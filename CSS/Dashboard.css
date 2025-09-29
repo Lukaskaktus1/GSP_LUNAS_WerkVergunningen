@@ -26,3 +26,7 @@ header{
 .Header-titel h2{
     color:color-mix(in hsl shorter hue, darkblue 50%, lightblue 50%);
 }
+
+li a {
+    text-decoration: none;
+}
