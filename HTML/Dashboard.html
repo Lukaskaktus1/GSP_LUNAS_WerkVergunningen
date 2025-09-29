@@ -1,39 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/Dashboard.css">
-    <title>Dashboard Portfolio Website</title>
+    <link rel="stylesheet" href="../CSS/Dashboard.css">
+    <title>Dashboard - GSP 6ADB 2025-2026</title>
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <div class="Header-titel">
-                <h2>GSP 6ADB 2025-2026</h2>
-            </div>
-            <div>
-                <ul>
-                    <li><a href=""></a></li>
-                    <li><a href=""></a></li>
-                    <li><a href=""></a></li>
-                    <li><a href=""></a></li>
-                    <li><a href=""></a></li>
-                    <li><a href=""></a></li>
-                    <li><a href=""></a></li>
-                </ul>
-            </div>
-            <div class="header-overig">
-                <input type="text" placeholder="Zoek projecten...">
-                <button></button>
-                <img src="" alt="Profile">
-            </div>
+    <header class="header-bar">
+        <div class="header-left">
+            <h1>GSP 6ADB 2025-2026</h1>
         </div>
-
+        <div class="header-right">
+            <div class="search-container">
+                <input type="text" placeholder="Zoek projecten..." class="search-input">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="notification-icon">
+                🔔
+                <span class="notification-dot"></span>
+            </div>
+            <div class="add-icon">➕</div>
+        </div>
     </header>
 
-    <main>
+    <div class="main-container">
+        <nav class="sidebar">
+            <ul class="nav-list">
+                <li class="nav-item active">
+                    <a href="Dashboard.html" class="nav-link">
+                        <span class="nav-icon">⚏</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Projecten.html" class="nav-link">
+                        <span class="nav-icon">📁</span>
+                        <span class="nav-text">Projecten</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Logboek.html" class="nav-link">
+                        <span class="nav-icon">📖</span>
+                        <span class="nav-text">Logboek</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="TijdLijn.html" class="nav-link">
+                        <span class="nav-icon">📅</span>
+                        <span class="nav-text">Tijdlijn</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Uren_Tracking.html" class="nav-link">
+                        <span class="nav-icon">🕐</span>
+                        <span class="nav-text">Uren Tracking</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Voortgang.html" class="nav-link">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Voortgang</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Instellingen.html" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Instellingen</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-    </main>
+        <main class="main-content">
+            <section class="welcome-section">
+                <h2 class="welcome-title">Welkom terug!</h2>
+                <p class="welcome-subtitle">Hier is een overzicht van je eindwerk voortgang.</p>
+            </section>
+
+        
+            <section class="summary-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Actieve Projecten</h3>
+                        <span class="card-icon">🖼️</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value">3</div>
+                        <div class="card-subtitle">2 in voorbereiding</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Totaal Uren</h3>
+                        <span class="card-icon">🕐</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value">127</div>
+                        <div class="card-subtitle">Deze week: 18u</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Logboek Entries</h3>
+                        <span class="card-icon">📄</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value">45</div>
+                        <div class="card-subtitle">Laatste entry vandaag</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Gemiddelde Voortgang</h3>
+                        <span class="card-icon">📈</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-value">67%</div>
+                        <div class="card-subtitle">Op schema</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="deadlines-section">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="section-icon">🕐</span>
+                        <h3>Komende Deadlines</h3>
+                    </div>
+                    <p class="section-subtitle">Blijf op schema met je taken</p>
+                    <ul class="deadlines-list">
+                        <li class="deadline-item urgent">
+                            <span class="deadline-dot red"></span>
+                            <span class="deadline-text">Database schema finaliseren</span>
+                            <span class="deadline-time">Over 3 dagen</span>
+                        </li>
+                        <li class="deadline-item">
+                            <span class="deadline-dot"></span>
+                            <span class="deadline-text">Frontend mockups reviewen</span>
+                            <span class="deadline-time">Over 5 dagen</span>
+                        </li>
+                        <li class="deadline-item">
+                            <span class="deadline-dot"></span>
+                            <span class="deadline-text">API documentatie updaten</span>
+                            <span class="deadline-time">Over 1 week</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            
+            <section class="team-hours-section">
+                <div class="section-card">
+                    <div class="section-header">
+                        <span class="section-icon">🕐</span>
+                        <h3>Team Uren Overzicht</h3>
+                    </div>
+                    <p class="section-subtitle">Totaal gewerkte uren per teamlid</p>
+                    <div class="team-members">
+                        <div class="team-member blue">
+                            <span class="member-name">Lisa Vermeulen</span>
+                            <span class="member-hours">65h</span>
+                        </div>
+                        <div class="team-member green">
+                            <span class="member-name">Tom Bakker</span>
+                            <span class="member-hours">71h</span>
+                        </div>
+                    </div>
+                    <div class="team-total">
+                        <span class="total-label">Totaal Team</span>
+                        <span class="total-hours">136h</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
 </body>
 </html>
