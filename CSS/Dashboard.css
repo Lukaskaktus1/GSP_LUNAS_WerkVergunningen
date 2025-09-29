@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+header{
+    background-color: #cecece;
+    color: white;
+    padding: 20px;
+    display: flex;
+}
+.header-container{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+.header-overig{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.Header-titel h2{
+    color:color-mix(in hsl shorter hue, darkblue 50%, lightblue 50%);
+}
