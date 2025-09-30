@@ -170,6 +170,105 @@ body {
     font-weight: 500;
 }
 
+.main-container{
+    margin-left: 250px;
+    padding: 30px;
+    min-height: calc(100vh - 60px);
+    width: calc(100% - 250px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card{
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    height: 100px;
+}
+.card h3{
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: black;
+    font-weight: 600;
+}
+
+.hours,
+.aantal{
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+}
+
+.content{
+    color: gray;
+    font-size: 14px;
+}
+
+.content-section{
+    display: flex;
+    gap: 20px;
+}
+
+.entries_section{
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+.entries-buttons{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: lightgray;
+    padding: 10px;
+    width: fit-content;
+}
+
+.uren{
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.overzicht{
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.projecten{
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.Uren_entries{
+    width: 100%;
+    background-color: white;
+    padding: 20px;
+
+}
 
 
 
