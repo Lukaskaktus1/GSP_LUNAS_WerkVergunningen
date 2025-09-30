@@ -103,7 +103,10 @@ body {
 }
 
 .nav-item {
-    margin-bottom: 5px;
+    margin: 5px;
+    margin-left: 12px;
+    border-radius: 10px;
+    max-width: 90%;
 }
 
 .nav-link {
@@ -112,22 +115,26 @@ body {
     padding: 12px 20px;
     text-decoration: none;
     color: #333;
+    border-radius: 15px;
     transition: all 0.3s ease;
 }
 
 .nav-item.active .nav-link {
     background-color: #007bff;
     color: white;
+    border-radius: 15px;
 }
 
 .nav-item:hover .nav-link {
     background-color: #007bff;
     color: white;
+    border-radius: 15px;
 }
 
 .nav-item.active:hover .nav-link {
     background-color: #007bff;
     color: white;
+    border-radius: 15px;
 }
 
 .nav-icon {
