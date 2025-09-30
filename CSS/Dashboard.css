@@ -12,6 +12,7 @@ body {
 
 .header-bar {
     background-color: #2c2c2c;
+    color: white;
     padding: 15px 30px;
     display: flex;
     justify-content: space-between;
@@ -25,7 +26,17 @@ body {
 
 .header-left h1 {
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.gradient-text {
+    font-size: 3rem;
+      font-weight: bold;
+      background: linear-gradient(to right, rgb(20, 20, 255), rgb(16, 195, 255));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
 }
 
 .header-right {
