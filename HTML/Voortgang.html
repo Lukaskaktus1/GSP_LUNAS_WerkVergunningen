@@ -20,7 +20,7 @@
                 🔔
                 <span class="notification-dot"></span>
             </div>
-            <div class="add-icon">➕</div>
+            <button class="add-icon" type="button" aria-label="Nieuw project">➕</button>
         </div>
     </header>
 
@@ -71,6 +71,123 @@
                 </li>
             </ul>
         </nav>
+        <div class="main-content">
+            <div class="content-header">
+                <div class="content-title">
+                    <h2>Alle Projecten</h2>
+                    <p>Status en voortgang van je eindwerken</p>
+                </div>
+                <button class="primary-btn" type="button">+ Nieuw Project</button>
+            </div>
+
+            <section class="progress-list">
+                <article class="progress-row">
+                    <div class="row-left">
+                        <h3 class="row-title">Website Redesign</h3>
+                        <p class="row-sub">Frontend Development</p>
+                        <p class="row-meta">📅 Deadline: 07 Dec 2024</p>
+                    </div>
+                    <div class="row-right">
+                        <span class="status-badge status-done">Voltooid</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress__bar" style="width: 100%"></div>
+                        </div>
+                        <span class="mini-percentage">100%</span>
+                    </div>
+                </article>
+
+                <article class="progress-row row-active">
+                    <div class="row-left">
+                        <h3 class="row-title">E-commerce Platform</h3>
+                        <p class="row-sub">Full-stack Development</p>
+                        <p class="row-meta">📅 Deadline: 15 Dec 2024</p>
+                    </div>
+                    <div class="row-right">
+                        <span class="status-badge status-inprogress">In Uitvoering</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress__bar" style="width: 75%"></div>
+                        </div>
+                        <span class="mini-percentage">75%</span>
+                    </div>
+                </article>
+
+                <article class="progress-row">
+                    <div class="row-left">
+                        <h3 class="row-title">Mobile App Design</h3>
+                        <p class="row-sub">UI/UX Design</p>
+                        <p class="row-meta">📅 Deadline: 22 Dec 2024</p>
+                    </div>
+                    <div class="row-right">
+                        <span class="status-badge status-inprogress">In Uitvoering</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress__bar" style="width: 45%"></div>
+                        </div>
+                        <span class="mini-percentage">45%</span>
+                    </div>
+                </article>
+
+                <article class="progress-row">
+                    <div class="row-left">
+                        <h3 class="row-title">Database Optimization</h3>
+                        <p class="row-sub">Backend Development</p>
+                        <p class="row-meta">📅 Deadline: 29 Dec 2024</p>
+                    </div>
+                    <div class="row-right">
+                        <span class="status-badge status-almost">Bijna Klaar</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress__bar" style="width: 90%"></div>
+                        </div>
+                        <span class="mini-percentage">90%</span>
+                    </div>
+                </article>
+
+                <article class="progress-row">
+                    <div class="row-left">
+                        <h3 class="row-title">API Integration</h3>
+                        <p class="row-sub">Backend Development</p>
+                        <p class="row-meta">📅 Deadline: 30 Jan 2025</p>
+                    </div>
+                    <div class="row-right">
+                        <span class="status-badge status-not">Niet Gestart</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress__bar" style="width: 0%"></div>
+                        </div>
+                        <span class="mini-percentage">0%</span>
+                    </div>
+                </article>
+
+                <article class="progress-row">
+                    <div class="row-left">
+                        <h3 class="row-title">User Authentication</h3>
+                        <p class="row-sub">Security Implementation</p>
+                        <p class="row-meta">📅 Deadline: 15 Feb 2025</p>
+                    </div>
+                    <div class="row-right">
+                        <span class="status-badge status-not">Niet Gestart</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress__bar" style="width: 0%"></div>
+                        </div>
+                        <span class="mini-percentage">0%</span>
+                    </div>
+                </article>
+            </section>
+
+            <section class="summary-grid">
+                <div class="summary-card">
+                    <p class="summary-title">Voltooide Projecten</p>
+                    <p class="summary-value done">1</p>
+                </div>
+                <div class="summary-card">
+                    <p class="summary-title">In Uitvoering</p>
+                    <p class="summary-value inprogress">3</p>
+                </div>
+                <div class="summary-card">
+                    <p class="summary-title">Nog Niet Gestart</p>
+                    <p class="summary-value not">2</p>
+                </div>
+            </section>
+        </div>
+    </div>
 
     </body>
-</html>
+    </html>
