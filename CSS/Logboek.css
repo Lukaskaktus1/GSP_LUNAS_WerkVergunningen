@@ -121,11 +121,13 @@ body {
 }
 
 .nav-item:hover .nav-link {
-    background-color: #f8f9fa;
+    background-color: #007bff;
+    color: white;
 }
 
 .nav-item.active:hover .nav-link {
-    background-color: #0056b3;
+    background-color: #007bff;
+    color: white;
 }
 
 .nav-icon {
