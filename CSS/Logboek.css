@@ -31,6 +31,16 @@ body {
     font-weight: 500;
 }
 
+.gradient-text {
+    font-size: 3rem;
+      font-weight: bold;
+      background: linear-gradient(to right, rgb(20, 20, 255), rgb(16, 195, 255));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      color: transparent;
+}
+
 .header-right {
     display: flex;
     align-items: center;
