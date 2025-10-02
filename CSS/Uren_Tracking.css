@@ -187,7 +187,19 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 250px;
     height: 100px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
+
+.card i{
+    font-size: 20px;
+    color: black;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
 .card h3{
     font-size: 16px;
     margin-bottom: 10px;
@@ -278,21 +290,110 @@ body {
     font-weight: 600;
 }
 
-.entry{
+.entries-list{
     display: flex;
     flex-direction: column;
+    gap: 20px;
+    
+    overflow-y: auto;
+}
+
+.entry-blue{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px;
     background-color: rgb(0, 123, 255, 0.1);
     border-radius: 10px;
     width: 100%;
+    gap: 10px;
+}
+
+.entry-green{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: rgb(40, 167, 69, 0.1);
+    border-radius: 10px;
+    width: 100%;
+    gap: 10px;
 }
 
 .entry-details{
     display: flex;
     flex-direction: row;
     margin-bottom: 5px;
+    padding: 10px;
+    align-items: center;
     gap: 20px;
 }
+
+.entry-info{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    padding: 10px;
+}
+
+.entry-left{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.entry-right{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: transparent;
+}
+
+.entry-right-blue{
+    color: Blue;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.entry-right-green{
+    color: Green;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.soort_entry_declarabel{
+    background-color: blue;
+    color: white;
+    padding: 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    width: fit-content;
+}
+
+.naam-blue{
+    color: blue;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.soort_entry_intern{
+    background-color: white;
+    color: black;
+    padding: 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    width: fit-content;
+}
+.naam-green{
+    color: green;
+    font-size: 14px;
+    font-weight: 600;
+}
+
 
 
 @media (max-width: 768px) {
