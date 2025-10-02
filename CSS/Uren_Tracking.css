@@ -281,12 +281,17 @@ body {
 .entry{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     padding: 10px 0;
     border-bottom: 1px solid #e0e0e0;
     width: 100%;
 }
 
+.entry-details{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+    gap: 20px;
+}
 
 
 @media (max-width: 768px) {
