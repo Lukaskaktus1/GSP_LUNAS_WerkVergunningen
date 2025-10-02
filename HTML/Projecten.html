@@ -20,7 +20,7 @@
                     🔔
                     <span class="notification-dot"></span>
                 </div>
-                <div class="add-icon">➕</div>
+                <button class="add-icon" type="button" aria-label="Nieuw project">➕</button>
             </div>
         </header>
 
@@ -72,6 +72,154 @@
                         </li>
                     </ul>
                 </nav>
+                <div class="main-content">
+                    <div class="content-header">
+                        <div class="content-title">
+                            <h2>Mijn Projecten</h2>
+                            <p>Beheer en organiseer je eindwerk projecten</p>
+                        </div>
+                        <button class="primary-btn" type="button">+ Nieuw Project</button>
+                    </div>
+
+                    <section class="projects-list">
+                        <article class="project-card">
+                            <header class="project-card__header">
+                                <div class="project-card__title">
+                                    <h3>E-commerce Platform</h3>
+                                    <span class="badge badge-info">In Progress</span>
+                                </div>
+                                <button class="icon-btn" type="button" aria-label="Project opties">⋮</button>
+                            </header>
+                            <p class="project-card__subtitle">Full-stack webapplicatie met React, Node.js en PostgreSQL</p>
+                            <ul class="meta-list">
+                                <li>🛠️ Full-stack Development</li>
+                                <li>📅 15 December 2024</li>
+                                <li>⏱️ 89 uren</li>
+                            </ul>
+
+                            <div class="progress">
+                                <div class="progress__bar" style="width: 75%"></div>
+                                <span class="progress__label">75%</span>
+                            </div>
+
+                            <div class="project-section">
+                                <h4>Technologieën</h4>
+                                <div class="chip-row">
+                                    <span class="chip">React</span>
+                                    <span class="chip">Node.js</span>
+                                    <span class="chip">PostgreSQL</span>
+                                    <span class="chip">Tailwind</span>
+                                </div>
+                            </div>
+
+                            <div class="project-section">
+                                <h4>Cloud Bestanden</h4>
+                                <div class="chip-row">
+                                    <button class="chip chip-action" type="button">📦 GitHub Repo</button>
+                                    <button class="chip chip-action" type="button">🧪 Staging Environment</button>
+                                    <button class="chip chip-action" type="button">🎨 Design Files</button>
+                                </div>
+                            </div>
+
+                            <footer class="project-card__footer">
+                                <span class="muted">23 documenten</span>
+                                <span class="muted">Laatst gewijzigd: 2 uur geleden</span>
+                                <button class="secondary-btn" type="button">Project Openen</button>
+                            </footer>
+                        </article>
+
+                        <article class="project-card">
+                            <header class="project-card__header">
+                                <div class="project-card__title">
+                                    <h3>Mobile App Design</h3>
+                                    <span class="badge badge-info">In Progress</span>
+                                </div>
+                                <button class="icon-btn" type="button" aria-label="Project opties">⋮</button>
+                            </header>
+                            <p class="project-card__subtitle">UI/UX ontwerp voor een fitness tracking applicatie</p>
+                            <ul class="meta-list">
+                                <li>🎯 UI/UX Design</li>
+                                <li>📅 22 December 2024</li>
+                                <li>⏱️ 34 uren</li>
+                            </ul>
+
+                            <div class="progress">
+                                <div class="progress__bar" style="width: 45%"></div>
+                                <span class="progress__label">45%</span>
+                            </div>
+
+                            <div class="project-section">
+                                <h4>Technologieën</h4>
+                                <div class="chip-row">
+                                    <span class="chip">Figma</span>
+                                    <span class="chip">Adobe XD</span>
+                                    <span class="chip">Principle</span>
+                                </div>
+                            </div>
+
+                            <div class="project-section">
+                                <h4>Cloud Bestanden</h4>
+                                <div class="chip-row">
+                                    <button class="chip chip-action" type="button">📁 Figma Project</button>
+                                    <button class="chip chip-action" type="button">🧩 Asset Library</button>
+                                    <button class="chip chip-action" type="button">🧪 Prototype</button>
+                                </div>
+                            </div>
+
+                            <footer class="project-card__footer">
+                                <span class="muted">15 documenten</span>
+                                <span class="muted">Laatst gewijzigd: 1 dag geleden</span>
+                                <button class="secondary-btn" type="button">Project Openen</button>
+                            </footer>
+                        </article>
+
+                        <article class="project-card">
+                            <header class="project-card__header">
+                                <div class="project-card__title">
+                                    <h3>Database Optimization</h3>
+                                    <span class="badge badge-success">Almost Done</span>
+                                </div>
+                                <button class="icon-btn" type="button" aria-label="Project opties">⋮</button>
+                            </header>
+                            <p class="project-card__subtitle">Performance verbetering van bestaande database systemen</p>
+                            <ul class="meta-list">
+                                <li>🧱 Backend Development</li>
+                                <li>📅 10 December 2024</li>
+                                <li>⏱️ 67 uren</li>
+                            </ul>
+
+                            <div class="progress">
+                                <div class="progress__bar" style="width: 90%"></div>
+                                <span class="progress__label">90%</span>
+                            </div>
+
+                            <div class="project-section">
+                                <h4>Technologieën</h4>
+                                <div class="chip-row">
+                                    <span class="chip">MySQL</span>
+                                    <span class="chip">Redis</span>
+                                    <span class="chip">Python</span>
+                                    <span class="chip">Docker</span>
+                                </div>
+                            </div>
+
+                            <div class="project-section">
+                                <h4>Cloud Bestanden</h4>
+                                <div class="chip-row">
+                                    <button class="chip chip-action" type="button">🗄️ Database Backup</button>
+                                    <button class="chip chip-action" type="button">📊 Performance Reports</button>
+                                    <button class="chip chip-action" type="button">🔁 Migration Scripts</button>
+                                </div>
+                            </div>
+
+                            <footer class="project-card__footer">
+                                <span class="muted">18 documenten</span>
+                                <span class="muted">Laatst gewijzigd: 3 uur geleden</span>
+                                <button class="secondary-btn" type="button">Project Openen</button>
+                            </footer>
+                        </article>
+                    </section>
+                </div>
             </div>
 
         </main>
