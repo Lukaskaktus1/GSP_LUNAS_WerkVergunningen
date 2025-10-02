@@ -108,6 +108,13 @@ body {
 .main-container {
     display: flex;
     margin-top: 60px;
+    margin-left: 250px;
+    padding: 30px;
+    min-height: calc(100vh - 60px);
+    width: calc(100% - 250px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .sidebar {
@@ -171,6 +178,238 @@ body {
 }
 
 
+
+/* Titel */
+.titel-section {
+    margin-bottom: 20px;
+}
+
+.titel-section h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.titel-section p {
+    color: gray;
+    font-size: 14px;
+}
+
+/* Filters */
+.filters-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-logbook, 
+.filter-project, 
+.filter-category {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+}
+
+.filter-btn {
+    background: #f0f0f0;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.new-entry-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Entries */
+.logbook-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.entry-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.entry-header {
+    display: flex;
+    gap: 15px;
+    flex: 1;
+}
+
+.entry-date {
+    border-radius: 10px;
+    text-align: center;
+    width: 50px;
+    padding: 5px 0;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.entry-date .day {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.entry-date .month {
+    font-size: 12px;
+    color: gray;
+}
+
+.entry-info {
+    flex: 1;
+}
+
+.entry-info h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.entry-info p {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.entry-meta {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 5px;
+    font-size: 13px;
+    color: gray;
+    min-width: 100px;
+}
+
+.tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tags span {
+    background: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #333;
+}
+
+/* Tags kleuren */
+.tag {
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    margin-left: 8px;
+    color: white;
+}
+
+.tag.development {
+    background: #007bff;
+}
+
+.tag.research {
+    background: #17a2b8;
+}
+
+.tag.design {
+    background: #ffc107;
+}
+
+/* Actions */
+.entry-actions {
+    display: flex;
+    gap: 10px;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+.entry-actions i {
+    cursor: pointer;
+    color: gray;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+.entry-actions i:hover {
+    color: black;
+}
+
+
+/* Grid: links datum, midden content, rechts uren/datum + icons */
+.entry-header {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 16px;
+  align-items: start;
+}
+
+/* Rechterkolom met uren, datum en acties */
+.entry-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  min-width: 120px;
+  font-size: 13px;
+  color: #555;
+}
+
+/* Uren mooi opvallend */
+.entry-meta .hours {
+  font-weight: 600;
+  font-size: 15px;
+  color: #007bff;
+}
+
+/* Datum rechts */
+.entry-meta .date {
+  font-size: 13px;
+  color: #777;
+}
+
+/* Actieknoppen (bewerk en verwijder) */
+.entry-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.entry-actions i {
+  font-size: 15px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.entry-actions i:hover {
+  color: #000;
+}
 
 
 @media (max-width: 768px) {
