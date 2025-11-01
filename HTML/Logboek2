@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/Logboek.css">
+    <title>Logboek - GSP 6ADB 2025-2026</title>
+    <link rel="icon" href="../afbeeldingen/LogoADB_1.png">
+</head>
+<script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+<body>
+   <header class="header-bar">
+        <div class="header-left">
+            <h1 class="gradient-text">GSP 6ADB 2025-2026</h1>
+        </div>
+        <div class="header-right">
+            <div class="search-container">
+                
+                <input type="text" placeholder="Zoek projecten..." class="search-input">
+                <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+            </div>
+            <div class="notification-icon">
+                <i class="fa-solid fa-bell"></i>
+                <span class="notification-dot"></span>
+            </div>
+            <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <nav class="sidebar">
+            <ul class="nav-list">
+                <li class="nav-item active">
+                    <a href="Dashboard.html" class="nav-link">
+                        <span class="nav-icon">⚏</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Projecten.html" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
+                        <span class="nav-text">Projecten</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Logboek.html" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-book"></i></span>
+                        <span class="nav-text">Logboek</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="TijdLijn.html" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                        <span class="nav-text">Tijdlijn</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Uren_Tracking.html" class="nav-link">
+                        <span class="nav-icon"><i class="fa-regular fa-clock"></i></span>
+                        <span class="nav-text">Uren Tracking</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Voortgang.html" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                        <span class="nav-text">Voortgang</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="Instellingen.html" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                        <span class="nav-text">Instellingen</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+
+        <section class="titel-section">
+            <h2>Logboek</h2>
+            <p>Registreer je dagelijkse werkzaamheden en uren</p>
+        </section>
+
+        <section class="filters-section">
+            <div class="filters">
+                <input type="text" placeholder="Zoek in logboek..." class="search-logbook">
+                <select class="filter-project">
+                    <option>Selecteer project</option>
+                </select>
+                <select class="filter-category">
+                    <option>Categorie</option>
+                </select>
+                <button class="filter-btn">Meer filters</button>
+                    </div>
+            <button class="new-entry-btn">+ Nieuwe Entry</button>
+        </section>
+
+        <section class="logbook-entries">
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <span class="day">9</span>
+                        <span class="month">dec</span>
+                    </div>
+                    <div class="entry-info">
+                        <h3>E-commerce Platform <span class="tag development">Development</span></h3>
+                        <span class="hours">4.5 uren</span>
+                        <span class="date">9-12-2024</span>
+                        <p>Implementatie van het betalingssysteem met Stripe. Gewerkt aan frontend validatie en error handling. Ook unit tests toegevoegd voor de payment service.</p>
+                        <div class="tags">
+                            <span>Frontend</span>
+                            <span>Stripe</span>
+                            <span>Testing</span>
+                        </div>
+                    </div>
+                    <div class="entry-meta">
+                        <div class="entry-actions">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <i class="fa-solid fa-trash"></i>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="entry-actions">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <i class="fa-solid fa-trash"></i>
+                    </div>
+                </div>
+
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <span class="day">8</span>
+                        <span class="month">dec</span>
+                    </div>
+                    <div class="entry-info">
+                        <h3>E-commerce Platform <span class="tag research">Research</span></h3>
+                        <span>3 uren</span>
+                        <span>8-12-2025</span>
+                        <p>Research naar best practices voor e-commerce security. Documentatie gelezen over OWASP guidelines en PCI compliance requirements.</p>
+                        <div class="tags">
+                            <span>Security</span>
+                            <span>Documentation</span>
+                            <span>Research</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="entry-actions">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <i class="fa-solid fa-trash"></i>
+                </div>
+                </div>
+
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <span class="day">7</span>
+                        <span class="month">dec</span>
+                    </div>
+                    <div class="entry-info">
+                        <h3>Mobile App Design <span class="tag design">Design</span></h3>
+                        <span>6 uren</span>
+                        <span>7-12-2025</span>
+                        <p>Wireframes gemaakt voor de hoofdschermen van de fitness app. User flow geoptimaliseerd en feedback van begeleider verwerkt in nieuwe mockups.</p>
+                        <div class="tags">
+                            <span>Wireframes</span>
+                            <span>User Flow</span>
+                            <span>Feedback</span>
+                        </div>
+                    </div>
+                    <div class="entry-meta">
+
+                    </div>
+                    </div>
+                <div class="entry-actions">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <i class="fa-solid fa-trash"></i>
+                </div>
+                </div>
+
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">
+                        <span class="day">6</span>
+                        <span class="month">dec</span>
+                    </div>
+                    <div class="entry-info">
+                        <h3>Database Optimization <span class="tag development">Development</span></h3>
+                        <span>2.5 uren</span>
+                        <span>6-12-2024</span>
+                        <p>Database queries geoptimaliseerd en indexen toegevoegd. Performance verbeterd met 40% volgens benchmark tests.</p>
+                        <div class="tags">
+                            <span>Performance</span>
+                            <span>SQL</span>
+                            <span>Optimization</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="entry-actions">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <i class="fa-solid fa-trash"></i>
+                </div>
+        </div>
+        </section>
+    </div>
+</body>
+</html>
