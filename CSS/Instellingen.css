@@ -12,7 +12,7 @@ body {
 }
 
 .header-bar {
-    background-color: white;
+    background-color: rgb(223, 223, 223);
     color: white;
     padding: 15px 30px;
     display: flex;
@@ -178,7 +178,7 @@ body {
         width: 200px;
     }
     
-    .main-content {
+    .main-container {
         margin-left: 200px;
         width: calc(100% - 200px);
     }
@@ -189,8 +189,12 @@ body {
     
     .header-right {
         gap: 10px;
+        margin-right: 20px;
     }
-    
+    .header-left h1{
+        margin-left: 20px;
+    }
+
     .search-input {
         width: 150px;
     }

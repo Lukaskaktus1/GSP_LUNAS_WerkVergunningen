@@ -357,7 +357,7 @@ body {
     font-weight: 600;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
     .sidebar {
         width: 200px;
     }
@@ -373,14 +373,18 @@ body {
     
     .header-right {
         gap: 10px;
+        margin-right: 20px;
     }
-    
+    .header-left h1{
+        margin-left: 20px;
+    }
+
     .search-input {
         width: 150px;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 590px) {
     .sidebar {
         width: 100%;
         position: relative;
