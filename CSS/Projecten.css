@@ -271,7 +271,7 @@ body {
     height: 8px;
     background: #f3f4f6;
     border-radius: 9999px;
-    overflow: hidden;
+    /*overflow: hidden;*/
     margin: 8px 0 14px 0;
 }
 
@@ -285,7 +285,7 @@ body {
     right: 8px;
     top: -18px;
     font-size: 11px;
-    color: #6b7280;
+    color: #000;
 }
 
 .project-section {
