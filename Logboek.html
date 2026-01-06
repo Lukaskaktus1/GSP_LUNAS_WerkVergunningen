@@ -98,7 +98,7 @@
                 </select>
                 <button class="filter-btn">Meer filters</button>
                     </div>
-            <button class="new-entry-btn">+ Nieuwe Entry</button>
+            <button class="new-entry-btn" id="openEntryBtn">+ Nieuwe Entry</button>
         </section>
 
         <section class="person">
@@ -110,7 +110,7 @@
             </div>
         </section>
 
-        <section class="logbook-entries">
+        <section class="logbook-entries" id="logbookEntries">
             <div class="entry-card">
                 <div class="entry-header">
                     <div class="entry-date">
@@ -366,5 +366,25 @@
             
         </section>
     </div>
+    <div id="entryModal" class="entry-modal hidden">
+    <div class="entry-modal-content">
+        <h3>Nieuwe Entry</h3>
+
+        <input type="date" id="entryDate">
+        <input type="text" id="entryTitle" placeholder="Titel">
+        <input type="text" id="entryCategory" placeholder="Categorie (Development / Design / Research)">
+        <input type="number" step="0.25" id="entryHours" placeholder="Uren">
+        <textarea id="entryDescription" placeholder="Beschrijving"></textarea>
+        <input type="text" id="entryTags" placeholder="Tags (komma gescheiden)">
+
+        <div class="modal-buttons">
+            <button id="saveEntryBtn" class="new-entry-btn">Opslaan</button>
+            <button id="closeEntryBtn">Annuleren</button>
+        </div>
+    </div>
+</div>
+
+<script src="Scripts/logboek-lukas.js"></script>
+
 </body>
 </html>
