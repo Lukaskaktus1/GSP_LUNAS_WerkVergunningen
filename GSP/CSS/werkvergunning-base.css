@@ -1,0 +1,401 @@
+/* Basis CSS voor alle werkvergunning pagina's - Gedeelde stijlen */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #EBF2FF;
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Header Styles - Gedeeld voor alle pagina's */
+.header {
+    background-color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #d4e4fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-icon i {
+    font-size: 24px;
+    color: #1678fa;
+}
+
+.header-title {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.header-title h1 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.header-title p {
+    font-size: 14px;
+    color: #666;
+}
+
+.role-badge {
+    background-color: #e5e7eb;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #333;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+}
+
+.role-badge i {
+    font-size: 12px;
+}
+
+.header-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.header-logo {
+    max-height: 100px;
+    max-width: 350px;
+    object-fit: contain;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.logout-btn i {
+    font-size: 16px;
+}
+
+/* Main Container - Gedeeld */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto 40px auto;
+    padding: 0 40px;
+}
+
+/* Form Card - Gedeeld */
+.form-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.form-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.form-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 25px;
+    font-style: italic;
+}
+
+/* Warning Boxes - Gedeeld */
+.warning-box {
+    background-color: #fee;
+    border-left: 4px solid #dc3545;
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 4px;
+}
+
+.warning-box.inline {
+    display: inline-block;
+    margin-left: 15px;
+    padding: 8px 15px;
+    font-size: 14px;
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.warning-icon {
+    color: #ffc107;
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+/* Form Sections - Gedeeld */
+.form-section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.subsection-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    margin-top: 25px;
+}
+
+/* Form Groups - Gedeeld */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #1678fa;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* Checkboxes and Radio Buttons - Gedeeld */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-item input[type="checkbox"],
+.checkbox-item input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox-item label {
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    margin: 0;
+    font-weight: normal;
+}
+
+.checkbox-group .geen-checkbox {
+    margin-left: auto;
+    font-weight: bold;
+}
+
+/* Navigation Buttons - Gedeeld */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px solid #e5e7eb;
+}
+
+.nav-button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.nav-button.prev {
+    background-color: #1f2937;
+    color: white;
+}
+
+.nav-button.prev:hover {
+    background-color: #111827;
+}
+
+.nav-button.next {
+    background-color: #1f2937;
+    color: white;
+}
+
+.nav-button.next:hover {
+    background-color: #111827;
+}
+
+/* Info Boxes - Gedeeld */
+.info-box {
+    background-color: #f0f9ff;
+    border-left: 4px solid #1678fa;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #666;
+}
+
+.info-box p {
+    margin: 5px 0;
+}
+
+/* Common Utility Classes - Gedeeld */
+.form-title-number {
+    margin-left: auto;
+    font-size: 16px;
+}
+
+.form-title-number input {
+    width: 100px;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.subsection-title-no-margin {
+    margin: 0;
+}
+
+.input-full-width {
+    width: 100%;
+}
+
+/* Responsive Design - Gedeeld */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .main-container {
+        padding: 0 20px;
+    }
+
+    .form-card {
+        padding: 20px;
+    }
+
+    .form-row,
+    .form-row-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .navigation-buttons {
+        flex-direction: column;
+    }
+
+    .nav-button {
+        width: 100%;
+    }
+}

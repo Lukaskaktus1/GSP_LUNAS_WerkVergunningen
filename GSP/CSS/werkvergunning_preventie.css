@@ -1,0 +1,81 @@
+/* Specifieke CSS voor werkvergunning_preventie.html */
+
+/* Preventiemaatregelen Grid */
+.preventie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.preventie-category {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.preventie-category h3 {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Signature Canvas Container */
+.signature-container {
+    margin-bottom: 15px;
+}
+
+.signature-canvas {
+    width: 100%;
+    height: 150px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    cursor: crosshair;
+    background-color: white;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.signature-canvas:active {
+    border-color: #1678fa;
+}
+
+.signature-clear-btn {
+    padding: 6px 12px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.signature-clear-btn:hover {
+    background-color: #333333;
+}
+
+/* Signature Date Container */
+.signature-date-container {
+    margin-top: 10px;
+}
+
+.signature-date-label {
+    font-size: 13px;
+    font-weight: normal;
+}
+
+.signature-date-input {
+    margin-left: 10px;
+    display: inline-block;
+}
+
+/* Responsive voor preventie grid */
+@media (max-width: 768px) {
+    .preventie-grid {
+        grid-template-columns: 1fr;
+    }
+}

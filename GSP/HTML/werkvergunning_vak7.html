@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werkvergunning - Vak VII</title>
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/werkvergunning_vak7.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="far fa-file-lines"></i>
+            </div>
+            <div class="header-title">
+                <h1>Werkvergunning Portaal</h1>
+                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <span id="userRole">Gebruiker</span></span></p>
+            </div>
+        </div>
+        <div class="header-center">
+            <img src="../IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="header-logo">
+        </div>
+        <div class="header-right">
+            <button class="logout-btn" onclick="window.location.href='../index.html'">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Uitloggen</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="form-card">
+            <div class="form-title">
+                <span>Vak VII. AFMELDING</span>
+            </div>
+
+            <!-- Control Table -->
+            <div class="form-section">
+                <table class="form-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>CONTROLE</th>
+                            <th>J</th>
+                            <th>N</th>
+                            <th>NAAM</th>
+                            <th>HANDTEKENING</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Uitvoerder vragen (eerste 3) -->
+                        <tr>
+                            <td class="role-label-cell" rowspan="3">
+                                <span>Uitvoerder:</span>
+                            </td>
+                            <td>Werkplek proper achtergelaten?</td>
+                            <td class="checkbox-cell"><input type="checkbox" id="proper_ja" class="table-checkbox"></td>
+                            <td class="checkbox-cell"><input type="checkbox" id="proper_neen" class="table-checkbox"></td>
+                            <td rowspan="3" class="signature-name-cell">
+                                <input type="text" id="uitvoerder_voornaam" placeholder="Voornaam" class="table-input-full">
+                                <input type="text" id="uitvoerder_achternaam" placeholder="Achternaam" class="table-input-full">
+                            </td>
+                            <td rowspan="3" class="signature-cell">
+                                <div class="signature-table-cell">
+                                    <canvas id="signatureCanvas_uitvoerder" class="signature-canvas-small"></canvas>
+                                    <input type="hidden" id="handtekening_uitvoerder" name="handtekening_uitvoerder">
+                                    <button type="button" class="signature-clear-btn-small" onclick="clearSignature('signatureCanvas_uitvoerder')">Wissen</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Is de taak volledig afgerond?</td>
+                            <td class="checkbox-cell"><input type="checkbox" id="taak_ja" class="table-checkbox"></td>
+                            <td class="checkbox-cell"><input type="checkbox" id="taak_neen" class="table-checkbox"></td>
+                        </tr>
+                        <tr>
+                            <td>Is de installatie GETEST?</td>
+                            <td class="checkbox-cell"><input type="checkbox" id="getest_ja" class="table-checkbox"></td>
+                            <td class="checkbox-cell"><input type="checkbox" id="getest_neen" class="table-checkbox"></td>
+                        </tr>
+
+                        <!-- Opdrachtgever/Afdeling i.o.v. opdrachtgever vragen (vragen 4 en 5) -->
+                        <tr>
+                            <td class="role-selector-cell" rowspan="2">
+                                <div class="role-checkbox-group">
+                                    <div class="role-checkbox-item">
+                                        <input type="checkbox" id="role_opdrachtgever" name="role_opdrachtgever_iov" value="opdrachtgever">
+                                        <label for="role_opdrachtgever">Opdrachtgever :</label>
+                                    </div>
+                                    <div class="role-checkbox-item">
+                                        <input type="checkbox" id="role_afdeling_iov" name="role_opdrachtgever_iov" value="afdeling_iov">
+                                        <label for="role_afdeling_iov">Afdeling i.o.v. opdrachtgever:</label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Is de installatie bedrijfsklaar?</td>
+                            <td class="checkbox-cell"><input type="checkbox" id="bedrijfsklaar_ja" class="table-checkbox"></td>
+                            <td class="checkbox-cell"><input type="checkbox" id="bedrijfsklaar_neen" class="table-checkbox"></td>
+                            <td rowspan="2" class="signature-name-cell">
+                                <input type="text" id="opdrachtgever_iov_voornaam" placeholder="Voornaam" class="table-input-full">
+                                <input type="text" id="opdrachtgever_iov_achternaam" placeholder="Achternaam" class="table-input-full">
+                            </td>
+                            <td rowspan="2" class="signature-cell">
+                                <div class="signature-table-cell">
+                                    <canvas id="signatureCanvas_opdrachtgever_iov" class="signature-canvas-small"></canvas>
+                                    <input type="hidden" id="handtekening_opdrachtgever_iov" name="handtekening_opdrachtgever_iov">
+                                    <button type="button" class="signature-clear-btn-small" onclick="clearSignature('signatureCanvas_opdrachtgever_iov')">Wissen</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Opdrachtgever gecontacteerd?</td>
+                            <td class="checkbox-cell"><input type="checkbox" id="gecontacteerd_ja" class="table-checkbox"></td>
+                            <td class="checkbox-cell"><input type="checkbox" id="gecontacteerd_neen" class="table-checkbox"></td>
+                        </tr>
+
+                        <!-- Afdeling vraag (laatste) -->
+                        <tr>
+                            <td class="role-label-cell">
+                                <span>Afdeling:</span>
+                            </td>
+                            <td>Is de maintenance taak volledig afgewerkt?</td>
+                            <td class="checkbox-cell"><input type="checkbox" id="maintenance_ja" class="table-checkbox"></td>
+                            <td class="checkbox-cell"><input type="checkbox" id="maintenance_neen" class="table-checkbox"></td>
+                            <td class="signature-name-cell">
+                                <input type="text" id="afdeling_voornaam" placeholder="Voornaam" class="table-input-full">
+                                <input type="text" id="afdeling_achternaam" placeholder="Achternaam" class="table-input-full">
+                            </td>
+                            <td class="signature-cell">
+                                <div class="signature-table-cell">
+                                    <canvas id="signatureCanvas_afdeling" class="signature-canvas-small"></canvas>
+                                    <input type="hidden" id="handtekening_afdeling" name="handtekening_afdeling">
+                                    <button type="button" class="signature-clear-btn-small" onclick="clearSignature('signatureCanvas_afdeling')">Wissen</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- OPMERKINGEN -->
+                <div class="remarks-section">
+                    <h3 class="subsection-title">OPMERKINGEN?</h3>
+                    <div class="remarks-header">
+                        <span>Werkplek inspectie werd uitgevoerd?</span>
+                        <div class="checkbox-group checkbox-group-inline-flex">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="inspectie_ja" name="inspectie">
+                                <label for="inspectie_ja">Ja</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="inspectie_neen" name="inspectie">
+                                <label for="inspectie_neen">Neen</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>(handtekening inspecteur)</label>
+                        <div class="signature-container">
+                            <canvas id="signatureCanvas_inspecteur" class="signature-canvas"></canvas>
+                            <input type="hidden" id="handtekening_inspecteur" name="handtekening_inspecteur">
+                            <button type="button" class="signature-clear-btn" onclick="clearSignature('signatureCanvas_inspecteur')">Wissen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="navigation-buttons">
+                <button class="nav-button prev" onclick="window.location.href='werkvergunning_vak6.html'">Vorige</button>
+                <!--
+                <button class="nav-button next" onclick="redirectToOverview()">Voltooien</button>-->
+                <button class="nav-button button next" onclick="navigateToNext('protoypeeindresultaat.html')">Volgende</button>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/saveCurrentVak.js"></script>
+    <script>
+        const role = sessionStorage.getItem('userRole');
+        const roleNames = {
+            'leerling': 'Leerling/Externe',
+            'leerkracht': 'Leerkracht',
+            'ta': 'TA',
+            'directeur': 'Directeur'
+        };
+        if (role && document.getElementById('userRole')) {
+            document.getElementById('userRole').textContent = roleNames[role] || 'Gebruiker';
+        }
+
+        // Handtekening Canvas functionaliteit
+        function initSignatureCanvas(canvasId, hiddenInputId, height = 150) {
+            const canvas = document.getElementById(canvasId);
+            const hiddenInput = document.getElementById(hiddenInputId);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            // Canvas grootte instellen
+            canvas.width = canvas.offsetWidth;
+            canvas.height = height;
+            
+            // Canvas styling
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Event listeners voor tekenen
+            function startDrawing(e) {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                lastX = e.clientX - rect.left;
+                lastY = e.clientY - rect.top;
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const currentY = e.clientY - rect.top;
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+
+                lastX = currentX;
+                lastY = currentY;
+
+                // Sla handtekening op als base64
+                if (hiddenInput) {
+                    hiddenInput.value = canvas.toDataURL();
+                }
+            }
+
+            function stopDrawing() {
+                if (isDrawing) {
+                    isDrawing = false;
+                    if (hiddenInput) {
+                        hiddenInput.value = canvas.toDataURL();
+                    }
+                }
+            }
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events voor mobiele apparaten
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            // Window resize handler
+            window.addEventListener('resize', () => {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                canvas.width = canvas.offsetWidth;
+                canvas.height = height;
+                ctx.putImageData(imageData, 0, 0);
+            });
+        }
+
+        function clearSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Clear hidden input
+            const hiddenInputMap = {
+                'signatureCanvas_uitvoerder': 'handtekening_uitvoerder',
+                'signatureCanvas_opdrachtgever_iov': 'handtekening_opdrachtgever_iov',
+                'signatureCanvas_afdeling': 'handtekening_afdeling',
+                'signatureCanvas_inspecteur': 'handtekening_inspecteur'
+            };
+            
+            const hiddenInputId = hiddenInputMap[canvasId];
+            if (hiddenInputId) {
+                const hiddenInput = document.getElementById(hiddenInputId);
+                if (hiddenInput) {
+                    hiddenInput.value = '';
+                }
+            }
+        }
+
+        // Maak radio button gedrag voor Ja/Nee checkboxes
+        function setupJaNeeCheckboxes(jaId, neeId) {
+            const jaCheckbox = document.getElementById(jaId);
+            const neeCheckbox = document.getElementById(neeId);
+            
+            if (jaCheckbox && neeCheckbox) {
+                jaCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        neeCheckbox.checked = false;
+                    }
+                });
+                
+                neeCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        jaCheckbox.checked = false;
+                    }
+                });
+            }
+        }
+
+        function redirectToOverview() {
+        const role = sessionStorage.getItem('userRole');
+
+        const rolePages = {
+            'leerling': 'overzicht_leerling.html',
+            'leerkracht': 'overzicht_leerkracht.html',
+            'ta': 'overzicht_ta.html',
+            'directeur': 'overzicht_directeur.html'
+        };
+
+        // Fallback = leerling
+        const targetPage = rolePages[role] || 'overzicht_leerling.html';
+
+        window.location.href = targetPage;
+    }
+
+        // Initialize signature canvases when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tabel handtekeningen (kleinere canvas) - één per rol groep
+            initSignatureCanvas('signatureCanvas_uitvoerder', 'handtekening_uitvoerder', 200);
+            initSignatureCanvas('signatureCanvas_opdrachtgever_iov', 'handtekening_opdrachtgever_iov', 150);
+            initSignatureCanvas('signatureCanvas_afdeling', 'handtekening_afdeling', 100);
+            // Inspecteur handtekening (grotere canvas)
+            initSignatureCanvas('signatureCanvas_inspecteur', 'handtekening_inspecteur', 150);
+
+            // Setup Ja/Nee checkboxes om elkaar uit te sluiten
+            setupJaNeeCheckboxes('proper_ja', 'proper_neen');
+            setupJaNeeCheckboxes('taak_ja', 'taak_neen');
+            setupJaNeeCheckboxes('getest_ja', 'getest_neen');
+            setupJaNeeCheckboxes('bedrijfsklaar_ja', 'bedrijfsklaar_neen');
+            setupJaNeeCheckboxes('gecontacteerd_ja', 'gecontacteerd_neen');
+            setupJaNeeCheckboxes('maintenance_ja', 'maintenance_neen');
+            setupJaNeeCheckboxes('inspectie_ja', 'inspectie_neen');
+
+            // Setup Opdrachtgever/Afdeling i.o.v. checkboxes om elkaar uit te sluiten
+            const opdrachtgeverCheckbox = document.getElementById('role_opdrachtgever');
+            const afdelingIovCheckbox = document.getElementById('role_afdeling_iov');
+            
+            if (opdrachtgeverCheckbox && afdelingIovCheckbox) {
+                opdrachtgeverCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        afdelingIovCheckbox.checked = false;
+                    }
+                });
+                
+                afdelingIovCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        opdrachtgeverCheckbox.checked = false;
+                    }
+                });
+            }
+        });
+        
+    </script>
+</body>
+</html>

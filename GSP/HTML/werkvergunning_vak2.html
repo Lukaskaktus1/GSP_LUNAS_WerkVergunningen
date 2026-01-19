@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werkvergunning - Vak II</title>
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/werkvergunning_vak2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="far fa-file-lines"></i>
+            </div>
+            <div class="header-title">
+                <h1>Werkvergunning Portaal</h1>
+                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <span id="userRole">Gebruiker</span></span></p>
+            </div>
+        </div>
+        <div class="header-center">
+            <img src="../IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="header-logo">
+        </div>
+        <div class="header-right">
+            <button class="logout-btn" onclick="window.location.href='../index.html'">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Uitloggen</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="form-card">
+            <div class="form-title">
+                <span>WERKVERGUNNING</span>
+                <span class="form-title-number">Nr. <input type="text" id="werkvergunning_nummer"></span>
+            </div>
+
+            <!-- Vak II -->
+            <div class="form-section">
+                <h2 class="section-title">Vak II. UITVOERDER/LEERLING:</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="naam_uitvoerder">Naam:</label>
+                        <input type="text" id="naam_uitvoerder" name="naam_uitvoerder">
+                    </div>
+                    <div class="form-group">
+                        <label for="firma">Firma:</label>
+                        <input type="text" id="firma" name="firma">
+                    </div>
+                    <div class="form-group">
+                        <label for="klas">Klas:</label>
+                        <input type="text" id="klas" name="klas">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Datum werken:</label>
+                        <input type="date" id="datum_werken" name="datum_werken">
+                    </div>
+                    <div class="form-group">
+                        <label>werktijd van</label>
+                        <input type="time" id="werktijd_van" name="werktijd_van">
+                    </div>
+                    <div class="form-group">
+                        <label>tot</label>
+                        <input type="time" id="werktijd_tot" name="werktijd_tot">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="namen_medewerkers">Namen medewerkers:</label>
+                    <input type="text" id="namen_medewerkers" name="namen_medewerkers">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ex-Zone (gas/stof):</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" id="exzone_ja" name="exzone" value="ja">
+                                <label for="exzone_ja">Ja</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="exzone_neen" name="exzone" value="neen">
+                                <label for="exzone_neen">Neen</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Veiligheidstest:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" id="veiligheidstest_ok" name="veiligheidstest" value="ok">
+                                <label for="veiligheidstest_ok">OK</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="veiligheidstest_nok" name="veiligheidstest" value="nok">
+                                <label for="veiligheidstest_nok">NOK</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>VCA-certificaten: Ja/Nee. Indien ja, kopiëren en bewaren (*)</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" id="vca_ja" name="vca" value="ja">
+                                <label for="vca_ja">Ja</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="vca_nee" name="vca" value="nee">
+                                <label for="vca_nee">Nee</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vermoedelijke_duur">Vermoedelijke duur:</label>
+                        <input type="text" id="vermoedelijke_duur" name="vermoedelijke_duur" placeholder="bijv. 2 uur">
+                    </div>
+                    <div class="form-group">
+                        <label for="geldig_tot">Geldig tot:</label>
+                        <input type="date" id="geldig_tot" name="geldig_tot">
+                    </div>
+                    <!--- Lege kolom voor 3-kolommen layout --->
+                    <div class="form-group"></div>
+                    <!--- Einde Lege kolom voor 3-kolommen layout --->
+                    <div class="form-group">
+                        <label for="werkzaamheden">Werkzaamheden:</label>
+                        <input type="text" id="werkzaamheden" name="werkzaamheden" placeholder="bijv. montage, afbouw, etc.">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="navigation-buttons">
+                <button class="nav-button prev" onclick="window.location.href='werkvergunning_vak1.html'">Vorige</button>
+                <button class="nav-button button next" onclick="navigateToNext('werkvergunning_vak3.html')">Volgende</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/saveCurrentVak.js"></script>
+    <script>
+        const role = sessionStorage.getItem('userRole');
+        const roleNames = {
+            'leerling': 'Leerling/Externe',
+            'leerkracht': 'Leerkracht',
+            'ta': 'TA',
+            'directeur': 'Directeur'
+        };
+        if (role && document.getElementById('userRole')) {
+            document.getElementById('userRole').textContent = roleNames[role] || 'Gebruiker';
+        }
+    </script>
+</body>
+</html>

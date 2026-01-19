@@ -1,0 +1,192 @@
+/* Specifieke CSS voor werkvergunning_vak7.html */
+
+/* Form Table specifiek voor Vak VII */
+.form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+
+.form-table th,
+.form-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+}
+
+.form-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-table td input[type="text"],
+.form-table td input[type="date"],
+.form-table td input[type="time"] {
+    width: 100%;
+    border: none;
+    padding: 5px;
+    font-size: 14px;
+}
+
+.form-table td input[type="checkbox"].table-checkbox {
+    width: 18px;
+    height: 18px;
+    margin: 0 auto;
+    display: block;
+    cursor: pointer;
+}
+
+.table-input {
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.role-label-cell {
+    min-width: 150px;
+    vertical-align: top;
+    padding: 12px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.role-selector-cell {
+    min-width: 200px;
+    vertical-align: top;
+    padding: 12px;
+}
+
+.role-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.role-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.role-selector-cell input[type="checkbox"],
+.role-selector-cell input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.role-selector-cell label {
+    font-size: 12px;
+    margin: 0;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.checkbox-cell {
+    text-align: center;
+    width: 50px;
+}
+
+.signature-name-cell {
+    vertical-align: top;
+    padding: 12px;
+}
+
+.signature-cell {
+    vertical-align: top;
+    padding: 12px;
+}
+
+.table-input-full {
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.form-table td input:focus {
+    outline: 2px solid #1678fa;
+    border-radius: 3px;
+}
+
+.table-input-full-width {
+    width: 100%;
+}
+
+/* Signature Canvas in Table Cells */
+.signature-table-cell {
+    padding: 5px;
+}
+
+.signature-canvas-small {
+    width: 100%;
+    height: 100px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: crosshair;
+    background-color: white;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.signature-canvas-small:active {
+    border-color: #1678fa;
+}
+
+.signature-clear-btn-small {
+    padding: 4px 8px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.signature-clear-btn-small:hover {
+    background-color: #333333;
+}
+
+/* Signature Container voor inspecteur */
+.signature-container {
+    margin-bottom: 15px;
+}
+
+.signature-canvas {
+    width: 100%;
+    height: 150px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    cursor: crosshair;
+    background-color: white;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.signature-canvas:active {
+    border-color: #1678fa;
+}
+
+.signature-clear-btn {
+    padding: 6px 12px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.signature-clear-btn:hover {
+    background-color: #333333;
+}

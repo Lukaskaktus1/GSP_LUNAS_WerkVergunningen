@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werkvergunning – Overzicht</title>
+
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/eindresultaatprototype.css">
+</head>
+<body>
+
+<h1>Werkvergunning – Overzicht</h1>
+
+<!-- ===================== VAK I ===================== -->
+<div class="section-box">
+    <h2>Vak I. Opdrachtgever / TA</h2>
+    <p><strong>Naam:</strong> <input type="text" id="vak1_naam" class="editable-field"></p>
+    <p><strong>Tel:</strong> <input type="text" id="vak1_tel" class="editable-field"></p>
+    <p><strong>Afdeling:</strong> <input type="text" id="vak1_afdeling" class="editable-field"></p>
+    <p><strong>Werkbeschrijving:</strong></p>
+    <p><textarea id="vak1_werkbeschrijving" class="editable-field" rows="4" style="width: 100%;"></textarea></p>
+    <p><strong>Ex-zone:</strong> <input type="text" id="vak1_exzone" class="editable-field"></p>
+</div>
+
+<!-- ===================== VAK II ===================== -->
+<div class="section-box">
+    <h2>Vak II. Uitvoerder / Leerling</h2>
+
+    <p><strong>Naam:</strong> <input type="text" id="vak2_naam" class="editable-field"></p>
+    <p><strong>Firma:</strong> <input type="text" id="vak2_firma" class="editable-field"></p>
+    <p><strong>Veiligheidstest:</strong> <input type="text" id="vak2_veiligheidstest" class="editable-field"></p>
+    <p><strong>Datum werken:</strong> <input type="date" id="vak2_datumwerken" class="editable-field"></p>
+    <p><strong>Namen medewerkers:</strong> <input type="text" id="vak2_medewerkers" class="editable-field"></p>
+
+    <h3>Activiteiten koud</h3>
+    <div class="checkbox-list" id="vak2_act_koud"></div>
+
+    <h3>Activiteiten warm</h3>
+    <div class="checkbox-list" id="vak2_act_warm"></div>
+
+    <h3>Vervoer & machines</h3>
+    <div class="checkbox-list" id="vak2_vervoer"></div>
+
+    <h3>Schadelijke stoffen</h3>
+    <div class="checkbox-list" id="vak2_stoffen"></div>
+
+    <h3>Chemicaliën</h3>
+    <div class="checkbox-list" id="vak2_chemicalien"></div>
+</div>
+
+<!-- ===================== VAK III ===================== -->
+<div class="section-box">
+    <h2>Vak III. Opdrachtgever / TA</h2>
+    <p><textarea id="vak3_aandachtspunten" class="editable-field" rows="4" style="width: 100%;"></textarea></p>
+    <p><strong>Parkeerplaats:</strong> <input type="text" id="vak3_parkeerplaats" class="editable-field"></p>
+</div>
+
+<!-- ===================== VAK IV ===================== -->
+<div class="section-box">
+    <h2>Vak IV. Afdeling</h2>
+    <p><strong>Naam afdelingsverantwoordelijke:</strong> <input type="text" id="vak4_naam" class="editable-field"></p>
+    <p><strong>Afdeling:</strong> <input type="text" id="vak4_afdeling" class="editable-field"></p>
+    <p><textarea id="vak4_aandachtspunten" class="editable-field" rows="4" style="width: 100%;"></textarea></p>
+</div>
+
+<!-- ===================== VAK V ===================== -->
+<div class="section-box">
+    <h2>Vak V. Vergunningen & Preventiemaatregelen</h2>
+
+    <p><strong>Andere vergunningen:</strong></p>
+    <div class="checkbox-list" id="vak5_vergunningen"></div>
+
+    <p><strong>Bijkomende toelatingen:</strong></p>
+    <div class="checkbox-list" id="vak5_toelatingen"></div>
+
+    <p><strong>Preventiemaatregelen:</strong></p>
+    <div class="checkbox-list" id="vak5_preventie"></div>
+</div>
+
+<!-- ===================== VAK VI ===================== -->
+<div class="section-box">
+    <h2>Vak VI. Bekrachtiging</h2>
+
+    <p><strong>LOTOTO:</strong> <input type="text" id="vak6_lototo" class="editable-field"></p>
+    <p><strong>Afdeling:</strong> <input type="text" id="vak6_afdeling" class="editable-field"></p>
+    <p><strong>Uitvoerder akkoord:</strong> <input type="text" id="vak6_uitvoerder" class="editable-field"></p>
+
+    <h3>Dagelijkse registraties</h3>
+    <table id="vak6_tabel">
+        <thead>
+            <tr>
+                <th>Dag</th>
+                <th>Datum</th>
+                <th>Van</th>
+                <th>Tot</th>
+                <th>Afdeling</th>
+                <th>Paraaf afdeling</th>
+                <th>Uitvoerder</th>
+                <th>Paraaf uitvoerder</th>
+                <th># uitvoerders</th>
+                <th>Overdracht</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- ===================== VAK VII ===================== -->
+<div class="section-box">
+    <h2>Vak VII. Afmelding</h2>
+
+    <table id="vak7_tabel">
+        <thead>
+            <tr>
+                <th>Controle</th>
+                <th>Ja</th>
+                <th>Neen</th>
+                <th>Naam</th>
+                <th>Handtekening</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <p><strong>Werkplekinspectie uitgevoerd:</strong> <input type="text" id="vak7_inspectie" class="editable-field"></p>
+    <img id="vak7_inspecteur_handtekening" class="signature-img">
+</div>
+
+<!-- Opslaan Button -->
+<div class="navigation-buttons" style="margin-top: 30px; padding: 20px 0;">
+    <button class="nav-button button next" onclick="saveAllChanges()">Wijzigingen Opslaan</button>
+</div>
+
+<!-- ===================== SCRIPT ===================== -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    /* ---------- Helper functies ---------- */
+
+    function fillText(id, key = id) {
+        const el = document.getElementById(id);
+        if (el) {
+            const value = sessionStorage.getItem(key) || '';
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.value = value;
+            } else {
+                el.textContent = value;
+            }
+        }
+    }
+
+    function saveText(id, key = id) {
+        const el = document.getElementById(id);
+        if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+            sessionStorage.setItem(key, el.value);
+        }
+    }
+
+    function fillCheckboxList(id, key) {
+        const el = document.getElementById(id);
+        const data = sessionStorage.getItem(key);
+        if (el && data) {
+            el.innerHTML = data
+                .split(',')
+                .map(v => `<span class="checkbox-item">${v.trim()}</span>`)
+                .join('');
+        }
+    }
+
+    function fillTable(tableId, storageKey, rowBuilder) {
+        const data = JSON.parse(sessionStorage.getItem(storageKey) || '[]');
+        const tbody = document.querySelector(`#${tableId} tbody`);
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = rowBuilder(row);
+            tbody.appendChild(tr);
+        });
+    }
+
+    /* ---------- Vak I ---------- */
+    fillText('vak1_naam');
+    fillText('vak1_tel');
+    fillText('vak1_afdeling');
+    fillText('vak1_werkbeschrijving');
+    fillText('vak1_exzone');
+
+    /* ---------- Vak II ---------- */
+    fillText('vak2_naam');
+    fillText('vak2_firma');
+    fillText('vak2_veiligheidstest');
+    fillText('vak2_datumwerken');
+    fillText('vak2_medewerkers');
+
+    fillCheckboxList('vak2_act_koud','vak2_act_koud');
+    fillCheckboxList('vak2_act_warm','vak2_act_warm');
+    fillCheckboxList('vak2_vervoer','vak2_vervoer');
+    fillCheckboxList('vak2_stoffen','vak2_stoffen');
+    fillCheckboxList('vak2_chemicalien','vak2_chemicalien');
+
+    /* ---------- Vak V ---------- */
+    fillCheckboxList('vak5_vergunningen','vak5_vergunningen');
+    fillCheckboxList('vak5_toelatingen','vak5_toelatingen');
+    fillCheckboxList('vak5_preventie','vak5_preventie');
+
+    /* ---------- Vak VI ---------- */
+    fillTable('vak6_tabel','vak6_tabel', row => `
+        <td>${row.dag || ''}</td>
+        <td>${row.datum || ''}</td>
+        <td>${row.van || ''}</td>
+        <td>${row.tot || ''}</td>
+        <td>${row.afdelingNaam || ''}</td>
+        <td>${row.afdelingParaaf || ''}</td>
+        <td>${row.uitvoerderNaam || ''}</td>
+        <td>${row.uitvoerderParaaf || ''}</td>
+        <td>${row.aantalUitvoerders || ''}</td>
+        <td>${row.afdOverdracht || ''}</td>
+    `);
+
+    /* ---------- Vak VII ---------- */
+    fillTable('vak7_tabel','vak7_tabel', row => `
+        <td>${row.controle}</td>
+        <td>${row.j}</td>
+        <td>${row.n}</td>
+        <td>${row.naam}</td>
+        <td>${row.handtekening ? `<img src="${row.handtekening}" class="signature-img">` : ''}</td>
+    `);
+
+    const sig = sessionStorage.getItem('handtekening_inspecteur');
+    if (sig) document.getElementById('vak7_inspecteur_handtekening').src = sig;
+
+    // Save all changes function
+    function saveAllChanges() {
+        // Save all text inputs
+        saveText('vak1_naam');
+        saveText('vak1_tel');
+        saveText('vak1_afdeling');
+        saveText('vak1_werkbeschrijving');
+        saveText('vak1_exzone');
+        saveText('vak2_naam');
+        saveText('vak2_firma');
+        saveText('vak2_veiligheidstest');
+        saveText('vak2_datumwerken');
+        saveText('vak2_medewerkers');
+        saveText('vak3_aandachtspunten');
+        saveText('vak3_parkeerplaats');
+        saveText('vak4_naam');
+        saveText('vak4_afdeling');
+        saveText('vak4_aandachtspunten');
+        saveText('vak6_lototo');
+        saveText('vak6_afdeling');
+        saveText('vak6_uitvoerder');
+        saveText('vak7_inspectie');
+        
+        alert('Wijzigingen opgeslagen!');
+    }
+
+});
+</script>
+
+</body>
+</html>

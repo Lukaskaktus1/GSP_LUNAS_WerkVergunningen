@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werkvergunning - Preventiemaatregelen</title>
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/werkvergunning_preventie.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="far fa-file-lines"></i>
+            </div>
+            <div class="header-title">
+                <h1>Werkvergunning Portaal</h1>
+                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <span id="userRole">Gebruiker</span></span></p>
+            </div>
+        </div>
+        <div class="header-center">
+            <img src="../IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="header-logo">
+        </div>
+        <div class="header-right">
+            <button class="logout-btn" onclick="window.location.href='../index.html'">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Uitloggen</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="form-card">
+            <div class="form-title form-title-column">
+                <div>PREVENTIEMAATREGELEN OP BASIS VAN RISICO-ANALYSE</div>
+                <div class="form-title-subtitle">Instruktie(s) op basis van risico-analyse</div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="subsection-title">PREVENTIEMAATREGELEN (Hourekening met de preventiehiërarchie: VERMIJDEN / VERVANGEN / AF SCHERMEN / PBM's / INSTRUCTIES!)</h3>
+                
+                <div class="preventie-grid">
+                    <!-- HUID -->
+                    <div class="preventie-category">
+                        <h3>HUID</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="huid_tyvec_classic" name="huid_tyvec_classic">
+                                <label for="huid_tyvec_classic">Tyvec Classic (wit-pak)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="huid_tyvec_f" name="huid_tyvec_f">
+                                <label for="huid_tyvec_f">Tyvec F (grijs-pak)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="huid_hitte" name="huid_hitte">
+                                <label for="huid_hitte">hitte-werende kledij</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="huid_andere" name="huid_andere">
+                                <label for="huid_andere">andere:</label>
+                                <input type="text" class="inline-input-medium">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- OGEN/OREN -->
+                    <div class="preventie-category">
+                        <h3>OGEN/OREN</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ogen_gelaatscherm" name="ogen_gelaatscherm">
+                                <label for="ogen_gelaatscherm">gelaatscherm</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ogen_goggles" name="ogen_goggles">
+                                <label for="ogen_goggles">goggles (ruimzichtbril)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="oren_bescherming" name="oren_bescherming">
+                                <label for="oren_bescherming">oorbescherming</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ogen_verlichting" name="ogen_verlichting">
+                                <label for="ogen_verlichting">bijkomende verlichting</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ogen_andere" name="ogen_andere">
+                                <label for="ogen_andere">andere:</label>
+                                <input type="text" class="inline-input-medium">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HAND/VOETEN -->
+                    <div class="preventie-category">
+                        <h3>HAND/VOETEN</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="hand_handschoenen" name="hand_handschoenen">
+                                <label for="hand_handschoenen">handschoenen type...</label>
+                                <input type="text" class="inline-input-very-small">
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="hand_laarzen" name="hand_laarzen">
+                                <label for="hand_laarzen">rubberen laarzen</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="hand_polsbeschermers" name="hand_polsbeschermers">
+                                <label for="hand_polsbeschermers">polsbeschermers</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="hand_tape" name="hand_tape">
+                                <label for="hand_tape">vast-TAPEN: handschoenen /laarzen</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="hand_andere" name="hand_andere">
+                                <label for="hand_andere">andere:</label>
+                                <input type="text" class="inline-input-medium">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ADEMHALING -->
+                    <div class="preventie-category">
+                        <h3>ADEMHALING</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="adem_afzuiging" name="adem_afzuiging">
+                                <label for="adem_afzuiging">afzuiging/ventilatie voorzien</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="adem_stofmasker" name="adem_stofmasker">
+                                <label for="adem_stofmasker">stofmasker P1/P2/P3</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="adem_halfgelaatsmasker" name="adem_halfgelaatsmasker">
+                                <label for="adem_halfgelaatsmasker">halfgelaatsmasker type.....</label>
+                                <input type="text" class="inline-input-small">
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="adem_volgelaatsmasker" name="adem_volgelaatsmasker">
+                                <label for="adem_volgelaatsmasker">volgelaatsmasker type.....</label>
+                                <input type="text" class="inline-input-small">
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="adem_luchtkap" name="adem_luchtkap">
+                                <label for="adem_luchtkap">luchtkap</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="adem_autonoom" name="adem_autonoom">
+                                <label for="adem_autonoom">autonome ademlucht</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VALLEN -->
+                    <div class="preventie-category">
+                        <h3>VALLEN</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="vallen_stelling" name="vallen_stelling">
+                                <label for="vallen_stelling">stelling</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="vallen_collectief" name="vallen_collectief">
+                                <label for="vallen_collectief">collectieve valbescherming</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="vallen_persoonlijk" name="vallen_persoonlijk">
+                                <label for="vallen_persoonlijk">persoonlijke valbescherming</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="vallen_gekeurd" name="vallen_gekeurd">
+                                <label for="vallen_gekeurd">gekeurd tot:</label>
+                                <input type="date" class="inline-input-medium">
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="vallen_dichtleggen" name="vallen_dichtleggen">
+                                <label for="vallen_dichtleggen">dichtleggen openingen vloer</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="vallen_andere" name="vallen_andere">
+                                <label for="vallen_andere">andere:</label>
+                                <input type="text" class="inline-input-medium">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COMMUNICATIE -->
+                    <div class="preventie-category">
+                        <h3>COMMUNICATIE</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="comm_radio" name="comm_radio">
+                                <label for="comm_radio">extra radio (portofoon)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="comm_tweede_persoon" name="comm_tweede_persoon">
+                                <label for="comm_tweede_persoon">+2° persoon</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="comm_productinfo" name="comm_productinfo">
+                                <label for="comm_productinfo">bezit productinfo (SDS-database)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="comm_signalisatie" name="comm_signalisatie">
+                                <label for="comm_signalisatie">signalisatie (pictogrammen,...)</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="comm_markeren" name="comm_markeren">
+                                <label for="comm_markeren">markeren werkplek</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="comm_gevarentags" name="comm_gevarentags">
+                                <label for="comm_gevarentags">aanbrengen gevarentags</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="comm_andere" name="comm_andere">
+                                <label for="comm_andere">andere:</label>
+                                <input type="text" class="inline-input-medium">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ANDERE -->
+                    <div class="preventie-category">
+                        <h3>ANDERE</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="andere_handgraven" name="andere_handgraven">
+                                <label for="andere_handgraven">handgraven tot ... cm</label>
+                                <input type="text" class="inline-input-extra-small">
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="andere_afdekken" name="andere_afdekken">
+                                <label for="andere_afdekken">afdekken riolering</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="andere_stockageplaats" name="andere_stockageplaats">
+                                <label for="andere_stockageplaats">aanduiden stockageplaats</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="andere_hijsplan" name="andere_hijsplan">
+                                <label for="andere_hijsplan">goedgekeurd hijsplan kritische lasten</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="andere_andere" name="andere_andere">
+                                <label for="andere_andere">andere:</label>
+                                <input type="text" class="inline-input-medium">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MILIEU -->
+                    <div class="preventie-category">
+                        <h3>MILIEU</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="milieu_lucht" name="milieu_lucht">
+                                <label for="milieu_lucht">vermijden luchtverontreiniging</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="milieu_bodem" name="milieu_bodem">
+                                <label for="milieu_bodem">vermijden bodemverontreiniging</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="milieu_water" name="milieu_water">
+                                <label for="milieu_water">vermijden waterverontreiniging</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="milieu_afval" name="milieu_afval">
+                                <label for="milieu_afval">afval in juiste container:</label>
+                                <input type="text" class="inline-input-medium">
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="milieu_isolatie" name="milieu_isolatie">
+                                <label for="milieu_isolatie">isolatie (afgekoeld) in gesloten zakken</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="milieu_draaien" name="milieu_draaien">
+                                <label for="milieu_draaien">vermijden onnodig draaien van machine</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="milieu_andere" name="milieu_andere">
+                                <label for="milieu_andere">andere:</label>
+                                <input type="text" class="inline-input-medium">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="signature-section">
+                    <h3 class="subsection-title">PREVENTIEMAATREGELEN DIE HIERBOVEN NIET VOORKOMEN (ALLEEN PREVENTIEMAATREGELEN OVERNEMEN UIT RISICO-ANALYSE)</h3>
+                    <div class="form-group">
+                        <textarea rows="4" placeholder="Voeg hier aanvullende preventiemaatregelen toe..."></textarea>
+                    </div>
+                    
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="handtekening_opdrachtgever">Handtekening Opdrachtgever:</label>
+                            <div class="signature-container">
+                                <canvas id="signatureCanvas_opdrachtgever" class="signature-canvas"></canvas>
+                                <input type="hidden" id="handtekening_opdrachtgever" name="handtekening_opdrachtgever">
+                                <button type="button" class="signature-clear-btn" onclick="clearSignature('signatureCanvas_opdrachtgever')">Wissen</button>
+                            </div>
+                            <div class="signature-date-container">
+                                <label for="datum_opdrachtgever" class="signature-date-label">Datum:</label>
+                                <input type="date" id="datum_opdrachtgever" name="datum_opdrachtgever" class="signature-date-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="handtekening_afdeling">Handtekening Afdeling:</label>
+                            <div class="signature-container">
+                                <canvas id="signatureCanvas_afdeling" class="signature-canvas"></canvas>
+                                <input type="hidden" id="handtekening_afdeling" name="handtekening_afdeling">
+                                <button type="button" class="signature-clear-btn" onclick="clearSignature('signatureCanvas_afdeling')">Wissen</button>
+                            </div>
+                            <div class="signature-date-container">
+                                <label for="datum_afdeling" class="signature-date-label">Datum:</label>
+                                <input type="date" id="datum_afdeling" name="datum_afdeling" class="signature-date-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="navigation-buttons">
+                <button class="nav-button prev" onclick="goBackFromPreventie()">Vorige</button>
+                <button class="nav-button button next" onclick="saveCurrentVak(); navigateFromPreventie();">Volgende</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/saveCurrentVak.js"></script>
+    <script>
+        const role = sessionStorage.getItem('userRole');
+        const roleNames = {
+            'leerling': 'Leerling/Externe',
+            'leerkracht': 'Leerkracht',
+            'ta': 'TA',
+            'directeur': 'Directeur'
+        };
+        if (role && document.getElementById('userRole')) {
+            document.getElementById('userRole').textContent = roleNames[role] || 'Gebruiker';
+        }
+
+        // Handtekening Canvas functionaliteit
+        function initSignatureCanvas(canvasId, hiddenInputId) {
+            const canvas = document.getElementById(canvasId);
+            const hiddenInput = document.getElementById(hiddenInputId);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            // Canvas grootte instellen
+            canvas.width = canvas.offsetWidth;
+            canvas.height = 150;
+            
+            // Canvas styling
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Event listeners voor tekenen
+            function startDrawing(e) {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                lastX = e.clientX - rect.left;
+                lastY = e.clientY - rect.top;
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const currentY = e.clientY - rect.top;
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+
+                lastX = currentX;
+                lastY = currentY;
+
+                // Sla handtekening op als base64
+                hiddenInput.value = canvas.toDataURL();
+            }
+
+            function stopDrawing() {
+                if (isDrawing) {
+                    isDrawing = false;
+                    hiddenInput.value = canvas.toDataURL();
+                }
+            }
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events voor mobiele apparaten
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            // Window resize handler
+            window.addEventListener('resize', () => {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                canvas.width = canvas.offsetWidth;
+                canvas.height = 150;
+                ctx.putImageData(imageData, 0, 0);
+            });
+        }
+
+        function clearSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Clear hidden input
+            const hiddenInputId = canvasId === 'signatureCanvas_opdrachtgever' ? 'handtekening_opdrachtgever' : 'handtekening_afdeling';
+            const hiddenInput = document.getElementById(hiddenInputId);
+            if (hiddenInput) {
+                hiddenInput.value = '';
+            }
+        }
+
+        // Navigatie functies
+        function goBackFromPreventie() {
+            const lotoRequired = sessionStorage.getItem('loto_required');
+            if (lotoRequired === 'true') {
+                window.location.href = 'werkvergunning_loto.html';
+            } else {
+                window.location.href = 'werkvergunning_vak5.html';
+            }
+        }
+
+        function navigateFromPreventie() {
+            const lotoRequired = sessionStorage.getItem('loto_required');
+            const lotoStatus = sessionStorage.getItem('loto_status');
+            
+            // Als LOTO vereist is maar nog niet is ingevuld, ga naar LOTO pagina
+            if (lotoRequired === 'true' && !lotoStatus) {
+                window.location.href = 'werkvergunning_loto.html';
+            } else {
+                // Anders ga naar Vak 6
+                window.location.href = 'werkvergunning_vak6.html';
+            }
+        }
+
+        // Initialize signature canvases when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initSignatureCanvas('signatureCanvas_opdrachtgever', 'handtekening_opdrachtgever');
+            initSignatureCanvas('signatureCanvas_afdeling', 'handtekening_afdeling');
+        });
+    </script>
+</body>
+</html>

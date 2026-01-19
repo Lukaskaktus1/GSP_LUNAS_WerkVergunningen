@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werkvergunning - Activiteiten</title>
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/werkvergunning_vak2_activiteiten.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="far fa-file-lines"></i>
+            </div>
+            <div class="header-title">
+                <h1>Werkvergunning Portaal</h1>
+                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <span id="userRole">Gebruiker</span></span></p>
+            </div>
+        </div>
+        <div class="header-center">
+            <img src="../IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="header-logo">
+        </div>
+        <div class="header-right">
+            <button class="logout-btn" onclick="window.location.href='../index.html'">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Uitloggen</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="form-card">
+            <div class="form-title">
+                <span>WERKVERGUNNING</span>
+                <span class="form-title-number">Nr. <input type="text" id="werkvergunning_nummer"></span>
+            </div>
+
+            <!-- II.1 ACTIVITEITEN KOUD -->
+            <div class="form-section">
+                <div class="section-header-row">
+                    <h3 class="subsection-title subsection-title-no-margin">II.1. ACTIVITEITEN KOUD</h3>
+                    <div class="checkbox-item geen-checkbox">
+                        <input type="checkbox" id="koud_geen" name="koud_geen">
+                        <label for="koud_geen">GEEN</label>
+                    </div>
+                </div>
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_monteren" name="koud_monteren">
+                        <label for="koud_monteren">monteren</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_demonteren" name="koud_demonteren">
+                        <label for="koud_demonteren">demonteren</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_koud_snijden" name="koud_koud_snijden">
+                        <label for="koud_koud_snijden">koud snijden</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_manueel_zagen" name="koud_manueel_zagen">
+                        <label for="koud_manueel_zagen">manueel zagen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_afkoppelen" name="koud_afkoppelen">
+                        <label for="koud_afkoppelen">E/l afkoppelen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_aansluiten" name="koud_aansluiten">
+                        <label for="koud_aansluiten">E/l aansluiten</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_schilderen" name="koud_schilderen">
+                        <label for="koud_schilderen">schilderen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_stellingbouw" name="koud_stellingbouw">
+                        <label for="koud_stellingbouw">stellingbouw</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_opmeten" name="koud_opmeten">
+                        <label for="koud_opmeten">opmeten</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_hogedrukreinigen" name="koud_hogedrukreinigen">
+                        <label for="koud_hogedrukreinigen">hogedrukreinigen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_hijswerken" name="koud_hijswerken">
+                        <label for="koud_hijswerken">hijswerken</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_werken_boven_2m_1" name="koud_werken_boven_2m_1">
+                        <label for="koud_werken_boven_2m_1">werken boven 2m</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_werken_boven_2m_2" name="koud_werken_boven_2m_2">
+                        <label for="koud_werken_boven_2m_2">werken boven 2m</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_nieuwe_isolatie" name="koud_nieuwe_isolatie">
+                        <label for="koud_nieuwe_isolatie">nieuwe isolatie</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_verwijderen_isolatie" name="koud_verwijderen_isolatie">
+                        <label for="koud_verwijderen_isolatie">verwijderen isolatie</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_druktesten" name="koud_druktesten">
+                        <label for="koud_druktesten">druktesten</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="koud_testen_algemeen" name="koud_testen_algemeen">
+                        <label for="koud_testen_algemeen">testen algemeen</label>
+                    </div>
+                    <div class="checkbox-item checkbox-item-span-2">
+                        <input type="checkbox" id="koud_andere" name="koud_andere">
+                        <label for="koud_andere">andere:</label>
+                        <input type="text" class="inline-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- II.2 ACTIVITEITEN WARM -->
+            <div class="form-section">
+                <div class="section-header-row">
+                    <h3 class="subsection-title subsection-title-no-margin">II.2. ACTIVITEITEN WARM</h3>
+                    <div class="checkbox-item geen-checkbox">
+                        <input type="checkbox" id="warm_geen" name="warm_geen">
+                        <label for="warm_geen">GEEN</label>
+                    </div>
+                </div>
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="warm_lassen" name="warm_lassen">
+                        <label for="warm_lassen">lassen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="warm_branden" name="warm_branden">
+                        <label for="warm_branden">branden</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="warm_slijpen" name="warm_slijpen">
+                        <label for="warm_slijpen">slijpen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="warm_elektrisch_boren" name="warm_elektrisch_boren">
+                        <label for="warm_elektrisch_boren">elektrisch boren</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="warm_openen_kasten" name="warm_openen_kasten">
+                        <label for="warm_openen_kasten">openen E/l kasten onder spanning</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="warm_pneumatisch_boren" name="warm_pneumatisch_boren">
+                        <label for="warm_pneumatisch_boren">pneumatisch boren</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="warm_kappen_beton" name="warm_kappen_beton">
+                        <label for="warm_kappen_beton">kappen beton</label>
+                    </div>
+                    <div class="checkbox-item checkbox-item-span-2">
+                        <input type="checkbox" id="warm_andere" name="warm_andere">
+                        <label for="warm_andere">andere:</label>
+                        <input type="text" class="inline-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- II.3 VERVOER EN MACHINES -->
+            <div class="form-section">
+                <div class="section-header-row">
+                    <h3 class="subsection-title subsection-title-no-margin">II.3. VERVOER EN MACHINES</h3>
+                    <div class="checkbox-item geen-checkbox">
+                        <input type="checkbox" id="vervoer_geen" name="vervoer_geen">
+                        <label for="vervoer_geen">GEEN</label>
+                    </div>
+                </div>
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vervoer_personenwagen" name="vervoer_personenwagen">
+                        <label for="vervoer_personenwagen">personenwagen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vervoer_bestelwagen" name="vervoer_bestelwagen">
+                        <label for="vervoer_bestelwagen">bestelwagen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vervoer_vrachtwagen" name="vervoer_vrachtwagen">
+                        <label for="vervoer_vrachtwagen">vrachtwagen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vervoer_zuigwagen" name="vervoer_zuigwagen">
+                        <label for="vervoer_zuigwagen">zuigwagen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vervoer_graafmachine" name="vervoer_graafmachine">
+                        <label for="vervoer_graafmachine">graafmachine</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vervoer_compressor" name="vervoer_compressor">
+                        <label for="vervoer_compressor">compressor</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="vervoer_generator" name="vervoer_generator">
+                        <label for="vervoer_generator">generator</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <span class="special-icon icon-diamond">◊</span>
+                        <input type="checkbox" id="vervoer_kraan" name="vervoer_kraan">
+                        <label for="vervoer_kraan">kraan</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <span class="special-icon icon-diamond">◊</span>
+                        <input type="checkbox" id="vervoer_heftruck" name="vervoer_heftruck">
+                        <label for="vervoer_heftruck">heftruck</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <span class="special-icon icon-diamond">◊</span>
+                        <input type="checkbox" id="vervoer_hoogtewerker" name="vervoer_hoogtewerker">
+                        <label for="vervoer_hoogtewerker">hoogtewerker</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <span class="special-icon icon-diamond">◊</span>
+                        <input type="checkbox" id="vervoer_schaarlift" name="vervoer_schaarlift">
+                        <label for="vervoer_schaarlift">schaarlift</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <span class="special-icon icon-diamond">◊</span>
+                        <input type="checkbox" id="vervoer_verreiker" name="vervoer_verreiker">
+                        <label for="vervoer_verreiker">verreiker</label>
+                    </div>
+                    <div class="checkbox-item checkbox-item-span-2">
+                        <input type="checkbox" id="vervoer_andere" name="vervoer_andere">
+                        <label for="vervoer_andere">andere:</label>
+                        <input type="text" class="inline-input">
+                    </div>
+                </div>
+                <div class="info-box">
+                    <p><strong>voor ◊ is een attest vereist!!!</strong></p>
+                    <p>Attesten (van het toestel en van de gebruiker) zijn geldig tot: <input type="date" class="info-box-input-date"></p>
+                    <p>Nummerplaat voertuig(en): <input type="text" class="info-box-input-text"></p>
+                </div>
+            </div>
+
+            <!-- II.4 SCHADELIJKE OF GEVAARLIJKE STOFFEN -->
+            <div class="form-section">
+                <div class="section-header-row">
+                    <h3 class="subsection-title subsection-title-no-margin">II.4. SCHADELIJKE OF GEVAARLIJKE STOFFEN EIGEN AAN DE UITVOERING VAN HET WERK</h3>
+                    <div class="checkbox-item geen-checkbox">
+                        <input type="checkbox" id="stoffen_geen" name="stoffen_geen">
+                        <label for="stoffen_geen">GEEN</label>
+                    </div>
+                </div>
+                <div class="checkbox-grid">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stoffen_asbest" name="stoffen_asbest">
+                        <label for="stoffen_asbest">asbest</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stoffen_stikstof" name="stoffen_stikstof">
+                        <label for="stoffen_stikstof">stikstof</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stoffen_glas_steenwol" name="stoffen_glas_steenwol">
+                        <label for="stoffen_glas_steenwol">glas/steen wol</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stoffen_foamglass" name="stoffen_foamglass">
+                        <label for="stoffen_foamglass">foam-glass</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stoffen_lasdampen" name="stoffen_lasdampen">
+                        <label for="stoffen_lasdampen">lasdampen</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stoffen_straling" name="stoffen_straling">
+                        <label for="stoffen_straling">straling</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="stoffen_waterevel" name="stoffen_waterevel">
+                        <label for="stoffen_waterevel">waterevel</label>
+                    </div>
+                    <div class="checkbox-item checkbox-item-span-2">
+                        <input type="checkbox" id="stoffen_andere" name="stoffen_andere">
+                        <label for="stoffen_andere">andere:</label>
+                        <input type="text" class="inline-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="navigation-buttons">
+                <button class="nav-button prev" onclick="window.location.href='werkvergunning_vak2.html'">Vorige</button>
+                <button class="nav-button next" onclick="navigateToNext('werkvergunning_vak2_chemicalien.html')">Volgende</button>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/saveCurrentVak.js"></script>
+
+    <script>
+        const role = sessionStorage.getItem('userRole');
+        const roleNames = {
+            'leerling': 'Leerling/Externe',
+            'leerkracht': 'Leerkracht',
+            'ta': 'TA',
+            'directeur': 'Directeur'
+        };
+        if (role && document.getElementById('userRole')) {
+            document.getElementById('userRole').textContent = roleNames[role] || 'Gebruiker';
+        }
+
+        // Functie om GEEN checkbox logica te beheren per sectie
+        function setupGeenCheckbox(geenId, sectionPrefix) {
+            const geenCheckbox = document.getElementById(geenId);
+            if (!geenCheckbox) return;
+
+            // Vind alle checkboxes in deze sectie (behalve de "geen" checkbox zelf)
+            const allCheckboxes = document.querySelectorAll(`input[type="checkbox"][id^="${sectionPrefix}_"]:not(#${geenId})`);
+
+            // Event listener voor "geen" checkbox
+            geenCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // Als "geen" wordt aangevinkt: zet alle andere uit en disable ze
+                    allCheckboxes.forEach(cb => {
+                        cb.checked = false;
+                        cb.disabled = true;
+                        // Disable ook bijbehorende input velden (voor "andere:")
+                        const inputField = cb.closest('.checkbox-item')?.querySelector('input[type="text"]');
+                        if (inputField) {
+                            inputField.disabled = true;
+                        }
+                    });
+                } else {
+                    // Als "geen" wordt uitgezet: enable alle andere weer
+                    allCheckboxes.forEach(cb => {
+                        cb.disabled = false;
+                        const inputField = cb.closest('.checkbox-item')?.querySelector('input[type="text"]');
+                        if (inputField) {
+                            inputField.disabled = false;
+                        }
+                    });
+                }
+            });
+
+            // Event listeners voor andere checkboxes in deze sectie
+            allCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Als een checkbox wordt aangevinkt: zet "geen" uit en enable "geen"
+                        geenCheckbox.checked = false;
+                        geenCheckbox.disabled = false;
+                        // Enable alle andere checkboxes in deze sectie
+                        allCheckboxes.forEach(otherCb => {
+                            otherCb.disabled = false;
+                            const inputField = otherCb.closest('.checkbox-item')?.querySelector('input[type="text"]');
+                            if (inputField) {
+                                inputField.disabled = false;
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        // Setup voor elke sectie
+        document.addEventListener('DOMContentLoaded', function() {
+            setupGeenCheckbox('koud_geen', 'koud');
+            setupGeenCheckbox('warm_geen', 'warm');
+            setupGeenCheckbox('vervoer_geen', 'vervoer');
+            setupGeenCheckbox('stoffen_geen', 'stoffen');
+        });
+    </script>
+</body>
+</html>

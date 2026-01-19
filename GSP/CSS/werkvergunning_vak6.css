@@ -1,0 +1,71 @@
+/* Specifieke CSS voor werkvergunning_vak6.html */
+
+/* Form Table specifiek voor Vak VI */
+.form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+
+.form-table th,
+.form-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+}
+
+.form-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-table td input[type="text"],
+.form-table td input[type="date"],
+.form-table td input[type="time"] {
+    width: 100%;
+    border: none;
+    padding: 5px;
+    font-size: 14px;
+}
+
+.form-table td input:focus {
+    outline: 2px solid #1678fa;
+    border-radius: 3px;
+}
+
+/* LOTO Status Indicator */
+.loto-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    margin-top: 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.loto-status-indicator .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* Warning Inline Container */
+.warning-inline-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.warning-inline-container .warning-icon {
+    color: #ffc107;
+    font-size: 20px;
+    flex-shrink: 0;
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werkvergunning - Vak III</title>
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/werkvergunning_vak3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="far fa-file-lines"></i>
+            </div>
+            <div class="header-title">
+                <h1>Werkvergunning Portaal</h1>
+                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <span id="userRole">Gebruiker</span></span></p>
+            </div>
+        </div>
+        <div class="header-center">
+            <img src="../IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="header-logo">
+        </div>
+        <div class="header-right">
+            <button class="logout-btn" onclick="window.location.href='../index.html'">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Uitloggen</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="form-card">
+            <div class="form-title">
+                <span>WERKVERGUNNING</span>
+                <span class="form-title-number">Nr. <input type="text" id="werkvergunning_nummer"></span>
+            </div>
+
+            <!-- Vak III -->
+            <div class="form-section">
+                <h2 class="section-title">Vak III. OPDRACHTGEVER/TA:</h2>
+                
+                <h3 class="subsection-title">ORGANISATORISCHE AANDACHTSPUNTEN VANWEGE OPDRACHTGEVER (andere werkzaamheden in de nabijheid,...?)</h3>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="org_geen" name="org_geen">
+                        <label for="org_geen">GEEN</label>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="org_werkhoogte" name="org_werkhoogte">
+                        <label for="org_werkhoogte">definiëring van de "werkhoogte" = afstand tussen vloer en voeten of bij werken op bordes/steiger > 1 meter boven de bordes/steigervloer!</label>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="org_andere" name="org_andere">
+                        <label for="org_andere">andere:</label>
+                        <input type="text" class="inline-input-large">
+                    </div>
+                </div>
+
+                <div class="section-divider">
+                    <div class="form-group">
+                        <label>PARKEERPLAATS: .................... zie plan keerzijde</label>
+                        <input type="text" placeholder="Parkeerplaats" class="input-full-width">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="navigation-buttons">
+                <button class="nav-button prev" onclick="window.location.href='werkvergunning_vak2_chemicalien.html'">Vorige</button>
+                <button class="nav-button button next" onclick="navigateToNext('werkvergunning_vak4.html')">Volgende</button>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/saveCurrentVak.js"></script>
+    <script>
+        const role = sessionStorage.getItem('userRole');
+        const roleNames = {
+            'leerling': 'Leerling/Externe',
+            'leerkracht': 'Leerkracht',
+            'ta': 'TA',
+            'directeur': 'Directeur'
+        };
+        if (role && document.getElementById('userRole')) {
+            document.getElementById('userRole').textContent = roleNames[role] || 'Gebruiker';
+        }
+
+        // Functie om GEEN checkbox logica te beheren voor Vak III
+        document.addEventListener('DOMContentLoaded', function() {
+            const geenCheckbox = document.getElementById('org_geen');
+            const werkhoogteCheckbox = document.getElementById('org_werkhoogte');
+            const andereCheckbox = document.getElementById('org_andere');
+            const andereInput = andereCheckbox?.closest('.checkbox-item')?.querySelector('input[type="text"]');
+            
+            // Parkeerplaats veld blijft altijd enabled - vinden we via de section-divider
+            const parkeerplaatsInput = document.querySelector('.section-divider input[type="text"]');
+            
+            if (!geenCheckbox) return;
+
+            // Event listener voor "geen" checkbox
+            geenCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // Als "geen" wordt aangevinkt: zet alle andere uit en disable ze
+                    if (werkhoogteCheckbox) {
+                        werkhoogteCheckbox.checked = false;
+                        werkhoogteCheckbox.disabled = true;
+                    }
+                    if (andereCheckbox) {
+                        andereCheckbox.checked = false;
+                        andereCheckbox.disabled = true;
+                        if (andereInput) {
+                            andereInput.disabled = true;
+                        }
+                    }
+                    // Parkeerplaats blijft enabled (niets doen)
+                } else {
+                    // Als "geen" wordt uitgezet: enable alle andere weer
+                    if (werkhoogteCheckbox) {
+                        werkhoogteCheckbox.disabled = false;
+                    }
+                    if (andereCheckbox) {
+                        andereCheckbox.disabled = false;
+                        if (andereInput) {
+                            andereInput.disabled = false;
+                        }
+                    }
+                }
+            });
+
+            // Event listeners voor andere checkboxes
+            if (werkhoogteCheckbox) {
+                werkhoogteCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Als een checkbox wordt aangevinkt: zet "geen" uit en enable "geen"
+                        geenCheckbox.checked = false;
+                        geenCheckbox.disabled = false;
+                        // Enable alle andere checkboxes
+                        if (andereCheckbox) {
+                            andereCheckbox.disabled = false;
+                            if (andereInput) {
+                                andereInput.disabled = false;
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (andereCheckbox) {
+                andereCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Als een checkbox wordt aangevinkt: zet "geen" uit en enable "geen"
+                        geenCheckbox.checked = false;
+                        geenCheckbox.disabled = false;
+                        // Enable alle andere checkboxes
+                        if (werkhoogteCheckbox) {
+                            werkhoogteCheckbox.disabled = false;
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werkvergunning - LOTO</title>
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/werkvergunning_loto.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="far fa-file-lines"></i>
+            </div>
+            <div class="header-title">
+                <h1>Werkvergunning Portaal</h1>
+                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <span id="userRole">Gebruiker</span></span></p>
+            </div>
+        </div>
+        <div class="header-center">
+            <img src="../IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="header-logo">
+        </div>
+        <div class="header-right">
+            <button class="logout-btn" onclick="navigateBackToOverview()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Terug</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container loto-main">
+        <!-- Formulier Document Header -->
+        <div class="loto-document-header">
+            <div class="loto-header-left">
+                <div class="loto-logo-box">
+                    <div class="loto-bv-logo">
+                        <span class="loto-bv-b">B</span>
+                        <span class="loto-bv-v">V</span>
+                    </div>
+                    <div class="loto-beveren-text">
+                        <div class="loto-beveren">BEVEREN</div>
+                        <div class="loto-verbindt">VERBINDT</div>
+                    </div>
+                </div>
+                <div class="loto-form-number">LOTOTO-FORM-24-001</div>
+            </div>
+            <div class="loto-header-center">
+                <div class="loto-title-formulier">Formulier</div>
+                <div class="loto-checklist-info">
+                    LOTo-checklijst: Preventief onderhoud draaibank MONDIALE M180 [M.DR.03]
+                </div>
+            </div>
+            <div class="loto-header-right">
+                <div class="loto-form-label">FORM</div>
+                <div>02/01/2024</div>
+                <div>revisie : 02</div>
+                <div class="loto-page-number">pag: <span id="currentPage">1</span>/7</div>
+            </div>
+        </div>
+
+        <!-- Gele Disclaimer Box -->
+        <div class="loto-disclaimer-box">
+            Deze LoToTo-lijst is met alle zorg, kennis en controle opgesteld. Dit betekent niet dat deze lijst 100% foutloos is. Alle betrokkenen bij het uitvoeren van deze lijst zijn verantwoordelijk voor de correcte uitvoering. Indien, volgens hun kennis, toch fouten aanwezig zijn in deze LoToTo lijst, gelieve dan onmiddellijk contact te nemen met de opsteller of TAC alvorens de lijst volledig af te werken.
+        </div>
+
+        <!-- Doelstelling Sectie -->
+        <div class="loto-section-box">
+            <div class="loto-section-title">Doelstelling:</div>
+            <div class="loto-section-content">Veiligstelling: Machine uit dienst nemen om herstellingswerken uit te voeren door intern/extern personeel.</div>
+        </div>
+
+        <!-- 1. Voorbereidingsacties: Leerling -->
+        <div class="loto-section">
+            <div class="loto-section-header">
+                <div class="loto-section-number-title">1. Voorbereidingsacties: leerling</div>
+            </div>
+            <div class="loto-note-subheader">
+                Noter werkvergunning aanvang werk:
+            </div>
+            <table class="loto-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Instrument/Apparaat</th>
+                        <th>P&Id schema</th>
+                        <th>Datum</th>
+                        <th>Uur</th>
+                        <th>Naam</th>
+                        <th>Paraaf</th>
+                        <th>Voor controle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="loto-action-cell">Vergrendelen van werkschakelaar aan machine met hangslot. Slot voorzien van "<span class="loto-highlight">NIET BEDIENEN</span>" label.</td>
+                        <td><input type="text" value="M.DR.03-WS" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_prep1_paraaf"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="loto-action-cell">Slotnummer:</td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_prep1_slot"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="loto-action-cell">Sleutel met TAG in LOCKBOX nr</td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_prep1_key"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="loto-action-cell">Vergrendelen van zekering bovenaan aan busbar, Slot voorzien van "<span class="loto-highlight">NIET BEDIENEN</span>" label.</td>
+                        <td><input type="text" value="5Q2.7" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_prep1_fuse"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="loto-action-cell">Slotnummer:</td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_prep1_fuse_slot"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="loto-action-cell">Sleutel met TAG in LOCKBOX nr</td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_prep1_fuse_key"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 2. Controle vergrendelingsacties leerkracht - leerling -->
+        <div class="loto-section">
+            <div class="loto-section-header">
+                <div class="loto-section-number-title">2. Controle vergrendelingsacties leerkracht - leerling.</div>
+            </div>
+            <table class="loto-table">
+                <thead>
+                    <tr>
+                        <th>Instrument/ Apparaat</th>
+                        <th>P&Id schema</th>
+                        <th>Datum</th>
+                        <th>Uur</th>
+                        <th>Naam</th>
+                        <th>Paraaf</th>
+                        <th>Voor controle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="loto-action-cell">Controleren of machine werkt met bedieningshendel.</td>
+                        <td>M.DR.03</td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_controle1"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="loto-action-cell">Controleren met multimeter of machine spanningsloos is.</td>
+                        <td>M.DR.03</td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_controle2"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. Controle LoTo en inhoud lockbox -->
+        <div class="loto-section">
+            <div class="loto-section-header">
+                <div class="loto-section-number-title">3. Controle LoTo en inhoud lockbox.</div>
+            </div>
+            <div class="loto-info-text">
+                LoToTo checklijst wordt bewaard in de Lockbox, Lockbox wordt gesloten na controle LoToTo en checklist door TA Elektriciteit. Sleutel wordt bewaard in de LoTo-sleutelkast in het bureel TA'S
+            </div>
+            <table class="loto-table">
+                <thead>
+                    <tr>
+                        <th>Lockbox nr</th>
+                        <th>Slot nr</th>
+                        <th>Datum</th>
+                        <th>Uur</th>
+                        <th>Naam</th>
+                        <th>Paraaf</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_lockbox"></canvas></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Verantwoordelijke voor kennisname/spot check/volledige eindcontrole -->
+        <div class="loto-section-two-col">
+            <div class="loto-two-col-left">
+                <div class="loto-subsection-title">Verantwoordelijke voor kennisname/spot check/volledige eindcontrole (duid aan wat past).</div>
+                <div class="loto-subsection-subtitle">TA Elektriciteit. (duid aan wat past)</div>
+                <table class="loto-table-small">
+                    <tr>
+                        <td>Voor kennisname</td>
+                        <td><canvas class="signature-canvas-small" id="sig_ta_kennisname"></canvas></td>
+                        <td><input type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td>Voor spot check</td>
+                        <td><canvas class="signature-canvas-small" id="sig_ta_spotcheck"></canvas></td>
+                        <td><input type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td>Voor volledige eindcontrole</td>
+                        <td><canvas class="signature-canvas-small" id="sig_ta_eindcontrole"></canvas></td>
+                        <td><input type="checkbox"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="loto-two-col-right">
+                <div class="loto-subsection-title">Voorbereiding en Vergrendelingsacties Uitgevoerd (Handtekening, datum, tijd)</div>
+                <canvas class="signature-canvas-large" id="sig_voorbereiding"></canvas>
+            </div>
+        </div>
+
+        <!-- 4. Werkzaamheden uitvoeren -->
+        <div class="loto-section">
+            <div class="loto-section-header highlight">
+                <div class="loto-section-number-title">4. Werkzaamheden kunnen uitgevoerd worden zoals beschreven in werkvergunning.</div>
+            </div>
+            <div class="loto-note-subheader highlight">
+                Noter nr werkvergunning :
+            </div>
+            <input type="text" class="loto-input-wide" placeholder="Nr werkvergunning">
+            <div class="loto-info-text">
+                Indien het herstellingswerk gereed is, dan wordt de installatie als volgt voorbereid voor in gebruikname.
+            </div>
+        </div>
+
+        <!-- 5. Voorbereiding in bedrijfname -->
+        <div class="loto-section">
+            <div class="loto-section-header highlight">
+                <div class="loto-section-number-title">5. Voorbereiding in bedrijfname.</div>
+            </div>
+            <div class="loto-note-subheader highlight">
+                Note<span class="loto-strikethrough">r nr</span> werkvergunning einde werk:
+            </div>
+            <table class="loto-table">
+                <thead>
+                    <tr>
+                        <th>Instrument/leidingnr.</th>
+                        <th>P&Id schema</th>
+                        <th>Slot nr</th>
+                        <th>Datum</th>
+                        <th>Uur</th>
+                        <th>Naam</th>
+                        <th>Paraaf</th>
+                        <th>Voor controle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="loto-action-cell">Open lockbox nr en verwijder 'niet-bedienen' label.</td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_bedrijf1"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="loto-action-cell">Ontgrendel de zekering aan de busbar en schakel deze in.</td>
+                        <td>5Q2.7</td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_bedrijf2"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="loto-action-cell">Ontgrendel de werkschakelaar en schakel deze aan.</td>
+                        <td>M.DR.03-WS</td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_bedrijf3"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 6. Testen van de machine -->
+        <div class="loto-section">
+            <div class="loto-section-header">
+                <div class="loto-section-number-title">6. Testen van de machine: Leerling -Leerkracht.</div>
+            </div>
+            <table class="loto-table">
+                <thead>
+                    <tr>
+                        <th>Instrument/ Apparaat</th>
+                        <th>P&Id</th>
+                        <th>Datum</th>
+                        <th>Uur</th>
+                        <th>Naam</th>
+                        <th>Paraaf</th>
+                        <th>Voor controle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="loto-action-cell">Controleren met multimeter of spanning aanwezig is.</td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_test1"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                    <tr>
+                        <td class="loto-action-cell">Controleren of machine werkt met bedieningshendel.</td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><input type="date" class="loto-input"></td>
+                        <td><input type="time" class="loto-input"></td>
+                        <td><input type="text" class="loto-input"></td>
+                        <td><canvas class="signature-canvas-small" id="sig_test2"></canvas></td>
+                        <td><input type="text" class="loto-input"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="loto-test-responsibility">
+                <div class="loto-test-responsibility-label highlight">Verantwoordelijke voor testen.</div>
+                <div class="loto-test-row">
+                    <div>TA Elektriciteit/leerkracht</div>
+                    <canvas class="signature-canvas-medium" id="sig_ta_test"></canvas>
+                </div>
+                <div class="loto-test-row">
+                    <div>Voor eindcontrole:</div>
+                    <canvas class="signature-canvas-medium" id="sig_eindcontrole"></canvas>
+                </div>
+                <div class="loto-test-row-large">
+                    <div>Voorbereiding Uitgevoerd. (Handtekening, datum, tijd)</div>
+                    <canvas class="signature-canvas-large" id="sig_voorbereiding_uitgevoerd"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meld bij TA Elektriciteit -->
+        <div class="loto-section">
+            <div class="loto-info-text">
+                Meld bij TA Elektriciteit dat de installatie klaar is voor in bedrijfname.
+            </div>
+            <div class="loto-disclaimer-box">
+                TA Elektriciteit controleert voor de vrijgave van de installatie de dubbels van de labels.
+            </div>
+            <table class="loto-table-two-col">
+                <thead>
+                    <tr>
+                        <th>Verantwoordelijke</th>
+                        <th>Ontgrendelingsacties Uitgevoerd (Handtekening, datum, tijd)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TA Elektriciteit</td>
+                        <td><canvas class="signature-canvas-medium" id="sig_ta_ontgrendel1"></canvas></td>
+                    </tr>
+                    <tr>
+                        <td>Voor controle van de dubbels van de labels</td>
+                        <td><canvas class="signature-canvas-medium" id="sig_ta_ontgrendel2"></canvas></td>
+                    </tr>
+                    <tr>
+                        <td>Voor kennisname<br>ontgrendelingsacties</td>
+                        <td><canvas class="signature-canvas-medium" id="sig_ta_ontgrendel3"></canvas></td>
+                    </tr>
+                    <tr>
+                        <td>Voor volledige eindcontrole<br>ontgrendelingsacties</td>
+                        <td><canvas class="signature-canvas-medium" id="sig_ta_ontgrendel4"></canvas></td>
+                    </tr>
+                    <tr>
+                        <td>Voor volledige vrijgave</td>
+                        <td><canvas class="signature-canvas-medium" id="sig_ta_ontgrendel5"></canvas></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="loto-status-update">
+                Installatie is terug bedrijfsklaar / in werking.
+            </div>
+        </div>
+
+        <!-- Opmerkingen en Benodigdheden -->
+        <div class="loto-section">
+            <div class="loto-section-header">
+                <div class="loto-section-number-title">Opmerkingen.</div>
+            </div>
+            <textarea class="loto-textarea" rows="3"></textarea>
+            <div class="loto-section-header">
+                <div class="loto-section-number-title">Benodigdheden (indicatief):</div>
+            </div>
+            <table class="loto-benodigdheden-table">
+                <thead>
+                    <tr>
+                        <th>SLOTEN</th>
+                        <th>LABELS NIET BEDIENEN</th>
+                        <th>LABELS SLOT</th>
+                        <th>VERGRENDELINGS-MATERIAAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>3</td>
+                        <td>2</td>
+                        <td>2</td>
+                        <td>#vergrendelingsschelpen<br>#kabelbinders &nbsp; &nbsp; &nbsp; &nbsp; 1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="loto-footer">
+            <div class="loto-footer-left">
+                Opsteller: Van Buynder Kristof
+            </div>
+            <div class="loto-footer-center">
+                Goedgekeurd door:<br>
+                na lezing datum:<br>
+                Afgedrukt: 18/01/2026 15:06
+            </div>
+            <div class="loto-footer-right">
+                Geautoriseerd door:
+                <canvas class="signature-canvas-medium" id="sig_geautoriseerd"></canvas>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="navigation-buttons">
+            <button class="nav-button prev" onclick="navigateBackToPreventie()">Vorige</button>
+            <button class="nav-button button next" type="button" onclick="saveLotoData(); window.location.href='werkvergunning_vak6.html'">Volgende</button>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/saveCurrentVak.js"></script>
+    <script>
+
+        // Navigatie functies
+        function navigateBackToOverview() {
+            const role = sessionStorage.getItem('userRole');
+            const pages = {
+                'leerling': 'overzicht_leerling.html',
+                'leerkracht': 'overzicht_leerkracht.html',
+                'ta': 'overzicht_ta.html',
+                'directeur': 'overzicht_directeur.html'
+            };
+            window.location.href = pages[role] || 'overzicht_leerling.html';
+        }
+
+        function navigateBackToPreventie() {
+            window.location.href = 'werkvergunning_preventie.html';
+        }
+
+        // Signature canvas initialization
+        function initSignatureCanvas(id, width = null, height = 100) {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+            
+            // Set canvas size
+            if (!width) {
+                width = canvas.offsetWidth;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Configure drawing
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            function getX(e) {
+                const rect = canvas.getBoundingClientRect();
+                return (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            }
+            
+            function getY(e) {
+                const rect = canvas.getBoundingClientRect();
+                return (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+            }
+            
+            canvas.addEventListener('mousedown', (e) => {
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(getX(e), getY(e));
+            });
+            
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(getX(e), getY(e));
+            }, {passive: false});
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (drawing) {
+                    ctx.lineTo(getX(e), getY(e));
+                    ctx.stroke();
+                }
+            });
+            
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (drawing) {
+                    ctx.lineTo(getX(e), getY(e));
+                    ctx.stroke();
+                }
+            }, {passive: false});
+            
+            ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(ev => {
+                canvas.addEventListener(ev, () => {
+                    drawing = false;
+                });
+            });
+        }
+
+        function clearSignature(id) {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Save LOTO data
+        function saveLotoData() {
+            // Save all signature canvases
+            document.querySelectorAll('.signature-canvas-small, .signature-canvas-medium, .signature-canvas-large').forEach(canvas => {
+                const id = canvas.id;
+                const dataURL = canvas.toDataURL('image/png');
+                sessionStorage.setItem(`loto_${id}`, dataURL);
+            });
+            
+            // Mark LOTO as completed
+            sessionStorage.setItem('loto_status', 'completed');
+        }
+
+        // Initialize all signature canvases on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load user role from sessionStorage
+            const role = sessionStorage.getItem('userRole');
+            const roleNames = {
+                'leerling': 'Leerling/Externe',
+                'leerkracht': 'Leerkracht',
+                'ta': 'TA',
+                'directeur': 'Directeur'
+            };
+            if (role && document.getElementById('userRole')) {
+                document.getElementById('userRole').textContent = roleNames[role] || 'Gebruiker';
+            }
+            
+            // Small canvases (for table paraaf cells)
+            document.querySelectorAll('.signature-canvas-small').forEach(canvas => {
+                initSignatureCanvas(canvas.id, 150, 80);
+                // Add clear button next to each canvas
+                addClearButton(canvas);
+            });
+            
+            // Medium canvases
+            document.querySelectorAll('.signature-canvas-medium').forEach(canvas => {
+                initSignatureCanvas(canvas.id, 300, 100);
+                addClearButton(canvas);
+            });
+            
+            // Large canvases
+            document.querySelectorAll('.signature-canvas-large').forEach(canvas => {
+                initSignatureCanvas(canvas.id, 400, 150);
+                addClearButton(canvas);
+            });
+        });
+
+        // Add clear button to signature canvas
+        function addClearButton(canvas) {
+            const container = canvas.parentElement;
+            if (container && !container.querySelector('.clear-sig-btn')) {
+                const clearBtn = document.createElement('button');
+                clearBtn.type = 'button';
+                clearBtn.className = 'clear-sig-btn';
+                clearBtn.textContent = 'Wissen';
+                clearBtn.onclick = function() {
+                    clearSignature(canvas.id);
+                };
+                clearBtn.style.cssText = 'margin-top: 5px; padding: 5px 10px; background-color: #000000; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;';
+                container.appendChild(clearBtn);
+            }
+        }
+    </script>
+</body>
+</html>

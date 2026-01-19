@@ -1,0 +1,30 @@
+/* Specifieke CSS voor werkvergunning_vak2_chemicalien.html */
+
+/* Checkbox Grid 4 kolommen - specifiek voor chemicaliën */
+.checkbox-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Label met icon voor GHS pictogrammen */
+.label-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* GHS Pictogram Icon */
+.ghs-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+/* Responsive voor chemicaliën grid */
+@media (max-width: 768px) {
+    .checkbox-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

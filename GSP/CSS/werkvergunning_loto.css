@@ -1,0 +1,473 @@
+/* LOTO Specifieke Stijlen - Pixel-perfect match met screenshots */
+
+.loto-main {
+    max-width: 100%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+}
+
+/* Document Header - Exact match screenshot */
+.loto-document-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    border: 1px solid #000;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: white;
+}
+
+.loto-header-left {
+    border-right: 1px solid #000;
+    padding-right: 10px;
+}
+
+.loto-logo-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.loto-bv-logo {
+    display: flex;
+    flex-direction: column;
+    font-size: 48px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.loto-bv-b {
+    color: #ff6600;
+}
+
+.loto-bv-v {
+    color: #0099cc;
+}
+
+.loto-beveren-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.loto-beveren {
+    color: #ff6600;
+    font-weight: bold;
+}
+
+.loto-verbindt {
+    color: #0099cc;
+    font-weight: bold;
+}
+
+.loto-form-number {
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.loto-header-center {
+    text-align: center;
+    padding: 0 10px;
+}
+
+.loto-title-formulier {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.loto-checklist-info {
+    font-size: 12px;
+}
+
+.loto-header-right {
+    border-left: 1px solid #000;
+    padding-left: 10px;
+    text-align: left;
+    font-size: 12px;
+}
+
+.loto-form-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.loto-page-number {
+    color: #000;
+}
+
+/* Disclaimer Box - Geel */
+.loto-disclaimer-box {
+    background-color: #ffff00;
+    border: 1px solid #000;
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Section Box */
+.loto-section-box {
+    border: 1px solid #000;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.loto-section-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.loto-section-content {
+    margin-left: 20px;
+}
+
+/* Sections */
+.loto-section {
+    margin-bottom: 30px;
+}
+
+.loto-section-header {
+    margin-bottom: 10px;
+}
+
+.loto-section-number-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.loto-note-subheader {
+    background-color: #ffff00;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+/* Tables */
+.loto-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #000;
+    margin-bottom: 15px;
+}
+
+.loto-table th,
+.loto-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+    font-size: 12px;
+}
+
+.loto-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.loto-action-cell {
+    font-weight: normal;
+    white-space: normal;
+}
+
+.loto-highlight {
+    background-color: #ffff00;
+    padding: 1px 2px;
+}
+
+.loto-input {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 4px;
+    font-size: 12px;
+    box-sizing: border-box;
+}
+
+/* Signature Canvases */
+.signature-canvas-small {
+    border: 1px solid #ccc;
+    cursor: crosshair;
+    background-color: #fafafa;
+    display: block;
+    width: 150px;
+    height: 80px;
+}
+
+.signature-canvas-medium {
+    border: 1px solid #ccc;
+    cursor: crosshair;
+    background-color: #fafafa;
+    display: block;
+    width: 300px;
+    height: 100px;
+}
+
+.signature-canvas-large {
+    border: 1px solid #ccc;
+    cursor: crosshair;
+    background-color: #fafafa;
+    display: block;
+    width: 400px;
+    height: 150px;
+}
+
+/* Info Text */
+.loto-info-text {
+    margin: 10px 0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Two Column Layout */
+.loto-section-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.loto-two-col-left,
+.loto-two-col-right {
+    border: 1px solid #000;
+    padding: 10px;
+}
+
+.loto-subsection-title {
+    font-weight: bold;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.loto-subsection-subtitle {
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.loto-table-small {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.loto-table-small td {
+    border: 1px solid #000;
+    padding: 8px;
+    font-size: 12px;
+}
+
+/* Highlight sections */
+.highlight {
+    background-color: #ffff00;
+    padding: 5px 10px;
+}
+
+.loto-input-wide {
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 10px 0;
+}
+
+/* Test Responsibility Section */
+.loto-test-responsibility {
+    margin-top: 20px;
+    border: 1px solid #000;
+    padding: 15px;
+}
+
+.loto-test-responsibility-label {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.loto-test-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.loto-test-row-large {
+    margin-top: 20px;
+}
+
+.loto-test-row-large > div {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+/* Two Column Table */
+.loto-table-two-col {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #000;
+    margin: 15px 0;
+}
+
+.loto-table-two-col th,
+.loto-table-two-col td {
+    border: 1px solid #000;
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+    font-size: 12px;
+}
+
+.loto-table-two-col th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.loto-status-update {
+    margin: 15px 0;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+/* Textarea */
+.loto-textarea {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+/* Benodigdheden Table */
+.loto-benodigdheden-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.loto-benodigdheden-table th {
+    background-color: #f0f0f0;
+    border: 1px solid #000;
+    padding: 8px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 11px;
+}
+
+.loto-benodigdheden-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px;
+}
+
+/* Footer */
+.loto-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-top: 1px solid #000;
+    margin-top: 30px;
+    padding-top: 15px;
+    font-size: 12px;
+}
+
+.loto-footer-left,
+.loto-footer-center,
+.loto-footer-right {
+    padding: 10px;
+}
+
+.loto-footer-center {
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+}
+
+.loto-footer-right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Navigation Buttons */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    padding: 20px 0;
+}
+
+.nav-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-button.prev {
+    background-color: #6c757d;
+    color: white;
+}
+
+.nav-button.prev:hover {
+    background-color: #5a6268;
+}
+
+.nav-button.next,
+.button.next {
+    background-color: #1678fa;
+    color: white;
+}
+
+.nav-button.next:hover,
+.button.next:hover {
+    background-color: #0d5fd8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .loto-document-header {
+        grid-template-columns: 1fr;
+    }
+    
+    .loto-header-left,
+    .loto-header-center,
+    .loto-header-right {
+        border: none;
+        border-bottom: 1px solid #000;
+        padding: 10px 0;
+    }
+    
+    .loto-section-two-col {
+        grid-template-columns: 1fr;
+    }
+    
+    .loto-footer {
+        grid-template-columns: 1fr;
+    }
+    
+    .loto-footer-center {
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid #000;
+        border-bottom: 1px solid #000;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .navigation-buttons,
+    .header {
+        display: none;
+    }
+    
+    .loto-main {
+        padding: 0;
+        background: white;
+    }
+}

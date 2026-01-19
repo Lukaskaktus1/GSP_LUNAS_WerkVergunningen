@@ -1,0 +1,25 @@
+/* Specifieke CSS voor werkvergunning_vak2_activiteiten.html */
+
+/* Checkbox Grid - specifiek voor activiteiten pagina */
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Special Icon - voor diamant iconen */
+.special-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.icon-diamond {
+    transform: rotate(45deg);
+    border: 1px solid #333;
+}
