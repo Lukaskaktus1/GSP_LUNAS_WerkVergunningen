@@ -171,6 +171,39 @@ body {
 }
 
 
+/* Veilig namespaced POMI-styling */
+.pomi-section {
+    font-family: inherit;
+    padding: 20px;
+    margin-bottom: 40px;
+    background: rgba(0,0,0,0.02);
+    border-radius: 8px;
+}
+
+.pomi-title {
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+}
+
+.pomi-subtitle {
+    font-size: 1.3rem;
+    margin-top: 20px;
+}
+
+.pomi-text {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.pomi-list {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.pomi-list li {
+    margin-bottom: 6px;
+}
+
 
 
 @media (max-width: 768px) {
