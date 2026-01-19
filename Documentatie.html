@@ -1,1 +1,125 @@
-hier is de
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentatie - GSP 6ADB 2025-2026</title>
+
+    <link rel="stylesheet" href="css/documentatie.css">
+    <link rel="icon" href="/afbeeldingen/LogoADB_1.png">
+
+    <!-- FontAwesome FREE -->
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+<header class="header-bar">
+    <div class="header-left">
+        <h1 class="gradient-text">GSP 6ADB 2025-2026</h1>
+    </div>
+
+    <div class="header-right">
+        <div class="search-container">
+            <input type="text" placeholder="Zoek documentatie..." class="search-input">
+            <span class="search-icon"><i class="fa-solid fa-search"></i></span>
+        </div>
+
+        <div class="notification-icon">
+            <i class="fa-solid fa-bell"></i>
+            <span class="notification-dot"></span>
+        </div>
+
+        <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
+    </div>
+</header>
+
+<div class="main-container">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="index.html" class="nav-link"><span class="nav-icon">⚏</span>Dashboard</a></li>
+            <li class="nav-item"><a href="Projecten.html" class="nav-link"><span class="nav-icon"><i class="fa-solid fa-folder"></i></span>Projecten</a></li>
+            <li class="nav-item"><a href="Logboek.html" class="nav-link"><span class="nav-icon"><i class="fa-solid fa-book"></i></span>Logboek</a></li>
+            <li class="nav-item"><a href="TijdLijn.html" class="nav-link"><span class="nav-icon"><i class="fa-solid fa-calendar"></i></span>Tijdlijn</a></li>
+            <li class="nav-item"><a href="Uren_Tracking.html" class="nav-link"><span class="nav-icon"><i class="fa-regular fa-clock"></i></span>Uren Tracking</a></li>
+            <li class="nav-item"><a href="Voortgang.html" class="nav-link"><span class="nav-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>Voortgang</a></li>
+            <li class="nav-item active"><a href="Documentatie.html" class="nav-link"><span class="nav-icon"><i class="fa-solid fa-file-lines"></i></span>Documentatie</a></li>
+            <li class="nav-item"><a href="Instellingen.html" class="nav-link"><span class="nav-icon"><i class="fa-solid fa-gear"></i></span>Instellingen</a></li>
+        </ul>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main style="margin-left:260px; padding:40px; width:100%;">
+
+        <h1 style="margin-bottom: 15px;">Documentatie</h1>
+        <p>Hier vind je alle documentatie voor jouw databaseproject.</p>
+
+        <!-- PROJECTDEFINTIE -->
+        <section id="projectdefinitie" class="pomi-section">
+            <h2 class="pomi-title">Projectdefinitie – POMI Digitaliseren Werkvergunningen</h2>
+
+            <h3 class="pomi-subtitle">Doel</h3>
+            <p class="pomi-text">
+                Het digitaliseren van het papieren werkvergunningssysteem om snelheid, veiligheid en overzicht te verbeteren.
+            </p>
+
+            <h3 class="pomi-subtitle">Projectbeschrijving</h3>
+            <p class="pomi-text">
+                We ontwikkelen een webapplicatie waarmee werkvergunningen digitaal kunnen worden aangemaakt, ingevuld, 
+                ondertekend, opgevolgd en beheerd. Rollen: <strong>admin</strong>, <strong>leerkracht</strong> en 
+                <strong>leerling</strong>. Elke vergunning bevat een <strong>QR-code</strong> voor controle op de werkvloer.
+            </p>
+
+            <h3 class="pomi-subtitle">Functionaliteiten</h3>
+            <ul class="pomi-list">
+                <li>Vergunningen aanmaken en bewerken</li>
+                <li>Digitale handtekening</li>
+                <li>QR-code genereren</li>
+                <li>Gebruikersrechten</li>
+                <li>Status & historiek</li>
+                <li>Notificaties</li>
+            </ul>
+        </section>
+
+        <!-- FIGMA EMBED -->
+        <section id="figma" style="margin-top:40px;">
+            <h2>Figma Design</h2>
+            <p>Bekijk hier het design van de applicatie:</p>
+            <iframe
+                style="border:1px solid #ddd; border-radius:8px; width:100%; height:500px;"
+                src="https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/Qxrb78INEYndFIReb76X1j/Untitled?node-id=0-1&t=oCIk42GeKUj8F8jY-0"
+                allowfullscreen>
+            </iframe>
+        </section>
+
+        <!-- ERD DIAGRAM -->
+        <section id="erd" style="margin-top:40px;">
+            <h2>ERD Diagram</h2>
+            <p>Plaats hier jouw ERD-diagram (PNG/JPG/SVG):</p>
+            <div style="background:white; padding:20px; border-radius:10px; border:1px solid #ddd;">
+                <img src="Assets/ERD_GSP_V2.png" alt="ERD diagram" style="width:100%; max-width:900px; border-radius:8px;">
+            </div>
+        </section>
+
+        <!-- NORMALISATIE -->
+        <section id="normalisatie" style="margin-top:40px;">
+            <h2>Normalisatie</h2>
+            <p>Normalisatie:</p>
+            <div style="background:white; padding:20px; border-radius:10px; border:1px solid #ddd;">
+                <a href="Assets/Genormalizeerd Erd model.xlsx" 
+               download 
+               style="display:inline-flex; align-items:center; gap:10px; padding:10px 15px; background:#28a745; color:white; border-radius:8px; text-decoration:none; font-weight:500; transition:background 0.3s;">
+                <i class="fa-solid fa-file-excel" style="font-size:18px;"></i>
+                <span>Projectdata.xlsx</span>
+                <i class="fa-solid fa-download" style="font-size:16px;"></i>
+            </a>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>
