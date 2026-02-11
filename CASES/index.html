@@ -1,0 +1,176 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/CASES/CSS/style.css">
+    <script src="/CASES/JAVASCRIPT/geluksspel.js"></script>
+    <title>Vakoverschrijdendgedrag</title>
+</head>
+<body>
+    <header>
+        
+            <img src="/CASES/IMAGES/Work Permit Portal Logo - Isolated Corporate Design.png" alt="Work Permit Portal Logo" height="80">
+            <h1>Sollicitatieformulier</h1>
+        
+        <nav>
+            <a href="#formulier">Solliciteer</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section1">
+            <form class="formulier" id="formulier">
+                    <h3>Voornaam + Achternaam</h3>
+                    <input type="text" id="voornaam_achternaam" required>
+                    <h3>Email</h3>
+                    <input type="email" id="email" placeholder="voorbeeld@gmail.com" required> <!-- Validatie via javascript -->
+                    <h3>Geboortedatum</h3>
+                    <input type="date" id="geboortedatum" required>
+
+                    <h3>Gewenste afdeling</h3>
+                    <select name="afdeling" id="afdeling">
+                        <option value="Sales">Sales</option>
+                        <option value="Aankoop">Aankoop</option>
+                        <option value="Technisch">Technisch</option>
+                    </select>
+
+                <h3>Ervaring</h3>
+                <select name="ervaring" id="ervaring">
+                    <option value="0-1 jaar">0-1 jaar</option>
+                    <option value="1-3 jaar">1-3 jaar</option>
+                    <option value="3-5 jaar">3-5 jaar</option>
+                    <option value="5+ jaar">5+ jaar</option>
+                </select>
+                
+
+                <h3>Beschikbaarheid</h3>
+                <div class="beschikbaarheid">
+                    <div class="Voltijds">
+                        <input type="radio" id="voltijds" name="Beschikbaarheid" value="Voltijds">
+                        <label for="voltijds">Voltijds</label>
+                    </div>
+                    <div class="Deeltijds">
+                        <input type="radio" id="deeltijds" name="Beschikbaarheid" value="Deeltijds">
+                        <label for="deeltijds">Deeltijds</label>
+                    </div>
+                    <div class="Freelance">
+                        <input type="radio" id="freelance" name="Beschikbaarheid" value="Freelance">
+                        <label for="freelance">Freelance</label>
+                    </div>
+                </div>
+
+                <h3>Vaardigheden</h3>
+                <div class="vaardigheden">
+                    <div class="CSS">
+                        <label for="css">CSS</label>
+                        <input type="checkbox" id="css" name="vaardigheden" value="CSS">
+                    </div>
+                    <div class="JavaScript">
+                        <label for="javascript">JavaScript</label>
+                        <input type="checkbox" id="javascript" name="vaardigheden" value="JavaScript">
+                    </div>
+                    <div class="HTML">
+                        <label for="html">HTML</label>
+                        <input type="checkbox" id="html" name="vaardigheden" value="HTML">
+                    </div>
+                    <div class="Python">
+                        <label for="python">Python</label>
+                        <input type="checkbox" id="python" name="vaardigheden" value="Python">
+                    </div>
+                    <div class="Netwerken">
+                        <label for="netwerken">Netwerken</label>
+                        <input type="checkbox" id="netwerken" name="vaardigheden" value="Netwerken">
+                    </div>
+                </div>
+                
+
+                <h3>Motivatie</h3>
+                <textarea id="motivatie" rows="4" cols="50" maxlength="500"></textarea>
+
+                
+                <h3>Startdatum</h3>
+                <select name="startdatum" id="startdatum">
+                    <option value="onmiddelijk">Onmiddelijk</option>
+                    <option value="binnen 1 maand">Binnen 1 maand</option>
+                    <option value="binnen 3 maanden">Binnen 3 maanden</option>
+                </select>
+                
+                <div class="GSPR">
+                    <h3>GDPR akkoord</h3>
+                    <div>
+                        <input type="checkbox" id="gdpr" name="gdpr" value="akkoord" required>
+                        <label for="gdpr">Ik ga akkoord met de GDPR voorwaarden</label>
+                    </div>
+
+                    <label for="gdpr" class="bijsluiter">
+                        Je gegevens worden uitsluitend gebruikt voor sollicitaties bij <strong style="font-weight: 800;">Werkvergunningen Portaal nv</strong>
+                        <br>
+                        Ze worden veilig opgeslagen en niet agedeeld met derden.
+                        <br>
+                        Je hebt het recht om je gegevens in te zien, te corrigeren of te verwijderen.
+                    </label>
+                </div>
+                <div class="buttons">
+                    <button type="submit">Verzenden</button>
+                    <button type="button" onclick="Geluksspel()">Speel spel</button>
+                </div>
+                <div class="Resultaat_Spelletje">
+                    <span id="resultaat"></span>
+                </div>
+                
+            </form>
+
+            
+            
+
+        </section>
+    </main>
+
+
+
+
+    <script>
+// Functie om formuliergegevens op te slaan in localStorage
+document.getElementById('formulier').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Haal alle formuliervelden op
+    var naam = document.getElementById('voornaam_achternaam').value;
+    var email = document.getElementById('email').value;
+    var geboortedatum = document.getElementById('geboortedatum').value;
+    var afdeling = document.getElementById('afdeling').value;
+    var ervaring = document.getElementById('ervaring').value;
+    var beschikbaarheid = document.querySelector('input[name="Beschikbaarheid"]:checked')?.value || '';
+    var vaardigheden = Array.from(document.querySelectorAll('input[name="vaardigheden"]:checked')).map(cb => cb.value).join(', ');
+    var motivatie = document.getElementById('motivatie').value;
+    var startdatum = document.getElementById('startdatum').value;
+
+    // Geluksgetal berekenen
+    var aantalLetters = naam.replace(/\s/g, '').length;
+    var geboorteMaand = new Date(geboortedatum).getMonth() + 1;
+    var randomGetal = Math.floor(Math.random() * 100) + 1;
+    var resultaat = (aantalLetters * geboorteMaand) / randomGetal;
+    var geluksGetal = Math.round(resultaat * 10) % 11;
+
+    // Alle gegevens opslaan in localStorage
+    localStorage.setItem('sollicitatie', JSON.stringify({
+        naam: naam,
+        email: email,
+        geboortedatum: geboortedatum,
+        afdeling: afdeling,
+        ervaring: ervaring,
+        beschikbaarheid: beschikbaarheid,
+        vaardigheden: vaardigheden,
+        motivatie: motivatie,
+        startdatum: startdatum,
+        geluksGetal: geluksGetal
+    }));
+
+    // Doorsturen naar mail template pagina
+    window.location.href = '/CASES/HTML/Mail_template.html';
+});
+</script>
+
+
+</body>
+</html>

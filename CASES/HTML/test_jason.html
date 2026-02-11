@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bevestiging sollicitatie</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #1b4f72 0%, #2e86ab 100%);
+        text-align: center;
+        padding: 30px 20px;
+      }
+      .logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto 15px auto;
+        border: 3px solid #fff;
+      }
+      .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .header h1 {
+        color: #fff;
+        margin: 0;
+        font-size: 26px;
+      }
+      .content {
+        padding: 30px 25px;
+      }
+      .content h2 {
+        color: #1b4f72;
+        font-size: 22px;
+        margin-bottom: 20px;
+      }
+      .content p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin: 15px 0;
+      }
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+      }
+      .data-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .data-table tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+      .data-table td:first-child {
+        color: #1b4f72;
+        font-weight: bold;
+        width: 40%;
+      }
+      .winner {
+        background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        color: #fff;
+        padding: 25px;
+        text-align: center;
+        border-radius: 10px;
+        margin: 30px 0;
+      }
+      .next-steps {
+        background: #e3f2fd;
+        padding: 20px;
+        border-left: 5px solid #2196f3;
+        border-radius: 8px;
+        margin: 25px 0;
+      }
+      .next-steps ul {
+        padding-left: 20px;
+        margin: 10px 0 0 0;
+      }
+      .footer {
+        background-color: #1b4f72;
+        color: #fff;
+        text-align: center;
+        padding: 20px 15px;
+        font-size: 12px;
+      }
+      .gdpr {
+        background-color: #f8f8f8;
+        padding: 25px 30px;
+        font-size: 12px;
+        line-height: 1.6;
+        border-top: 2px solid #e0e0e0;
+      }
+      a {
+        color: #2196f3;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <div class="logo">
+          <img src="content.png" alt="Logo" />
+        </div>
+        <h1>FrankDeBom Enterprises</h1>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <h2>Bedankt voor je sollicitatie, {{naam}}!</h2>
+        <p>
+          We hebben je sollicitatie goed ontvangen en zullen deze zorgvuldig
+          beoordelen. Hieronder vind je een overzicht van de gegevens die je
+          hebt ingevuld.
+        </p>
+
+        <!-- Data Table -->
+        <table class="data-table">
+          <tr>
+            <td>Gewenste afdeling</td>
+            <td>{{afdeling}}</td>
+          </tr>
+          <tr>
+            <td>Ervaring</td>
+            <td>{{ervaring}} jaar</td>
+          </tr>
+          <tr>
+            <td>Beschikbaarheid</td>
+            <td>{{beschikbaarheid}}</td>
+          </tr>
+          <tr>
+            <td>Vaardigheden</td>
+            <td>{{vaardigheden}}</td>
+          </tr>
+          <tr>
+            <td>Gewenste startdatum</td>
+            <td>{{startdatum}}</td>
+          </tr>
+        </table>
+
+        <!-- Winner Block -->
+        <div class="winner">
+          <h3>🎉 GEFELICITEERD! 🎉</h3>
+          <p>
+            Je geluksgetal is
+            <strong style="font-size: 28px">{{geluksGetal}}</strong>
+          </p>
+          <p>
+            Je hebt een prijs gewonnen bij ons geluksspel! We nemen binnenkort
+            contact met je op om je prijs te overhandigen.
+          </p>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+          <h3>📋 Wat gebeurt er nu?</h3>
+          <ul>
+            <li>We beoordelen je sollicitatie binnen 5 werkdagen</li>
+            <li>
+              Bij interesse nodigen we je uit voor een kennismakingsgesprek
+            </li>
+            <li>
+              Je ontvangt in alle gevallen binnen 2 weken een reactie van ons
+            </li>
+          </ul>
+        </div>
+
+        <p>
+          Heb je nog vragen? Neem gerust contact op via
+          <a href="mailto:jobs@frankdebom.be">jobs@frankdebom.be</a>
+        </p>
+        <p>
+          Met vriendelijke groet,<br /><strong>Het recruitment team</strong
+          ><br />FrankDeBom Enterprises
+        </p>
+      </div>
+
+      <!-- GDPR -->
+      <div class="gdpr">
+        <strong>Privacy en gegevensbescherming:</strong><br />
+        Je gegevens worden verwerkt conform de AVG/GDPR. We bewaren je
+        sollicitatiegegevens maximaal 1 jaar. Je hebt te allen tijde het recht
+        op inzage, correctie of verwijdering van je gegevens.<br /><br />
+        <strong>Wil je je gegevens laten verwijderen of wijzigen?</strong><br />
+        Contacteer ons via
+        <a href="mailto:privacy@frankdebom.be">privacy@frankdebom.be</a>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        © 2026 FrankDeBom Enterprises | GTI Beveren | Alle rechten voorbehouden
+      </div>
+    </div>
+  </body>
+</html>
