@@ -25,7 +25,7 @@ var geluksGetalEl = Math.round(resultaat * 10) % 11; // Getal tussen 0-10
 
   'use strict';
 
-  var WEBHOOK_URL = 'https://hook.eu1.make.com/gzecp6tfd7ddnimtu9xpc63ps67d2x8k';
+  var WEBHOOK_URL = 'https://hook.eu1.make.com/lxc8ukbkj387fgieyo12ryk65cbd93bv';
 
   var form = document.getElementById('formulier');
   var naamEl = document.getElementById('voornaam_achternaam');

@@ -19,13 +19,13 @@
 
     <main>
         <section class="section1">
-            <form class="formulier" id="formulier">
+            <form class="formulier" id="formulier" action="https://hook.eu1.make.com/gzecp6tfd7ddnimtu9xpc63ps67d2x8k">
                     <h3>Voornaam + Achternaam</h3>
-                    <input type="text" id="voornaam_achternaam" required>
+                    <input type="text" id="voornaam_achternaam" required name="volledige_naam">
                     <h3>Email</h3>
-                    <input type="email" id="email" placeholder="voorbeeld@gmail.com" required> <!-- Validatie via javascript -->
+                    <input type="email" id="email" placeholder="voorbeeld@gmail.com" required name="email"> <!-- Validatie via javascript -->
                     <h3>Geboortedatum</h3>
-                    <input type="date" id="geboortedatum" required>
+                    <input type="date" id="geboortedatum" required name="geboortedatum">
 
                     <h3>Gewenste afdeling</h3>
                     <select name="afdeling" id="afdeling">
@@ -126,54 +126,6 @@
         </section>
     </main>
 
-
-    <script src="/CASES/JAVASCRIPT/form-webhook.js"></script>
-
-
-    
-    <script>
-
-//dit is enkel voor de gegevens naar de mail template te sturen dus behoort niet tot de sollicitatie pagina en is gemaakt met ai.
-// Functie om formuliergegevens op te slaan in localStorage
-document.getElementById('formulier').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    // Haal alle formuliervelden op
-    var naam = document.getElementById('voornaam_achternaam').value;
-    var email = document.getElementById('email').value;
-    var geboortedatum = document.getElementById('geboortedatum').value;
-    var afdeling = document.getElementById('afdeling').value;
-    var ervaring = document.getElementById('ervaring').value;
-    var beschikbaarheid = document.querySelector('input[name="Beschikbaarheid"]:checked')?.value || '';
-    var vaardigheden = Array.from(document.querySelectorAll('input[name="vaardigheden"]:checked')).map(cb => cb.value).join(', ');
-    var motivatie = document.getElementById('motivatie').value;
-    var startdatum = document.getElementById('startdatum').value;
-
-    // Geluksgetal berekenen
-    var aantalLetters = naam.replace(/\s/g, '').length;
-    var geboorteMaand = new Date(geboortedatum).getMonth() + 1;
-    var randomGetal = Math.floor(Math.random() * 100) + 1;
-    var resultaat = (aantalLetters * geboorteMaand) / randomGetal;
-    var geluksGetal = Math.round(resultaat * 10) % 11;
-
-    // Alle gegevens opslaan in localStorage
-    localStorage.setItem('sollicitatie', JSON.stringify({
-        naam: naam,
-        email: email,
-        geboortedatum: geboortedatum,
-        afdeling: afdeling,
-        ervaring: ervaring,
-        beschikbaarheid: beschikbaarheid,
-        vaardigheden: vaardigheden,
-        motivatie: motivatie,
-        startdatum: startdatum,
-        geluksGetal: geluksGetal
-    }));
-
-    // Doorsturen naar mail template pagina
-    window.location.href = '/CASES/HTML/Mail_template.html';
-});
-</script>
 
 
 </body>
