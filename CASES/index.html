@@ -111,14 +111,29 @@
                     </label>
                 </div>
                 
-                <div class="Resultaat_Spelletje">
-                    <span id="resultaat"></span>
+                <div class="buttons">
+                    <button type="button" onclick="speelGelukspel()">Speel spel</button>
+                    <button type="submit">Verzenden</button>
                 </div>
 
-                <div class="buttons">
-                    <button type="submit">Verzenden</button>
-                    <button type="button" onclick="Geluksspel()">Speel spel</button>
+                <h1>Gelukspel</h1>
+                <p>Vul naam en geboortedatum en klik op speel gelukspel. Bij een geluksgetal van 8 of hoger wint u!</p>
+                
+                
+                <div class="Resultaat_Spelletje">
+                    <h1>Geluksgetal: </h1>
+                    <h2 id="geluksgetal" >...</h2>
+                    <br>
+                    <h1>Resultaat:</h1>
+                    <h2 id="resultaat">...</h2>
                 </div>
+
+
+                <input type="hidden" id="geluksgetal_input" name="geluksgetal">
+                <input type="hidden" id="resultaat_input" name="resultaat">
+                </div>
+
+                
             </form>
         </section>
     </main>
