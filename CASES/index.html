@@ -18,12 +18,12 @@
     </header>
 
     <main>
-        <section class="section1">
-            <form class="formulier" id="formulier" action="https://hook.eu1.make.com/gzecp6tfd7ddnimtu9xpc63ps67d2x8k">
+        <section class="section1">                             
+            <form class="formulier" id="formulier" action="https://hook.eu1.make.com/gx5f41byssv6f7fqdejtd122488f8avd">
                     <h3>Voornaam + Achternaam</h3>
                     <input type="text" id="voornaam_achternaam" required name="volledige_naam">
                     <h3>Email</h3>
-                    <input type="email" id="email" placeholder="voorbeeld@gmail.com" required name="email"> <!-- Validatie via javascript -->
+                    <input type="email" id="email" placeholder="voorbeeld@gmail.com" required name="email">
                     <h3>Geboortedatum</h3>
                     <input type="date" id="geboortedatum" required name="geboortedatum">
 
@@ -85,7 +85,7 @@
                 
 
                 <h3>Motivatie</h3>
-                <textarea id="motivatie" rows="4" cols="50" maxlength="500"></textarea>
+                <textarea id="motivatie" rows="4" cols="50" maxlength="500" name="motivatie"></textarea>
 
                 
                 <h3>Startdatum</h3>
@@ -110,23 +110,17 @@
                         Je hebt het recht om je gegevens in te zien, te corrigeren of te verwijderen.
                     </label>
                 </div>
+                
+                <div class="Resultaat_Spelletje">
+                    <span id="resultaat"></span>
+                </div>
+
                 <div class="buttons">
                     <button type="submit">Verzenden</button>
                     <button type="button" onclick="Geluksspel()">Speel spel</button>
                 </div>
-                <div class="Resultaat_Spelletje">
-                    <span id="resultaat"></span>
-                </div>
-                
             </form>
-
-            
-            
-
         </section>
     </main>
-
-
-
 </body>
 </html>

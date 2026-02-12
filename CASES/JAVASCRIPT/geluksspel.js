@@ -22,11 +22,9 @@ var gewonnen = (geluksGetal >= 8);
 var resultaatDiv = document.getElementById('resultaat');
 
 if (gewonnen) {
-    resultaatDiv.innerHTML = "Gefeliciteerd! Je won!";
-    resultaatDiv.style.color = "green";
+    resultaatDiv.innerHTML = geluksGetal;
 } else {
     resultaatDiv.innerHTML = "Jammer, volgende keer!";
-    resultaatDiv.style.color = "red";
 }
 
 // animatie resetten
