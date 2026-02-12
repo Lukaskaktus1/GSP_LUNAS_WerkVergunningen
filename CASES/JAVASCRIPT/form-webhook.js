@@ -2,16 +2,37 @@
  * Verstuurt sollicitatieformulier naar Make.com webhook (geen PHP).
  */
 (function () {
+
+
+  // 1. Tel het aantal letters in de volledige naam (zonder spaties)
+var naam = document.getElementById('voornaam_achternaam').value;
+var aantalLetters = naam.replace(/\s/g, '').length;
+
+// 2. Haal de geboortemaand op (1-12)
+var geboortedatum = document.getElementById('geboortedatum').value;
+var geboorteMaand = new Date(geboortedatum).getMonth() + 1;
+
+// 3. Genereer een random getal tussen 1 en 100
+var randomGetal = Math.floor(Math.random() * 100) + 1;
+
+// 4. Bereken het geluksgetal
+var resultaat = (aantalLetters * geboorteMaand) / randomGetal;
+
+var geluksGetalEl = Math.round(resultaat * 10) % 11; // Getal tussen 0-10
+
+
+
+
   'use strict';
 
-  var WEBHOOK_URL = 'https://hook.eu2.make.com/vobhaj6rph4xzm4p8vp5ljasbwekfvua';
+  var WEBHOOK_URL = 'https://hook.eu1.make.com/gzecp6tfd7ddnimtu9xpc63ps67d2x8k';
 
-  var form = document.getElementById('sollicitatieformulier');
-  var naamEl = document.getElementById('naam');
+  var form = document.getElementById('formulier');
+  var naamEl = document.getElementById('voornaam_achternaam');
   var geboortedatumEl = document.getElementById('geboortedatum');
   var naamError = document.getElementById('naam-error');
   var geboortedatumError = document.getElementById('geboortedatum-error');
-  var resultaatEl = document.getElementById('geluksspel-resultaat');
+  var resultaatEl = document.getElementById('resultaat');
 
   function toonNaamError(msg) {
     if (naamError) {
@@ -57,7 +78,6 @@
     for (var i = 0; i < vaardighedenEls.length; i++) {
       vaardigheden.push(vaardighedenEls[i].value);
     }
-    var geluksgetalEl = document.getElementById('geluksgetal');
     return {
       naam: (naamEl.value || '').trim(),
       geboortedatum: geboortedatumEl.value || '',
@@ -65,7 +85,7 @@
       vaardigheden: vaardigheden,
       startdatum: document.getElementById('startdatum').value || '',
       mail_naar: document.getElementById('mail-naar').value || '',
-      geluksgetal: geluksgetalEl ? geluksgetalEl.value : ''
+      geluksgetal: geluksGetalEl || ''
     };
   }
 
@@ -85,7 +105,7 @@
     })
       .then(function (res) {
         if (res.ok) {
-          window.location.href = 'bedankt.html';
+          window.location.href = '/CASES/HTML/Mail_template.html';
         } else {
           alert('Versturen mislukt. Probeer later opnieuw.');
         }
