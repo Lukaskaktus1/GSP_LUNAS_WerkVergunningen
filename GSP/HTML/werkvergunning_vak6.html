@@ -39,58 +39,25 @@
                 <span>Vak VI. BEKRACHTIGING</span>
                 <span class="warning-box inline">DEZE VERGUNNING VERVALT OGENBLIKKELIJK BIJ EEN NOODSITUATIE!</span>
             </div>
-
-            <!-- LOTOTO Check -->
             <div class="form-section">
-                <div class="warning-inline-container">
-                    <i class="fas fa-exclamation-triangle warning-icon"></i>
-                    <span>De LOTOTO-checklijst werd gecontroleerd op VOLLEDIGHEID en is OK voor VRIJGAVE INSTALLATIE:</span>
-                    <div class="checkbox-group checkbox-group-inline">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="lototo_ja" name="lototo">
-                            <label for="lototo_ja">Ja</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="lototo_nvt" name="lototo">
-                            <label for="lototo_nvt">NVT</label>
-                        </div>
-                    </div>
-                    <div id="loto_status_indicator" class="loto-status-indicator" style="display: none;">
-                        <span class="material-symbols-outlined">info</span>
-                        <span id="loto_status_text"></span>
-                    </div>
-                    <i class="fas fa-exclamation-triangle warning-icon"></i>
-                </div>
-
-                <div class="info-box">
-                    <p><strong>Afdeling:</strong> De vergunning is grondig voorbereid, de nodige vergunningen zijn bijgevoegd, de uitvoerders werden geïnformeerd, de werkplek werd geïnspecteerd!</p>
-                    <p><strong>Uitvoerder:</strong> Ik ben akkoord met al de vereisten die besproken zijn, en informeer al mijn medewerkers deze maatregelen te handhaven.</p>
-                </div>
-
                 <!-- Table -->
                 <table class="form-table">
                     <thead>
                         <tr>
-                            <th>Dag</th>
-                            <th>Datum</th>
-                            <th>Van...</th>
-                            <th>Tot...</th>
+                            <th rowspan="2">Dag</th>
+                            <th rowspan="2">Datum</th>
+                            <th rowspan="2">Van...</th>
+                            <th rowspan="2">Tot...</th>
                             <th colspan="2">AFDELING</th>
                             <th colspan="2">UITVOERDER</th>
-                            <th>Aantal uitvoerders</th>
-                            <th>Afd.overdracht handtekening</th>
+                            <th rowspan="2">Aantal uitvoerders</th>
+                            <th rowspan="2">Afd.overdracht handtekening</th>
                         </tr>
                         <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
                             <th>Naam</th>
                             <th>paraaf</th>
                             <th>Naam</th>
                             <th>paraaf</th>
-                            <th></th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,12 +123,37 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            
+            <!-- LOTOTO Check -->
+                <div class="warning-inline-container">
+                    <i class="fas fa-exclamation-triangle warning-icon"></i>
+                    <span>De LOTOTO-checklijst werd gecontroleerd op VOLLEDIGHEID en is OK voor VRIJGAVE INSTALLATIE:</span>
+                    <div class="checkbox-group checkbox-group-inline">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lototo_ja" name="lototo">
+                            <label for="lototo_ja">Ja</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lototo_nvt" name="lototo">
+                            <label for="lototo_nvt">NVT</label>
+                        </div>
+                    </div>
+                    <div id="loto_status_indicator" class="loto-status-indicator" style="display: none;">
+                        <span class="material-symbols-outlined">info</span>
+                        <span id="loto_status_text"></span>
+                    </div>
+                    <i class="fas fa-exclamation-triangle warning-icon"></i>
+                </div>
 
+                <div class="info-box">
+                    <p><strong>Afdeling:</strong> De vergunning is grondig voorbereid, de nodige vergunningen zijn bijgevoegd, de uitvoerders werden geïnformeerd, de werkplek werd geïnspecteerd!</p>
+                    <p><strong>Uitvoerder:</strong> Ik ben akkoord met al de vereisten die besproken zijn, en informeer al mijn medewerkers deze maatregelen te handhaven.</p>
+                </div>
+            </div>
             <!-- Navigation Buttons -->
             <div class="navigation-buttons">
-                <button class="nav-button prev" onclick="goBackFromVak6()">Vorige</button>
-                <button class="nav-button button next" onclick="navigateToNext('werkvergunning_vak7.html')">Volgende</button>
+                <button class="nav-button prev" onclick="window.location.href='werkvergunning_preventie.html'">Vorige</button>
+                <button class="nav-button button next" onclick="window.location.href='werkvergunning_vak7.html'">Volgende</button>
 
             </div>
         </div>
