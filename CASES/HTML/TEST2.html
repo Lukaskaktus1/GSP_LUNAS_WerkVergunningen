@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FutureTech Summit 2026</title>
+
+<style>
+
+/* ===== BASIS ===== */
+body{
+  font-family:Arial, sans-serif;
+  margin:0;
+  line-height:1.6;
+}
+
+section{
+  padding:60px 20px;
+  max-width:1000px;
+  margin:auto;
+}
+
+/* ===== HERO ===== */
+.hero{
+  background:#0b1f3a;
+  color:white;
+  text-align:center;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.hero button{
+  padding:15px 25px;
+  font-size:18px;
+  cursor:pointer;
+}
+
+/* ===== PROGRAMMA ===== */
+.timeline{
+  display:grid;
+  gap:12px;
+}
+
+.timeline div{
+  background:#f2f2f2;
+  padding:15px;
+  border-radius:8px;
+}
+
+/* ===== SPEAKERS ===== */
+.cards{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.card{
+  flex:1;
+  min-width:220px;
+  border:1px solid #ddd;
+  padding:20px;
+  border-radius:10px;
+}
+
+/* ===== FAQ ===== */
+.accordion{
+  width:100%;
+  padding:15px;
+  margin-top:10px;
+  cursor:pointer;
+  background:#eee;
+  border:none;
+}
+
+.panel{
+  display:none;
+  padding:10px;
+  background:#f9f9f9;
+}
+
+/* ===== FORM ===== */
+form{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+input, select{
+  padding:10px;
+}
+
+.price{
+  font-size:24px;
+  font-weight:bold;
+  margin-top:15px;
+}
+
+.success{color:green;}
+.error{color:red;}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+<h1>FutureTech Summit 2026</h1>
+<p>12 juni 2026 • Brussel Expo</p>
+
+<h2 id="countdown"></h2>
+
+<button onclick="scrollToForm()">Schrijf je in</button>
+</section>
+
+<!-- ================= PROGRAMMA ================= -->
+<section>
+<h2>Programma</h2>
+<div class="timeline">
+<div>09:00 — Registratie</div>
+<div>10:00 — AI Keynote</div>
+<div>13:00 — Workshops</div>
+<div>17:00 — Networking</div>
+</div>
+</section>
+
+<!-- ================= SPEAKERS ================= -->
+<section>
+<h2>Sprekers</h2>
+<div class="cards">
+<div class="card">
+<h3>Sarah Jacobs</h3>
+<p>AI Architect</p>
+</div>
+
+<div class="card">
+<h3>Tom Vermeulen</h3>
+<p>Cloud Engineer</p>
+</div>
+</div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section>
+<h2>FAQ</h2>
+
+<button class="accordion">Wat zit inbegrepen?</button>
+<div class="panel">Lunch, workshops en networking inbegrepen.</div>
+
+<button class="accordion">Kan ik annuleren?</button>
+<div class="panel">Annuleren kan tot 30 dagen vooraf.</div>
+
+</section>
+
+<!-- ================= FORM ================= -->
+<section id="formSection">
+<h2>Inschrijving</h2>
+
+<form id="registerForm">
+
+<label>Naam*</label>
+<input type="text" id="name" required>
+
+<label>E-mail*</label>
+<input type="email" id="email" required>
+
+<label>Telefoon (optioneel)</label>
+<input type="tel" pattern="^(\+32|0)[0-9]{8,9}$">
+
+<h3>Tickettype</h3>
+
+<label><input type="radio" name="ticket" value="1199" required> Early Bird (€1199)</label>
+<label><input type="radio" name="ticket" value="2099"> Standaard (€2099)</label>
+<label><input type="radio" name="ticket" value="3199" id="vipTicket"> VIP (€3199)</label>
+
+<label>Aantal tickets</label>
+<input type="range" id="amount" min="1" max="5" value="1">
+<span id="amountDisplay">1</span>
+
+<h3>Workshops (max 3)</h3>
+<label><input type="checkbox" class="workshop" value="99"> AI</label>
+<label><input type="checkbox" class="workshop" value="99"> Cloud</label>
+<label><input type="checkbox" class="workshop" value="99"> Cybersecurity</label>
+<label><input type="checkbox" class="workshop" value="99"> Data</label>
+
+<div id="tshirtField" style="display:none;">
+<label>T-shirt maat (VIP)</label>
+<select>
+<option>S</option>
+<option>M</option>
+<option>L</option>
+<option>XL</option>
+</select>
+</div>
+
+<label>Dieetvoorkeur</label>
+<select>
+<option>Geen</option>
+<option>Vegetarisch</option>
+<option>Vegan</option>
+<option>Glutenvrij</option>
+<option>Halal</option>
+</select>
+
+<label>Kortingscode</label>
+<input type="text" id="discount">
+<button type="button" onclick="checkDiscount()">Controleer</button>
+<span id="discountMsg"></span>
+
+<label>
+<input type="checkbox" id="gdpr" required>
+Ik ga akkoord met de privacyvoorwaarden
+</label>
+
+<div class="price">
+Totaalprijs: €<span id="price">0</span>
+</div>
+
+<button type="submit">Bevestig inschrijving</button>
+
+</form>
+</section>
+
+<script>
+
+/* ========= SMOOTH SCROLL ========= */
+function scrollToForm(){
+ document.getElementById("formSection")
+  .scrollIntoView({behavior:"smooth"});
+}
+
+/* ========= COUNTDOWN ========= */
+const eventDate = new Date("June 12, 2026 09:00:00");
+
+setInterval(()=>{
+ const now = new Date();
+ const diff = eventDate - now;
+
+ const days = Math.floor(diff/(1000*60*60*24));
+ document.getElementById("countdown").innerHTML =
+  days + " dagen te gaan";
+},1000);
+
+/* ========= ACCORDION ========= */
+document.querySelectorAll(".accordion").forEach(btn=>{
+ btn.onclick=()=>{
+   const panel=btn.nextElementSibling;
+   panel.style.display=
+     panel.style.display==="block"?"none":"block";
+ };
+});
+
+/* ========= PRIJS ========= */
+let discountActive=false;
+
+amount.oninput=e=>{
+ amountDisplay.textContent=e.target.value;
+ calculatePrice();
+};
+
+document.querySelectorAll('input[name="ticket"]').forEach(r=>{
+ r.addEventListener("change",()=>{
+   tshirtField.style.display =
+     (vipTicket.checked) ? "block":"none";
+   calculatePrice();
+ });
+});
+
+document.querySelectorAll(".workshop").forEach(cb=>{
+ cb.addEventListener("change",()=>{
+   const checked=document.querySelectorAll(".workshop:checked");
+   if(checked.length>3){
+     cb.checked=false;
+     alert("Maximaal 3 workshops");
+   }
+   calculatePrice();
+ });
+});
+
+function calculatePrice(){
+
+ const ticket=document.querySelector('input[name="ticket"]:checked');
+ if(!ticket) return;
+
+ let total=ticket.value*amount.value;
+
+ document.querySelectorAll(".workshop:checked")
+   .forEach(w=> total+=Number(w.value));
+
+ if(discountActive) total*=0.8;
+
+ price.textContent=total.toFixed(2);
+}
+
+/* ========= KORTING ========= */
+function checkDiscount(){
+ if(discount.value==="TECH20"){
+   discountActive=true;
+   discountMsg.textContent="✔ Code geldig";
+   discountMsg.className="success";
+ }else{
+   discountActive=false;
+   discountMsg.textContent="✖ Ongeldig";
+   discountMsg.className="error";
+ }
+ calculatePrice();
+}
+
+/* ========= TICKETNUMMER ========= */
+function generateTicket(name){
+ const letters=name.substring(0,3).toUpperCase();
+ const time=Date.now();
+ const rand=Math.floor(Math.random()*9000+1000);
+ return `${letters}-${time}-${rand}`;
+}
+
+/* ========= SUBMIT + MAKE WEBHOOK ========= */
+registerForm.addEventListener("submit",e=>{
+ e.preventDefault();
+
+ const ticketNumber=generateTicket(name.value);
+
+ fetch("https://hook.make.com/XXXXXX",{
+   method:"POST",
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({
+     name:name.value,
+     email:email.value,
+     ticketNumber,
+     price:price.textContent
+   })
+ });
+
+ alert("Inschrijving voltooid!\nTicketnummer: "+ticketNumber);
+});
+
+</script>
+
+</body>
+</html>
