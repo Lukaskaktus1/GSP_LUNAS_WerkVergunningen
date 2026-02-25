@@ -13,14 +13,13 @@
     Locatie
     countdown timer
     -->
-    <section class="hero">
+    <div class="hero">
         <h1>Tech Mania 2026</h1>
         <p>12 juli 2026 • Brussel Expo</p>
-        <br>
-        <h2 id="countdown"></h2>
+        <div id="countdownTimer" style="font-size:7rem; color:white; margin-bottom:20px;"></div>
         <br>
         <button id="registerBtn">Registreer nu</button>
-    </section>
+    </div>
     <main>
         <section class="programma">
             <h2>Programma</h2>
@@ -53,12 +52,12 @@
             <h2>Sprekers</h2>
             <div class="cards">
                 <div class="card">
-                    <img src="../IMAGES/speaker1.jpg" alt="Spreker 1">
+                    <img src="../IMAGES/Emma_prof.jpg" alt="Spreker 1">
                     <h3>Dr. Emma Tech</h3>
                     <p>AI Specialist bij FutureTech</p>
                 </div>
                 <div class="card">
-                    <img src="../IMAGES/speaker2.jpg" alt="Spreker 2">
+                    <img src="../IMAGES/PresenterPic_Charlie_Kirk.jpg" alt="Spreker 2">
                     <h3>Prof. Lucas Innovate</h3>
                     <p>Blockchain Expert aan Universiteit van Brussel</p>
                 </div>
@@ -70,53 +69,76 @@
             </div>
         </section>
 
-         <!-- REGISTRATIEFORMULIER -->
-         <section id="formTitle" class="registration-form">
+         <form class="registration-form" id="formTitle" action="https://hook.eu1.make.com/525ibiiv8hs1cs7g7sv6o7c7d29whf7a
+">
 
             <h2>Registreer voor Tech Mania 2026</h2>
-            <!-- Formulier komt hier -->
              <label>Naam*</label>
-            <input type="text" id="name" required>
+            <input type="text" id="name" name="Naam" required>
 
             <label>E-mail*</label>
-            <input type="email" id="email" required>
+            <input type="email" id="email" name="Email" required>
 
             <label>Telefoon (optioneel)</label>
-            <input type="tel" pattern="^(\+32|0)[0-9]{8,9}$">
+            <input type="tel" pattern="^(\+32|0)[0-9]{8,9}$" id="phone" name="Telefoon" placeholder="Bijv: +3212345678 of 012345678">
 
             <h3>Tickettype</h3>
 
-            <label><input type="radio" name="ticket" value="1199" required> Early Bird (€1199)</label>
-            <label><input type="radio" name="ticket" value="2099"> Standaard (€2099)</label>
-            <label><input type="radio" name="ticket" value="3199" id="vipTicket"> VIP (€3199)</label>
+            <div class="ticket-options">
+
+                <input type="radio" id="early" name="tickettype" value="1199" required>
+                <label for="early" class="ticket-card">
+                    <h4>Early Bird</h4>
+                    <p>Beperkte korting voor snelle beslissers</p>
+                    <span class="price-tag">€1199</span>
+                </label>
+
+                <input type="radio" id="standard" name="tickettype" value="2099">
+                <label for="standard" class="ticket-card">
+                    <h4>Standaard</h4>
+                    <p>Volledige toegang tot het event</p>
+                    <span class="price-tag">€2099</span>
+                </label>
+
+                <input type="radio" id="vip" name="tickettype" value="3199" id="vipTicket">
+                <label for="vip" class="ticket-card vip">
+                    <h4>VIP</h4>
+                    <p>Front seats + VIP T-shirt + networking lounge</p>
+                    <span class="price-tag">€3199</span>
+                </label>
+
+            </div>
 
             <label>Aantal tickets</label>
-            <input type="range" id="amount" min="1" max="5" value="1">
-            <span id="amountDisplay">1</span>
-
+            <input type="range" id="amount" min="1" max="5" value="1" name="AantalTickets">
+            <p>Tickets: <span id="amountDisplay">1</span></p>
+            <br>
+            
             <h3>Workshops (max 3)</h3>
-            <label><input type="checkbox" class="workshop" value="99"> AI</label>
-            <label><input type="checkbox" class="workshop" value="99"> Cloud</label>
-            <label><input type="checkbox" class="workshop" value="99"> Cybersecurity</label>
-            <label><input type="checkbox" class="workshop" value="99"> Data</label>
+            <div class="row-reverse">
+                <label><input type="checkbox" class="workshop" value="99" name="AI"> AI</label>
+                <label><input type="checkbox" class="workshop" value="99" name="Cloud"> Cloud</label>
+                <label><input type="checkbox" class="workshop" value="99" name="Cybersecurity"> Cybersecurity</label>
+                <label><input type="checkbox" class="workshop" value="99" name="Data"> Data</label>
+            </div>
 
-            <div id="tshirtField" style="display:none;">
+            <div id="tshirtField"">
             <label>T-shirt maat (VIP)</label>
             <select>
-            <option>S</option>
-            <option>M</option>
-            <option>L</option>
-            <option>XL</option>
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+                <option>XL</option>
             </select>
             </div>
 
             <label>Dieetvoorkeur</label>
             <select>
-            <option>Geen</option>
-            <option>Vegetarisch</option>
-            <option>Vegan</option>
-            <option>Glutenvrij</option>
-            <option>Halal</option>
+                <option>Geen</option>
+                <option>Vegetarisch</option>
+                <option>Vegan</option>
+                <option>Glutenvrij</option>
+                <option>Halal</option>
             </select>
 
             <label>Kortingscode</label>
@@ -124,18 +146,17 @@
             <button type="button" onclick="checkDiscount()">Controleer</button>
             <span id="discountMsg"></span>
 
-            <label>
-            <input type="checkbox" id="gdpr" required>
-            Ik ga akkoord met de privacyvoorwaarden
-            </label>
+            <div class="row-reverse">
+                <label><input type="checkbox" id="gdpr" required> Ik ga akkoord met de privacyvoorwaarden <a href="#gdpr" style="color:cyan;">Lees Hier</a></label>
+            </div>
 
             <div class="price">
-            Totaalprijs: €<span id="price">0</span>
+            Totaalprijs: € <span id="price">0</span>
             </div>
 
             <button type="submit">Bevestig inschrijving</button>
 
-        </section>
+        </form>
 
     </main>
     <footer>
@@ -236,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
             createParticle(planeX + rotatedX + (Math.random()*6-3), planeY + rotatedY + (Math.random()*6-3));
 
             // subtiele scroll
-            window.scrollBy(0, 1.2);
+            window.scrollBy(0, 17);
 
             if(t < 1){
                 requestAnimationFrame(animate);
@@ -249,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function landPlane(){
-
+        
         plane.animate([
             { transform: plane.style.transform + " scale(1)" },
             { transform: plane.style.transform + " scale(0.85)" },
@@ -258,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
             duration: 400,
             easing: "ease-out"
         });
-
+        
         formTitle.classList.add("landing-impact");
 
         // explosie bij landing
@@ -294,6 +315,107 @@ setTimeout(()=>{
     }
 
 });
+
+
+
+const countdownEl = document.getElementById("countdownTimer");
+const eventDate = new Date("2026-07-12T09:00:00");
+
+function updateCountdown() {
+    const now = new Date();
+    const diff = eventDate - now;
+
+    if(diff <= 0){
+        countdownEl.textContent = "Het evenement is begonnen!";
+        clearInterval(countdownInterval);
+        return;
+    }
+
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const seconds = Math.floor((diff % (1000*60)) / 1000);
+
+    countdownEl.textContent = `${days} : ${hours} : ${minutes} : ${seconds}`;
+}
+
+updateCountdown();
+const countdownInterval = setInterval(updateCountdown, 1000);
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const ticketRadios = document.querySelectorAll('input[name="tickettype"]');
+    const amountSlider = document.getElementById("amount");
+    const amountDisplay = document.getElementById("amountDisplay");
+    const priceEl = document.getElementById("price");
+    const tshirtField = document.getElementById("tshirtField");
+    const discountInput = document.getElementById("discount");
+    const discountMsg = document.getElementById("discountMsg");
+
+    let discountActive = false;
+
+    function updateTshirt() {
+        const vipChecked = document.getElementById("vip").checked;
+        tshirtField.style.display = vipChecked ? "block" : "none";
+    }
+
+    function calculatePrice() {
+        let ticketPrice = 0;
+        ticketRadios.forEach(radio => {
+            if(radio.checked){
+                ticketPrice = parseInt(radio.value);
+            }
+        });
+
+        let total = ticketPrice * parseInt(amountSlider.value);
+
+        if(discountActive){
+            total *= 0.8;
+        }
+
+        priceEl.textContent = total;
+    }
+
+    ticketRadios.forEach(radio => {
+        radio.addEventListener("change", () => {
+            updateTshirt();
+            calculatePrice();
+        });
+    });
+
+    amountSlider.addEventListener("input", () => {
+        amountDisplay.textContent = amountSlider.value;
+        calculatePrice();
+    });
+
+    discountInput.addEventListener("input", () => {
+        discountActive = false;
+        discountMsg.textContent = "";
+    });
+
+    window.checkDiscount = function(){
+        const code = discountInput.value.trim().toUpperCase();
+        if(code === "TECH20"){
+            discountActive = true;
+            discountMsg.textContent = "Korting toegepast! (-20%)";
+            discountMsg.style.color = "lightgreen";
+        } else {
+            discountActive = false;
+            discountMsg.textContent = "Ongeldige code";
+            discountMsg.style.color = "red";
+        }
+        calculatePrice();
+    }
+
+    updateTshirt();
+    amountDisplay.textContent = amountSlider.value;
+    calculatePrice();
+
+});
+
+
 </script>
 </body>
 </html>
