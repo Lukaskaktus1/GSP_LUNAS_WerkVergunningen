@@ -62,15 +62,77 @@
                     <p>Blockchain Expert aan Universiteit van Brussel</p>
                 </div>
                 <div class="card">
-                    <img src="../IMAGES/speaker3.jpg" alt="Spreker 3">
+                    <img src="../IMAGES/depositphotos_9993241-stock-photo-old-aged-female-person-very.jpg" alt="Spreker 3">
                     <h3>Sara Future</h3>
                     <p>CTO bij NextGen Solutions</p>
                 </div>
             </div>
         </section>
 
-         <form class="registration-form" id="formTitle" action="https://hook.eu1.make.com/525ibiiv8hs1cs7g7sv6o7c7d29whf7a
-">
+        <section class="faq-section" id="faq">
+
+            <h2>Veelgestelde vragen</h2>
+
+            <div class="faq-container">
+
+            <div class="faq-item">
+                <button class="faq-question">
+                Wat is inbegrepen in mijn ticket?
+                <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <p>
+                    Je ticket geeft toegang tot alle keynotes, networking zones,
+                    expo area en gekozen workshops. VIP-tickets bevatten
+                    extra front seats en een exclusief T-shirt.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                Kan ik mijn ticket annuleren?
+                <span class="faq-icon">+</span>
+                </button>
+            <div class="faq-answer">
+            <p>
+            Tickets zijn overdraagbaar tot 7 dagen voor het evenement.
+            Neem contact op met de organisatie voor wijzigingen.
+            </p>
+            </div>
+            </div>
+
+            <div class="faq-item">
+            <button class="faq-question">
+            Hoe werkt de kortingscode?
+            <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+            <p>
+            Een geldige kortingscode geeft automatisch 20% korting
+            op de totale ticketprijs nadat je op "Controleer" klikt.
+            </p>
+            </div>
+            </div>
+
+            <div class="faq-item">
+            <button class="faq-question">
+            Waarom vragen jullie dieetvoorkeur?
+            <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+            <p>
+            Deze informatie wordt uitsluitend gebruikt om catering
+            aan te passen tijdens het evenement en wordt niet voor
+            andere doeleinden opgeslagen (GDPR).
+            </p>
+            </div>
+            </div>
+
+            </div>
+        </section>
+
+         <form class="registration-form" id="formTitle" action="https://hook.eu1.make.com/525ibiiv8hs1cs7g7sv6o7c7d29whf7a">
 
             <h2>Registreer voor Tech Mania 2026</h2>
              <label>Naam*</label>
@@ -113,7 +175,7 @@
             <input type="range" id="amount" min="1" max="5" value="1" name="AantalTickets">
             <p>Tickets: <span id="amountDisplay">1</span></p>
             <br>
-            
+
             <h3>Workshops (max 3)</h3>
             <div class="row-reverse">
                 <label><input type="checkbox" class="workshop" value="99" name="AI"> AI</label>
@@ -124,7 +186,7 @@
 
             <div id="tshirtField"">
             <label>T-shirt maat (VIP)</label>
-            <select>
+            <select name="t-shirt" default="none">
                 <option>S</option>
                 <option>M</option>
                 <option>L</option>
@@ -133,7 +195,7 @@
             </div>
 
             <label>Dieetvoorkeur</label>
-            <select>
+            <select name="dieet">
                 <option>Geen</option>
                 <option>Vegetarisch</option>
                 <option>Vegan</option>
@@ -142,12 +204,78 @@
             </select>
 
             <label>Kortingscode</label>
-            <input type="text" id="discount">
+            <input type="text" id="discount" name="Kortingscode" placeholder="Voer code in: bv. TECH20">
             <button type="button" onclick="checkDiscount()">Controleer</button>
             <span id="discountMsg"></span>
 
             <div class="row-reverse">
-                <label><input type="checkbox" id="gdpr" required> Ik ga akkoord met de privacyvoorwaarden <a href="#gdpr" style="color:cyan;">Lees Hier</a></label>
+                <label><input type="checkbox" id="gdpr" name="gdpr" required> Ik ga akkoord met de privacyvoorwaarden <a href="#gdpr" style="color:cyan;">Lees Hier</a></label>
+            </div>
+
+            <!-- GDPR POPUP -->
+            <div id="gdprModal" class="gdpr-modal">
+                <div class="gdpr-content">
+
+                    <span class="close-gdpr">&times;</span>
+
+                    <h2>Privacyverklaring – Tech Mania 2026</h2>
+
+                    <p>
+                    Bij inschrijving voor <strong>Tech Mania 2026</strong> verwerken wij
+                    persoonsgegevens conform de GDPR (AVG-wetgeving).
+                    </p>
+
+                    <h3>1. Welke gegevens verzamelen wij?</h3>
+                    <ul>
+                        <li>Naam en e-mailadres (verplicht voor registratie)</li>
+                        <li>Telefoonnummer (optioneel)</li>
+                        <li>Tickettype en gekozen workshops</li>
+                        <li>Dieetvoorkeur (uitsluitend voor cateringorganisatie)</li>
+                        <li>T-shirtmaat (enkel bij VIP-tickets)</li>
+                    </ul>
+
+                    <h3>2. Waarom verwerken wij deze gegevens?</h3>
+                    <p>
+                    De gegevens worden uitsluitend gebruikt voor:
+                    </p>
+                    <ul>
+                        <li>Registratie en ticketbeheer</li>
+                        <li>Versturen van bevestigingsmails en ticketnummer</li>
+                        <li>Organisatie van workshops en catering</li>
+                        <li>Communicatie over het evenement</li>
+                    </ul>
+
+                    <h3>3. Automatische verwerking</h3>
+                    <p>
+                    Na inschrijving worden gegevens veilig doorgestuurd via Make.com
+                    naar onze deelnemerslijst (Google Sheets) en e-mailsysteem.
+                    Deze verwerking gebeurt enkel voor eventorganisatie.
+                    </p>
+
+                    <h3>4. Bewaartermijn</h3>
+                    <p>
+                    Persoonsgegevens worden maximaal 12 maanden na het evenement bewaard
+                    en daarna automatisch verwijderd, tenzij wettelijke verplichtingen anders bepalen.
+                    </p>
+
+                    <h3>5. Delen van gegevens</h3>
+                    <p>
+                    Deelnemersgegevens worden nooit publiek gedeeld en enkel gebruikt
+                    door het organisatieteam en noodzakelijke dienstverleners.
+                    </p>
+
+                    <h3>6. Uw rechten</h3>
+                    <p>
+                    U heeft recht op inzage, correctie of verwijdering van uw gegevens.
+                    Contacteer ons via:
+                    <br><strong>privacy@techmania2026.be</strong>
+                    </p>
+
+                    <p class="gdpr-footer">
+                        Door het aanvinken van het GDPR-vakje gaat u akkoord met deze verwerking.
+                    </p>
+
+                </div>
             </div>
 
             <div class="price">
@@ -412,6 +540,140 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTshirt();
     amountDisplay.textContent = amountSlider.value;
     calculatePrice();
+
+});
+
+// GDPR POPUP
+const gdprModal = document.getElementById("gdprModal");
+const gdprLink = document.querySelector('a[href="#gdpr"]');
+const closeBtn = document.querySelector(".close-gdpr");
+
+gdprLink.addEventListener("click", function(e){
+    e.preventDefault();
+    gdprModal.style.display = "block";
+});
+
+closeBtn.addEventListener("click", () => {
+    gdprModal.style.display = "none";
+});
+
+window.addEventListener("click", (e) => {
+    if(e.target === gdprModal){
+        gdprModal.style.display = "none";
+    }
+});
+
+
+// FAQ ACCORDION
+const faqItems = document.querySelectorAll(".faq-item");
+
+faqItems.forEach(item => {
+
+    const button = item.querySelector(".faq-question");
+
+    button.addEventListener("click", () => {
+
+        // sluit andere open items
+        faqItems.forEach(el => {
+            if(el !== item){
+                el.classList.remove("active");
+            }
+        });
+
+        // toggle huidige
+        item.classList.toggle("active");
+    });
+
+});
+
+
+const form = document.querySelector(".registration-form");
+
+/* Ticketnummer generator */
+function generateTicketNumber(name){
+
+    const clean = name
+        .replace(/[^a-zA-Z]/g,"")
+        .toUpperCase()
+        .substring(0,3)
+        .padEnd(3,"X");
+
+    const timestamp = Date.now();
+    const random = Math.floor(1000 + Math.random()*9000);
+
+    return `TM26-${clean}-${timestamp}-${random}`;
+}
+
+
+/* FORM SUBMIT OVERRULE */
+form.addEventListener("submit", async function(e){
+
+    e.preventDefault(); // voorkomt standaard submit
+
+    const gdprChecked = document.getElementById("gdpr").checked;
+    if(!gdprChecked){
+        alert("Je moet akkoord gaan met de privacyvoorwaarden.");
+        return;
+    }
+
+    const formData = new FormData(form);
+
+    /* Naam ophalen (BELANGRIJK: jouw veld heet 'Naam') */
+    const naam = formData.get("Naam");
+
+    /* Ticketnummer maken */
+    const ticketnummer = generateTicketNumber(naam);
+
+    /* workshops verzamelen */
+    const workshops =
+        Array.from(document.querySelectorAll(".workshop:checked"))
+        .map(w => w.name)
+        .join(", ");
+
+    /* totaalprijs ophalen */
+    const totaalprijs =
+        document.getElementById("price").textContent;
+
+    /* DATA voor Make */
+    const data = {
+        Naam: naam,
+        Email: formData.get("Email"),
+        Telefoon: formData.get("Telefoon"),
+        Tickettype: formData.get("tickettype"),
+        AantalTickets: formData.get("AantalTickets"),
+        Dieet: formData.get("dieet"),
+        Tshirt: formData.get("t-shirt"),
+        Kortingscode: formData.get("Kortingscode"),
+        Workshops: workshops,
+        Totaalprijs: totaalprijs,
+        Ticketnummer: ticketnummer
+    };
+
+    try{
+
+        await fetch(
+            "https://hook.eu1.make.com/525ibiiv8hs1cs7g7sv6o7c7d29whf7a",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            }
+        );
+
+        alert(
+            "✅ Inschrijving gelukt!\n\nJe ticketnummer:\n" +
+            ticketnummer
+        );
+
+        form.reset();
+        document.getElementById("price").textContent = "0";
+
+    } catch(error){
+        console.error(error);
+        alert("Er ging iets mis bij verzenden.");
+    }
 
 });
 
