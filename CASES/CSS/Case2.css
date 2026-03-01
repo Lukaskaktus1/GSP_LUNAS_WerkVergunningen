@@ -444,9 +444,10 @@ h2{
 /* explosion */
 .explosionParticle{
     position:fixed;
-    width:10px;
-    height:10px;
+    width:100px;
+    height:100px;
     background:orange;
+    border:groove 2px red;
     border-radius:50%;
     opacity:0.9;
     pointer-events:none;

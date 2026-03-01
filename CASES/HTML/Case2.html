@@ -148,21 +148,21 @@
 
             <div class="ticket-options">
 
-                <input type="radio" id="early" name="tickettype" value="1199" required>
+                <input type="radio" id="early" name="tickettype" value="Early Bird" data-price="1199" required>
                 <label for="early" class="ticket-card">
                     <h4>Early Bird</h4>
                     <p>Beperkte korting voor snelle beslissers</p>
                     <span class="price-tag">€1199</span>
                 </label>
 
-                <input type="radio" id="standard" name="tickettype" value="2099">
+                <input type="radio" id="standard" name="tickettype" value="Standaard" data-price="2099">
                 <label for="standard" class="ticket-card">
                     <h4>Standaard</h4>
                     <p>Volledige toegang tot het event</p>
                     <span class="price-tag">€2099</span>
                 </label>
 
-                <input type="radio" id="vip" name="tickettype" value="3199" id="vipTicket">
+                <input type="radio" id="vip" name="tickettype" value="VIP" data-price="3199">
                 <label for="vip" class="ticket-card vip">
                     <h4>VIP</h4>
                     <p>Front seats + VIP T-shirt + networking lounge</p>
@@ -184,7 +184,7 @@
                 <label><input type="checkbox" class="workshop" value="99" name="Data"> Data</label>
             </div>
 
-            <div id="tshirtField"">
+            <div id="tshirtField">
             <label>T-shirt maat (VIP)</label>
             <select name="t-shirt" default="none">
                 <option>S</option>
@@ -385,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
             createParticle(planeX + rotatedX + (Math.random()*6-3), planeY + rotatedY + (Math.random()*6-3));
 
             // subtiele scroll
-            window.scrollBy(0, 17);
+            window.scrollBy(0, 5.2);
 
             if(t < 1){
                 requestAnimationFrame(animate);
@@ -411,7 +411,9 @@ document.addEventListener("DOMContentLoaded", () => {
         formTitle.classList.add("landing-impact");
 
         // explosie bij landing
-explosion.style.opacity = 1;
+        trail.style.opacity = 0;
+        plane.style.opacity = 0;
+        explosion.style.opacity = 1;
 
 for(let i=0;i<12;i++){
     const dx = Math.random()*40 - 20; // willekeurige X
@@ -490,21 +492,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function calculatePrice() {
-        let ticketPrice = 0;
-        ticketRadios.forEach(radio => {
-            if(radio.checked){
-                ticketPrice = parseInt(radio.value);
-            }
-        });
 
-        let total = ticketPrice * parseInt(amountSlider.value);
+    let ticketPrice = 0;
 
-        if(discountActive){
-            total *= 0.8;
-        }
+    const selectedTicket =
+        document.querySelector('input[name="tickettype"]:checked');
 
-        priceEl.textContent = total;
+    if (selectedTicket) {
+        ticketPrice = Number(selectedTicket.dataset.price);
     }
+
+    let total = ticketPrice * Number(amountSlider.value);
+
+    if (discountActive){
+        total *= 0.8;
+    }
+
+    priceEl.textContent = Math.round(total);
+}
 
     ticketRadios.forEach(radio => {
         radio.addEventListener("change", () => {
@@ -601,7 +606,7 @@ function generateTicketNumber(name){
     const timestamp = Date.now();
     const random = Math.floor(1000 + Math.random()*9000);
 
-    return `TM26-${clean}-${timestamp}-${random}`;
+    return `${clean}-${timestamp}-${random}`;
 }
 
 
@@ -664,7 +669,7 @@ form.addEventListener("submit", async function(e){
 
         alert(
             "✅ Inschrijving gelukt!\n\nJe ticketnummer:\n" +
-            ticketnummer
+            ticketnummer + "\n\nBekijk je mailbox voor de bevestiging en verdere details."
         );
 
         form.reset();
@@ -674,6 +679,32 @@ form.addEventListener("submit", async function(e){
         console.error(error);
         alert("Er ging iets mis bij verzenden.");
     }
+
+});
+
+
+/* MAX 3 WORKSHOPS SELECTEREN */
+document.addEventListener("DOMContentLoaded", () => {
+
+    const workshopCheckboxes = document.querySelectorAll(".workshop");
+    const MAX_WORKSHOPS = 3;
+
+    workshopCheckboxes.forEach(box => {
+
+        box.addEventListener("change", () => {
+
+            const checked =
+                document.querySelectorAll(".workshop:checked");
+
+            // als meer dan 3 → laatste keuze terug uitzetten
+            if (checked.length > MAX_WORKSHOPS) {
+                box.checked = false;
+                alert("Je mag maximaal 3 workshops kiezen.");
+            }
+
+        });
+
+    });
 
 });
 
