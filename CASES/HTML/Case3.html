@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Flyer Redesigner</title>
+    <link rel="stylesheet" href="../CSS/Case3.css">
+</head>
+<body>
+
+<header>
+    <h1>AI Flyer Redesigner</h1>
+    <p>Upload je oude flyer en geef hem een nieuwe look met AI</p>
+</header>
+
+<main>
+
+    <!-- FORMULIER -->
+    <section class="form-section">
+        <form id="foto-formulier">
+
+            <label>Upload flyer:</label>
+            <input type="file" name="foto" accept="image/*" required>
+
+            <label>Kies actie:</label>
+            <select name="actie" required>
+                <option value="vertaal_engels">Vertaal naar Engels</option>
+                <option value="vertaal_frans">Vertaal naar Frans</option>
+                <option value="moderniseer">Moderniseer tekst</option>
+            </select>
+
+            <label>Kies stijl:</label>
+            <select name="stijl" required>
+                <option value="fotorealistisch">Fotorealistisch</option>
+                <option value="infographics">Infographics</option>
+            </select>
+
+            <!-- GDPR -->
+            <div class="gdpr">
+                <input type="checkbox" required>
+                <span>
+                    Ik ga akkoord dat mijn afbeelding verwerkt wordt via externe AI-diensten
+                    (OpenAI & Make.com).
+                </span>
+            </div>
+
+            <button type="submit">Genereer nieuwe flyer</button>
+
+        </form>
+    </section>
+
+    <!-- LADEN -->
+    <section id="laden">
+        <div class="spinner"></div>
+        <p>Even geduld... AI verwerkt je flyer.</p>
+    </section>
+
+    <!-- RESULTAAT -->
+    <section id="resultaat">
+        <h2>Je nieuwe flyer</h2>
+        <img id="flyerAfbeelding" src="" alt="Gegenereerde flyer">
+    </section>
+
+</main>
+
+<script src="../JAVASCRIPT/Case3.js"></script>
+
+</body>
+</html>

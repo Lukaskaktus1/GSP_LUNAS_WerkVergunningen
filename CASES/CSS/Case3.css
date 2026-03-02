@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    text-align: center;
+}
+
+header {
+    background: #1f2937;
+    color: white;
+    padding: 25px;
+}
+
+main {
+    max-width: 700px;
+    margin: auto;
+    padding: 20px;
+}
+
+.form-section {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+/* GDPR */
+.gdpr {
+    margin-top: 15px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gdpr input {
+    width: auto;
+}
+
+/* LADEN */
+#laden {
+    display: none;
+    margin-top: 30px;
+}
+
+/* RESULTAAT */
+#resultaat {
+    display: none;
+    margin-top: 30px;
+}
+
+#flyerAfbeelding {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* SPINNER */
+.spinner {
+    margin: auto;
+    width: 60px;
+    height: 60px;
+    border: 6px solid #ddd;
+    border-top: 6px solid #2563eb;
+    border-radius: 50%;
+    animation: draaien 1s linear infinite;
+}
+
+@keyframes draaien {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
