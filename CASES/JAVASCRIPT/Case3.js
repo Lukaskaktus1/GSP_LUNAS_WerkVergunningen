@@ -12,7 +12,7 @@ formulier.addEventListener('submit', function(e) {
     var formData = new FormData(formulier);
 
     // 👉 VERVANG MET JOUW MAKE WEBHOOK
-    var webhookUrl = "https://hook.eu2.make.com/JOUW-WEBHOOK-ID";
+    var webhookUrl = "https://hook.eu1.make.com/du5haqcvk8a6qgopbzoqs2ovyf6y1hk3";
 
     fetch(webhookUrl, {
         method: 'POST',
