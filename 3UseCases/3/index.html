@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="nl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AI Flyer Redesigner | GTI Beveren</title>
+        <link rel="stylesheet" href="../3/style.css">
+        <script src="../3/script.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>AI Flyer Redesigner</h1>
+            <p>Use Case 4 — GTI Beveren — 2025-2026</p>
+        </header>
+        <main class="container">
+            
+            <section id="form-container" class="form-section">
+                <h2>Nieuw Ontwerp Maken</h2>
+                <form id="foto-formulier">
+                    <div class="input-group">
+                        <label for="foto">1. Upload originele flyer</label>
+                        <input type="file" id="foto" name="foto" accept="image/*" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="actie">2. Wat moet AI doen met de tekst?</label>
+                        <select id="actie" name="actie" required>
+                            <option value="vertaal_engels">Vertaal naar het Engels</option>
+                            <option value="vertaal_frans">Vertaal naar het Frans</option>
+                            <option value="moderniseer">Tekst moderniseren (pakkend & fris)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="stijl">3. Kies de visuele stijl van de nieuwe flyer</label>
+                        <select id="stijl" name="stijl" required>
+                            <option value="fotorealistisch">Fotorealistisch (Modern)</option>
+                            <option value="infographics">Infographics (Strak & Zakelijk)</option>
+                        </select>
+                    </div>
+
+                    <div class="gdpr-box">
+                        <input type="checkbox" id="gdpr" required>
+                        <label for="gdpr">Ik begrijp dat deze afbeelding wordt verwerkt door externe AI-modellen (OpenAI) en dat gegevens tijdelijk worden opgeslagen voor verwerking.</label>
+                    </div>
+
+                    <button type="submit">Start Redesign</button>
+                </form>
+            </section>
+
+            <section id="laden" class="hidden">
+                <div class="spinner"></div>
+                <h3>AI is aan het werk...</h3>
+                <p>We herkennen de tekst (OCR), vertalen de inhoud en genereren een volledig nieuwe afbeelding met DALL-E 3.</p>
+                <p><small>Dit duurt meestal tussen de 20 en 40 seconden.</small></p>
+            </section>
+
+            <section id="resultaat" class="hidden">
+                <h2>Resultaat</h2>
+                <p>Hieronder zie je jouw vernieuwde flyer:</p>
+                <div class="result-card">
+                    <img id="flyerAfbeelding" src="" alt="Jouw AI-gegenereerde flyer">
+                </div>
+                <p><small>Let op: De URL van deze afbeelding verloopt na 2 uur. Sla de afbeelding op als je deze wilt bewaren.</small></p>
+                <button class="btn-reset" onclick="location.reload()">Nieuwe Flyer Uploaden</button>
+            </section>
+
+        </main>
+        <div class="footer">
+            &copy; 2025 GTI Beveren - AI Project Redesigner
+        </div>    
+    </body>
+</html>
