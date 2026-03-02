@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="nl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Bevestiging ticket | TechCon Events</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+        <header class="kop">
+            <div class="kop-inhoud">
+                <div class="logo-rij">
+                    <img src="afbeeldingen/Logo" alt="TechCon Events logo" class="logo">
+                    <span class="bedrijfsnaam">TechCon Events</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="blok">
+            <div class="blok-inhoud klein">
+                <section class="kaart">
+                    <p class="held-tekst">Dit is een voorbeeld van de e‑mail die je ontvangt na je bestelling.</p>
+                    <h1 class="kop2">Bevestiging van je TechCon ticket</h1>
+
+                    <p id="ticketGroet" class="privacy-tekst"></p>
+
+                    <div class="rij" style="align-items: flex-start; margin: 1.5rem 0;">
+                        <div class="veld">
+                            <span class="privacy-tekst">Ticketnummer</span>
+                            <p id="ticketNummer" class="totaal-bedrag" style="font-size: 1.2rem;"></p>
+                            <span class="privacy-tekst">E‑mail</span>
+                            <p id="ticketEmail" class="privacy-tekst"></p>
+                        </div>
+                        <div class="veld" style="align-items: center;">
+                            <span class="privacy-tekst">Unieke QR‑code</span>
+                            <div id="qrcode" style="margin-top: 0.5rem;"></div>
+                        </div>
+                    </div>
+
+                    <h3 class="programma-titel">Praktische info</h3>
+                    <ul class="privacy-lijst">
+                        <li>Datum: 15–17 mei 2026</li>
+                        <li>Locatie: Antwerpen Expo</li>
+                        <li>Inkom: toon deze QR‑code (digitaal of geprint) aan de ingang.</li>
+                    </ul>
+
+                    <h3 class="programma-titel" style="margin-top: 1.2rem;">GDPR / privacy</h3>
+                    <p class="privacy-tekst">
+                        Je persoonsgegevens worden enkel gebruikt voor ticketafhandeling, veiligheidsredenen op het event en 
+                        noodzakelijke communicatie rond TechCon 2026. Je kan altijd inzage vragen, gegevens laten aanpassen of verwijderen 
+                        via privacy@techcon-events.be.
+                    </p>
+
+                    <p class="privacy-tekst" style="margin-top: 1.2rem;">
+                        Tot binnenkort op TechCon 2026!<br>
+                        Het TechCon Events team
+                    </p>
+
+                    <a href="index.html" class="kleine-knop" style="margin-top: 1.4rem; display: inline-block;">Terug naar website</a>
+                </section>
+            </div>
+        </main>
+
+        <footer class="voet">
+            <div class="voet-inhoud">
+                <div class="voet-links">
+                    <img src="afbeeldingen/Foto1.jpg" alt="TechCon Events logo" class="logo-klein">
+                    <span class="bedrijfsnaam">TechCon Events</span>
+                </div>
+                <div class="voet-rechts">
+                    <p>Contact: info@techcon-events.be</p>
+                    <p>© 2026 TechCon Events – Alle rechten voorbehouden.</p>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>

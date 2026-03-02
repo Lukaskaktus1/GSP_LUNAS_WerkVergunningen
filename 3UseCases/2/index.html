@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="nl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TechCon 2026 | Future of Innovation</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+
+        <header class="kop">
+            <div class="kop-inhoud">
+                <div class="logo-rij">
+                    <img src="afbeeldingen/Logo" alt="TechCon Events logo" class="logo">
+                    <span class="bedrijfsnaam">TechCon Events</span>
+                </div>
+                <nav class="menu">
+                    <a href="#programma" class="menu-knop">Programma</a>
+                    <a href="#sprekers" class="menu-knop">Sprekers</a>
+                    <a href="#faq" class="menu-knop">FAQ</a>
+                    <a href="#tickets" class="menu-knop hoofd-knop">Tickets</a>
+                </nav>
+            </div>
+        </header>
+
+        <section class="held" id="start">
+            <div class="held-inhoud">
+                <h1 class="hoofdtitel">
+                    <span class="titel-kleur">TechCon 2026</span>
+                    Future of Innovation
+                </h1>
+                <p class="held-tekst">
+                    15-17 mei 2026 · Antwerpen Expo · Toonaangevend technologie-event met keynotes, workshops en networking.
+                </p>
+
+                <div id="countdown" class="countdown">
+                    <div class="count-blok">
+                        <span id="days" class="count-getal">00</span>
+                        <span class="count-tekst">DAGEN</span>
+                    </div>
+                    <div class="count-blok">
+                        <span id="hours" class="count-getal">00</span>
+                        <span class="count-tekst">UREN</span>
+                    </div>
+                    <div class="count-blok">
+                        <span id="minutes" class="count-getal">00</span>
+                        <span class="count-tekst">MIN</span>
+                    </div>
+                    <div class="count-blok">
+                        <span id="seconds" class="count-getal">00</span>
+                        <span class="count-tekst">SEC</span>
+                    </div>
+                </div>
+
+                <a href="#tickets" class="grote-knop">Claim je ticket</a>
+            </div>
+        </section>
+
+        <section id="programma" class="blok licht">
+            <div class="blok-inhoud">
+                <h2 class="kop2">Programmaoverzicht</h2>
+                <div class="programma-lijst">
+                    <div class="programma-item">
+                        <span class="programma-tijd">09:00 - 10:30</span>
+                        <h3 class="programma-titel">Opening keynote: AI in 2030</h3>
+                        <p class="programma-tekst">Dr. Elena Vance over de impact van artificiële intelligentie op werk en samenleving.</p>
+                    </div>
+                    <div class="programma-item">
+                        <span class="programma-tijd">11:00 - 12:30</span>
+                        <h3 class="programma-titel">Hands-on: Quantum computing</h3>
+                        <p class="programma-tekst">Inleiding tot quantum-algoritmes en toepassingen in de industrie.</p>
+                    </div>
+                    <div class="programma-item">
+                        <span class="programma-tijd">13:30 - 15:00</span>
+                        <h3 class="programma-titel">Panelgesprek: Cybersecurity vandaag</h3>
+                        <p class="programma-tekst">Experten delen concrete cases rond datalekken en beveiliging.</p>
+                    </div>
+                    <div class="programma-item">
+                        <span class="programma-tijd">15:30 - 17:00</span>
+                        <h3 class="programma-titel">Workshops rond cloud & data</h3>
+                        <p class="programma-tekst">Korte sessies over cloud-migratie, data-analyse en automatisatie.</p>
+                    </div>
+                    <div class="programma-item">
+                        <span class="programma-tijd">17:00 - 18:30</span>
+                        <h3 class="programma-titel">Netwerkreceptie & demo-zone</h3>
+                        <p class="programma-tekst">Ontmoet sprekers, partners en andere deelnemers in de demo-zone.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sprekers" class="blok donker">
+            <div class="blok-inhoud">
+                <h2 class="kop2">Sprekers</h2>
+                <div class="spreker-lijst">
+                    <article class="spreker-kaart">
+                        <img src="afbeeldingen/Foto1.jpg" alt="Spreker 1" class="spreker-foto">
+                        <h3 class="spreker-naam">Dr. Elena Vance</h3>
+                        <p class="spreker-beroep">AI-onderzoeker · Future Lab Europe</p>
+                    </article>
+                    <article class="spreker-kaart">
+                        <img src="afbeeldingen/Foto3.jpg" alt="Spreker 2" class="spreker-foto">
+                        <h3 class="spreker-naam">Mohammed Aydin</h3>
+                        <p class="spreker-beroep">Cloud architect · SkyBridge Solutions</p>
+                    </article>
+                    <article class="spreker-kaart">
+                        <img src="afbeeldingen/Foto2.jpg" alt="Spreker 3" class="spreker-foto">
+                        <h3 class="spreker-naam">Sofie De Wilde</h3>
+                        <p class="spreker-beroep">Cybersecurity consultant · SecurePoint</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="tickets" class="blok">
+            <div class="blok-inhoud">
+                <h2 class="kop2">Inschrijven</h2>
+
+                <form id="registrationForm" class="formulier">
+                    <div class="rij">
+                        <div class="veld">
+                            <label for="userName">Naam *</label>
+                            <input type="text" id="userName" required>
+                        </div>
+                        <div class="veld">
+                            <label for="userEmail">E-mailadres *</label>
+                            <input type="email" id="userEmail" required>
+                        </div>
+                    </div>
+
+                    <div class="rij">
+                        <div class="veld">
+                            <label for="diet">Dieetvoorkeur</label>
+                            <select id="diet">
+                                <option value="Geen">Geen</option>
+                                <option value="Vegetarisch">Vegetarisch</option>
+                                <option value="Vegan">Vegan</option>
+                                <option value="Glutenvrij">Glutenvrij</option>
+                            </select>
+                        </div>
+                        <div class="veld">
+                            <label for="userPhone">Telefoonnummer (optioneel)</label>
+                            <input type="tel" id="userPhone" placeholder="+32 400 00 00 00">
+                        </div>
+                    </div>
+
+                    <div class="veld">
+                        <label>Tickettype *</label>
+                        <div id="ticketTypeGroup" class="ticketrij">
+                            <label class="ticket-card kaart">
+                                <input type="radio" name="ticketType" value="Early Bird" data-price="1199" checked>
+                                <span class="ticket-naam">Early Bird</span>
+                                <span class="ticket-prijs">€ 1.199</span>
+                                <span class="ticket-uitleg">Beperkte voorraad, toegang alle dagen.</span>
+                            </label>
+                            <label class="ticket-card kaart">
+                                <input type="radio" name="ticketType" value="Standaard" data-price="2099">
+                                <span class="ticket-naam">Standaard</span>
+                                <span class="ticket-prijs">€ 2.099</span>
+                                <span class="ticket-uitleg">Toegang alle dagen + toegang tot expo-zone.</span>
+                            </label>
+                            <label class="ticket-card kaart">
+                                <input type="radio" name="ticketType" value="VIP" data-price="3199">
+                                <span class="ticket-naam">VIP</span>
+                                <span class="ticket-prijs">€ 3.199</span>
+                                <span class="ticket-uitleg">VIP‑lounge, reserved seats en TechCon T‑shirt.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="tshirtSection" class="veld">
+                        <label for="tshirtSize">T‑shirtmaat (enkel bij VIP)</label>
+                        <select id="tshirtSize">
+                            <option value="S">Small</option>
+                            <option value="M">Medium</option>
+                            <option value="L">Large</option>
+                            <option value="XL">X-Large</option>
+                        </select>
+                    </div>
+
+                    <div class="veld">
+                        <div class="rij tussen">
+                            <label for="ticketQuantity">Aantal tickets</label>
+                            <span id="quantityDisplay" class="aantal-tekst">1</span>
+                        </div>
+                        <input type="range" id="ticketQuantity" min="1" max="5" value="1" step="1">
+                        <div class="range-tekst">
+                            <span>1 ticket</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5 tickets</span>
+                        </div>
+                    </div>
+
+                    <div class="veld">
+                        <label>Workshops (max. 3 – €50 per stuk)</label>
+                        <div id="workshopGrid" class="workshop-lijst">
+                            <label class="workshop-item kaart">
+                                <input type="checkbox" name="workshops" value="AI" class="workshop-cb">
+                                <span>AI ethics & strategy</span>
+                            </label>
+                            <label class="workshop-item kaart">
+                                <input type="checkbox" name="workshops" value="Quantum" class="workshop-cb">
+                                <span>Quantum computing basics</span>
+                            </label>
+                            <label class="workshop-item kaart">
+                                <input type="checkbox" name="workshops" value="Security" class="workshop-cb">
+                                <span>Websecurity in de praktijk</span>
+                            </label>
+                            <label class="workshop-item kaart">
+                                <input type="checkbox" name="workshops" value="Cloud" class="workshop-cb">
+                                <span>Cloud fundamentals</span>
+                            </label>
+                            <label class="workshop-item kaart">
+                                <input type="checkbox" name="workshops" value="Data" class="workshop-cb">
+                                <span>Data & dashboards</span>
+                            </label>
+                            <label class="workshop-item kaart">
+                                <input type="checkbox" name="workshops" value="UX" class="workshop-cb">
+                                <span>UX design basics</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="veld">
+                        <label for="promoCode">Kortingscode</label>
+                        <div class="rij">
+                            <input type="text" id="promoCode" placeholder="TECH20" class="veld-invoer">
+                            <button type="button" id="btnApplyPromo" class="kleine-knop">Pas toe</button>
+                        </div>
+                        <p id="promoFeedback" class="promo-tekst"></p>
+                    </div>
+
+                    <div class="veld totaal-blok">
+                        <div class="rij tussen">
+                            <span>Totaal te betalen:</span>
+                            <span id="totalPrice" class="totaal-bedrag">€ 1.199,00</span>
+                        </div>
+                    </div>
+
+                    <div class="veld">
+                        <label class="checkbox-regel">
+                            <input type="checkbox" id="gdpr" required>
+                            <span>Ik ga akkoord met de verwerking van mijn gegevens volgens de 
+                                <a href="#privacy">privacyverklaring</a> (GDPR).</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="grote-knop breed">Inschrijving voltooien</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="faq" class="blok licht">
+            <div class="blok-inhoud klein">
+                <h2 class="kop2">Veelgestelde vragen</h2>
+                <div id="faqContainer" class="faq-lijst">
+                    <div class="faq-item">
+                        <button class="faq-btn">
+                            <span>Kan ik mijn ticket annuleren?</span>
+                            <span class="faq-teken">+</span>
+                        </button>
+                        <div class="faq-panel">
+                            Annuleren kan tot 30 dagen voor het event. Neem contact op via support@techcon-events.be.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-btn">
+                            <span>Is mijn ticket overdraagbaar?</span>
+                            <span class="faq-teken">+</span>
+                        </button>
+                        <div class="faq-panel">
+                            Ja, tot 7 dagen voor de start kan je de naam kosteloos laten aanpassen.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-btn">
+                            <span>Zijn er maaltijden inbegrepen?</span>
+                            <span class="faq-teken">+</span>
+                        </button>
+                        <div class="faq-panel">
+                            Koffie, water en een lunchbuffet zijn inbegrepen bij alle tickettypes.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-btn">
+                            <span>Waar vindt TechCon plaats?</span>
+                            <span class="faq-teken">+</span>
+                        </button>
+                        <div class="faq-panel">
+                            Het event gaat door in Antwerpen Expo. Adres en route-informatie staan in de bevestigingsmail.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-btn">
+                            <span>Worden de sessies opgenomen?</span>
+                            <span class="faq-teken">+</span>
+                        </button>
+                        <div class="faq-panel">
+                            Een selectie van keynotes en workshops wordt achteraf online gedeeld met deelnemers.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="privacy" class="blok donker">
+            <div class="blok-inhoud klein">
+                <h2 class="kop2">Privacyverklaring (samenvatting)</h2>
+                <p class="privacy-tekst">
+                    We gebruiken je gegevens om je ticket te registreren, communicatie over het event te sturen en, indien je daarvoor kiest, nieuws over toekomstige edities te bezorgen.
+                </p>
+                <ul class="privacy-lijst">
+                    <li>Je gegevens worden niet verkocht aan derden.</li>
+                    <li>Je kan op elk moment inzage vragen of je gegevens laten verwijderen.</li>
+                    <li>We bewaren je gegevens maximaal 2 jaar na het event.</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer class="voet">
+            <div class="voet-inhoud">
+                <div class="voet-links">
+                    <img src="afbeeldingen/Logo" alt="TechCon Events logo" class="logo-klein">
+                    <span class="bedrijfsnaam">TechCon Events</span>
+                </div>
+                <div class="voet-rechts">
+                    <p>Contact: info@techcon-events.be</p>
+                    <p>© 2026 TechCon Events – Alle rechten voorbehouden.</p>
+                </div>
+            </div>
+        </footer>
+
+    </body>
+</html>
