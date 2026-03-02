@@ -1,341 +1,326 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FutureTech Summit 2026</title>
-
-<style>
-
-/* ===== BASIS ===== */
-body{
-  font-family:Arial, sans-serif;
-  margin:0;
-  line-height:1.6;
-}
-
-section{
-  padding:60px 20px;
-  max-width:1000px;
-  margin:auto;
-}
-
-/* ===== HERO ===== */
-.hero{
-  background:#0b1f3a;
-  color:white;
-  text-align:center;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
-
-.hero button{
-  padding:15px 25px;
-  font-size:18px;
-  cursor:pointer;
-}
-
-/* ===== PROGRAMMA ===== */
-.timeline{
-  display:grid;
-  gap:12px;
-}
-
-.timeline div{
-  background:#f2f2f2;
-  padding:15px;
-  border-radius:8px;
-}
-
-/* ===== SPEAKERS ===== */
-.cards{
-  display:flex;
-  gap:20px;
-  flex-wrap:wrap;
-}
-
-.card{
-  flex:1;
-  min-width:220px;
-  border:1px solid #ddd;
-  padding:20px;
-  border-radius:10px;
-}
-
-/* ===== FAQ ===== */
-.accordion{
-  width:100%;
-  padding:15px;
-  margin-top:10px;
-  cursor:pointer;
-  background:#eee;
-  border:none;
-}
-
-.panel{
-  display:none;
-  padding:10px;
-  background:#f9f9f9;
-}
-
-/* ===== FORM ===== */
-form{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-input, select{
-  padding:10px;
-}
-
-.price{
-  font-size:24px;
-  font-weight:bold;
-  margin-top:15px;
-}
-
-.success{color:green;}
-.error{color:red;}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CASE 2 - Tech Mania 2026</title>
+    <link rel="stylesheet" href="../CSS/Case2 copy.css">
+    <script defer src="../JAVASCRIPT/Case2.js"></script>
 </head>
 
 <body>
 
-<!-- ================= HERO ================= -->
 <section class="hero">
-<h1>FutureTech Summit 2026</h1>
-<p>12 juni 2026 • Brussel Expo</p>
-
-<h2 id="countdown"></h2>
-
-<button onclick="scrollToForm()">Schrijf je in</button>
+    <h1>Tech Mania 2026</h1>
+    <p>12 juli 2026 • Brussel Expo</p>
+    <h2 id="countdown"></h2>
+    <button id="registerBtn">Registreer nu</button>
 </section>
 
-<!-- ================= PROGRAMMA ================= -->
-<section>
-<h2>Programma</h2>
-<div class="timeline">
-<div>09:00 — Registratie</div>
-<div>10:00 — AI Keynote</div>
-<div>13:00 — Workshops</div>
-<div>17:00 — Networking</div>
-</div>
+<main>
+
+<section class="programma">
+    <h2>Programma</h2>
+
+    <div class="timeline">
+        <div class="time-block">
+            <h3>10:00 - 11:00</h3>
+            <p>Opening Keynote: De Toekomst van Technologie</p>
+        </div>
+
+        <div class="time-block">
+            <h3>11:15 - 12:15</h3>
+            <p>Paneldiscussie: AI en Ethiek</p>
+        </div>
+
+        <div class="time-block">
+            <h3>12:30 - 13:30</h3>
+            <p>Lunchpauze & Netwerken</p>
+        </div>
+
+        <div class="time-block">
+            <h3>13:45 - 14:45</h3>
+            <p>Workshop: Blockchain in de Praktijk</p>
+        </div>
+
+        <div class="time-block">
+            <h3>15:00 - 16:00</h3>
+            <p>Afsluitende Keynote: Innovatie in de Volgende Decade</p>
+        </div>
+    </div>
 </section>
 
-<!-- ================= SPEAKERS ================= -->
-<section>
-<h2>Sprekers</h2>
-<div class="cards">
-<div class="card">
-<h3>Sarah Jacobs</h3>
-<p>AI Architect</p>
-</div>
+<section class="speakers">
+    <h2>Sprekers</h2>
 
-<div class="card">
-<h3>Tom Vermeulen</h3>
-<p>Cloud Engineer</p>
-</div>
-</div>
+    <div class="cards">
+        <div class="card">
+            <img src="../IMAGES/speaker1.jpg" alt="Spreker 1">
+            <h3>Dr. Emma Tech</h3>
+            <p>AI Specialist bij FutureTech</p>
+        </div>
+
+        <div class="card">
+            <img src="../IMAGES/speaker2.jpg" alt="Spreker 2">
+            <h3>Prof. Lucas Innovate</h3>
+            <p>Blockchain Expert aan Universiteit van Brussel</p>
+        </div>
+
+        <div class="card">
+            <img src="../IMAGES/speaker3.jpg" alt="Spreker 3">
+            <h3>Sara Future</h3>
+            <p>CTO bij NextGen Solutions</p>
+        </div>
+    </div>
 </section>
 
-<!-- ================= FAQ ================= -->
-<section>
-<h2>FAQ</h2>
+<form class="registration-form" id="formTitle"
+action="https://hook.eu1.make.com/525ibiiv8hs1cs7g7sv6o7c7d29whf7a">
 
-<button class="accordion">Wat zit inbegrepen?</button>
-<div class="panel">Lunch, workshops en networking inbegrepen.</div>
+    <h2>Registreer voor Tech Mania 2026</h2>
 
-<button class="accordion">Kan ik annuleren?</button>
-<div class="panel">Annuleren kan tot 30 dagen vooraf.</div>
+    <label>Naam*</label>
+    <input type="text" id="name" name="Naam" required>
 
-</section>
+    <label>E-mail*</label>
+    <input type="email" id="email" name="Email" required>
 
-<!-- ================= FORM ================= -->
-<section id="formSection">
-<h2>Inschrijving</h2>
+    <label>Telefoon (optioneel)</label>
+    <input type="tel"
+           id="phone"
+           name="Telefoon"
+           pattern="^(\+32|0)[0-9]{8,9}$"
+           placeholder="+3212345678 of 012345678">
 
-<form id="registerForm">
+    <h3>Tickettype</h3>
 
-<label>Naam*</label>
-<input type="text" id="name" required>
+    <div class="ticket-options">
 
-<label>E-mail*</label>
-<input type="email" id="email" required>
+        <input type="radio" id="early" name="tickettype" value="1199" required>
+        <label for="early" class="ticket-card">
+            <h4>Early Bird</h4>
+            <p>Beperkte korting voor snelle beslissers</p>
+            <span class="price-tag">€1199</span>
+        </label>
 
-<label>Telefoon (optioneel)</label>
-<input type="tel" pattern="^(\+32|0)[0-9]{8,9}$">
+        <input type="radio" id="standard" name="tickettype" value="2099">
+        <label for="standard" class="ticket-card">
+            <h4>Standaard</h4>
+            <p>Volledige toegang tot het event</p>
+            <span class="price-tag">€2099</span>
+        </label>
 
-<h3>Tickettype</h3>
+        <input type="radio" id="vip" name="tickettype" value="3199">
+        <label for="vip" class="ticket-card vip">
+            <h4>VIP</h4>
+            <p>Front seats + VIP T-shirt + networking lounge</p>
+            <span class="price-tag">€3199</span>
+        </label>
 
-<label><input type="radio" name="ticket" value="1199" required> Early Bird (€1199)</label>
-<label><input type="radio" name="ticket" value="2099"> Standaard (€2099)</label>
-<label><input type="radio" name="ticket" value="3199" id="vipTicket"> VIP (€3199)</label>
+    </div>
 
-<label>Aantal tickets</label>
-<input type="range" id="amount" min="1" max="5" value="1">
-<span id="amountDisplay">1</span>
+    <label>Aantal tickets</label>
+    <input type="range" id="amount" name="AantalTickets" min="1" max="5" value="1">
+    <span id="amountDisplay">1</span>
 
-<h3>Workshops (max 3)</h3>
-<label><input type="checkbox" class="workshop" value="99"> AI</label>
-<label><input type="checkbox" class="workshop" value="99"> Cloud</label>
-<label><input type="checkbox" class="workshop" value="99"> Cybersecurity</label>
-<label><input type="checkbox" class="workshop" value="99"> Data</label>
+    <h3>Workshops (max 3)</h3>
 
-<div id="tshirtField" style="display:none;">
-<label>T-shirt maat (VIP)</label>
-<select>
-<option>S</option>
-<option>M</option>
-<option>L</option>
-<option>XL</option>
-</select>
-</div>
+    <div class="workshop-list">
+        <label><input type="checkbox" class="workshop" value="99" name="AI"> AI</label>
+        <label><input type="checkbox" class="workshop" value="99" name="Cloud"> Cloud</label>
+        <label><input type="checkbox" class="workshop" value="99" name="Cybersecurity"> Cybersecurity</label>
+        <label><input type="checkbox" class="workshop" value="99" name="Data"> Data</label>
+    </div>
 
-<label>Dieetvoorkeur</label>
-<select>
-<option>Geen</option>
-<option>Vegetarisch</option>
-<option>Vegan</option>
-<option>Glutenvrij</option>
-<option>Halal</option>
-</select>
+    <div id="tshirtField" class="hidden">
+        <label>T-shirt maat (VIP)</label>
+        <select name="Tshirt">
+            <option>S</option>
+            <option>M</option>
+            <option>L</option>
+            <option>XL</option>
+        </select>
+    </div>
 
-<label>Kortingscode</label>
-<input type="text" id="discount">
-<button type="button" onclick="checkDiscount()">Controleer</button>
-<span id="discountMsg"></span>
+    <label>Dieetvoorkeur</label>
+    <select name="Dieet">
+        <option>Geen</option>
+        <option>Vegetarisch</option>
+        <option>Vegan</option>
+        <option>Glutenvrij</option>
+        <option>Halal</option>
+    </select>
 
-<label>
-<input type="checkbox" id="gdpr" required>
-Ik ga akkoord met de privacyvoorwaarden
-</label>
+    <label>Kortingscode</label>
+    <input type="text" id="discount" name="Kortingscode">
+    <button type="button" id="checkDiscount">Controleer</button>
+    <span id="discountMsg"></span>
 
-<div class="price">
-Totaalprijs: €<span id="price">0</span>
-</div>
+    <label class="gdpr">
+        <input type="checkbox" id="gdpr" required>
+        Ik ga akkoord met de privacyvoorwaarden
+    </label>
 
-<button type="submit">Bevestig inschrijving</button>
+    <div class="price">
+        Totaalprijs: €<span id="price">0</span>
+    </div>
+
+    <button type="submit" class="submit-btn">Bevestig inschrijving</button>
 
 </form>
-</section>
+
+</main>
+
+<footer></footer>
+
+<img src="../IMAGES/plane-23.png" id="plane" alt="plane">
+<div id="trail"></div>
+<div id="explosion"></div>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
 
-/* ========= SMOOTH SCROLL ========= */
-function scrollToForm(){
- document.getElementById("formSection")
-  .scrollIntoView({behavior:"smooth"});
+    const btn = document.getElementById("registerBtn");
+    const plane = document.getElementById("plane");
+    const formTitle = document.getElementById("formTitle");
+    const trail = document.getElementById("trail");
+    const explosion = document.getElementById("explosion");
+
+    let flying = false;
+    let planeX = -200;
+    let planeY = window.innerHeight * 0.35;
+
+    btn.addEventListener("click", startFlight);
+
+    function createParticle(x, y){
+        const p = document.createElement("div");
+        p.className = "particle";
+
+        p.style.left = x + "px";
+        p.style.top = y + "px";
+
+        trail.appendChild(p);
+        setTimeout(()=>p.remove(),800);
+    }
+
+    function createExplosion(x, y){
+        const e = document.createElement("div");
+        e.className = "explosionParticle";
+
+        e.style.left = x + "px";
+        e.style.top = y + "px";
+
+        explosion.appendChild(e);
+        setTimeout(()=>e.remove(),600);
+    }
+
+    function startFlight(){
+
+        if(flying) return;
+        flying = true;
+
+        // Vliegtuig + trail zichtbaar
+        plane.style.opacity = 1;
+        trail.style.opacity = 1;
+
+        const duration = 2200;
+        const startTime = performance.now();
+
+        function animate(time){
+            let t = (time - startTime) / duration;
+            if(t > 1) t = 1;
+
+            const startX = -200;
+            const startY = window.innerHeight * 0.35;
+
+            const rect = formTitle.getBoundingClientRect();
+            const endX = rect.left + rect.width/2 - 60;
+            const endY = rect.top - 50;
+
+            const controlX = window.innerWidth * 0.45;
+            const controlY = startY - 220;
+
+            // bezier flight path
+            const newX = (1-t)*(1-t)*startX + 2*(1-t)*t*controlX + t*t*endX;
+            const newY = (1-t)*(1-t)*startY + 2*(1-t)*t*controlY + t*t*endY;
+
+            const dx = newX - planeX;
+            const dy = newY - planeY;
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+            planeX = newX;
+            planeY = newY;
+
+            plane.style.transform = `translate(${planeX}px, ${planeY}px) rotate(${angle}deg)`;
+
+            // trail achter motor
+            const engineOffsetX = -plane.offsetWidth * 0.32;
+            const engineOffsetY = plane.offsetHeight * 0.12;
+            const rad = angle * Math.PI / 180;
+            const rotatedX = engineOffsetX * Math.cos(rad) - engineOffsetY * Math.sin(rad);
+            const rotatedY = engineOffsetX * Math.sin(rad) + engineOffsetY * Math.cos(rad);
+
+            createParticle(planeX + rotatedX + (Math.random()*6-3), planeY + rotatedY + (Math.random()*6-3));
+
+            // subtiele scroll
+            window.scrollBy(0, 17);
+
+            if(t < 1){
+                requestAnimationFrame(animate);
+            } else {
+                landPlane();
+            }
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    function landPlane(){
+        
+        plane.animate([
+            { transform: plane.style.transform + " scale(1)" },
+            { transform: plane.style.transform + " scale(0.85)" },
+            { transform: plane.style.transform + " scale(1)" }
+        ], {
+            duration: 400,
+            easing: "ease-out"
+        });
+        
+        formTitle.classList.add("landing-impact");
+
+        // explosie bij landing
+explosion.style.opacity = 1;
+
+for(let i=0;i<12;i++){
+    const dx = Math.random()*40 - 20; // willekeurige X
+    const dy = Math.random()*40 - 20; // willekeurige Y
+
+    const e = document.createElement("div");
+    e.className = "explosionParticle";
+    e.style.left = planeX + "px";
+    e.style.top = planeY + "px";
+    explosion.appendChild(e);
+
+    // animatie met transform + fade
+    setTimeout(()=>{
+        e.style.transform = `translate(${dx}px, ${dy}px) scale(2)`;
+        e.style.opacity = 0;
+    },10);
+
+    setTimeout(()=> e.remove(), 600);
 }
 
-/* ========= COUNTDOWN ========= */
-const eventDate = new Date("June 12, 2026 09:00:00");
+// verdwijnt na landing
+setTimeout(()=>{
+    plane.style.opacity = 0;
+    trail.style.opacity = 0;
+    explosion.style.opacity = 0;
+    formTitle.classList.remove("landing-impact");
+    flying = false;
+},600);
+    }
 
-setInterval(()=>{
- const now = new Date();
- const diff = eventDate - now;
-
- const days = Math.floor(diff/(1000*60*60*24));
- document.getElementById("countdown").innerHTML =
-  days + " dagen te gaan";
-},1000);
-
-/* ========= ACCORDION ========= */
-document.querySelectorAll(".accordion").forEach(btn=>{
- btn.onclick=()=>{
-   const panel=btn.nextElementSibling;
-   panel.style.display=
-     panel.style.display==="block"?"none":"block";
- };
 });
-
-/* ========= PRIJS ========= */
-let discountActive=false;
-
-amount.oninput=e=>{
- amountDisplay.textContent=e.target.value;
- calculatePrice();
-};
-
-document.querySelectorAll('input[name="ticket"]').forEach(r=>{
- r.addEventListener("change",()=>{
-   tshirtField.style.display =
-     (vipTicket.checked) ? "block":"none";
-   calculatePrice();
- });
-});
-
-document.querySelectorAll(".workshop").forEach(cb=>{
- cb.addEventListener("change",()=>{
-   const checked=document.querySelectorAll(".workshop:checked");
-   if(checked.length>3){
-     cb.checked=false;
-     alert("Maximaal 3 workshops");
-   }
-   calculatePrice();
- });
-});
-
-function calculatePrice(){
-
- const ticket=document.querySelector('input[name="ticket"]:checked');
- if(!ticket) return;
-
- let total=ticket.value*amount.value;
-
- document.querySelectorAll(".workshop:checked")
-   .forEach(w=> total+=Number(w.value));
-
- if(discountActive) total*=0.8;
-
- price.textContent=total.toFixed(2);
-}
-
-/* ========= KORTING ========= */
-function checkDiscount(){
- if(discount.value==="TECH20"){
-   discountActive=true;
-   discountMsg.textContent="✔ Code geldig";
-   discountMsg.className="success";
- }else{
-   discountActive=false;
-   discountMsg.textContent="✖ Ongeldig";
-   discountMsg.className="error";
- }
- calculatePrice();
-}
-
-/* ========= TICKETNUMMER ========= */
-function generateTicket(name){
- const letters=name.substring(0,3).toUpperCase();
- const time=Date.now();
- const rand=Math.floor(Math.random()*9000+1000);
- return `${letters}-${time}-${rand}`;
-}
-
-/* ========= SUBMIT + MAKE WEBHOOK ========= */
-registerForm.addEventListener("submit",e=>{
- e.preventDefault();
-
- const ticketNumber=generateTicket(name.value);
-
- fetch("https://hook.make.com/XXXXXX",{
-   method:"POST",
-   headers:{'Content-Type':'application/json'},
-   body:JSON.stringify({
-     name:name.value,
-     email:email.value,
-     ticketNumber,
-     price:price.textContent
-   })
- });
-
- alert("Inschrijving voltooid!\nTicketnummer: "+ticketNumber);
-});
-
 </script>
 
 </body>
