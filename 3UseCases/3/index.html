@@ -59,10 +59,19 @@
                 <h2>Resultaat</h2>
                 <p>Hieronder zie je jouw vernieuwde flyer:</p>
                 <div class="result-card">
-                    <img id="flyerAfbeelding" src="" alt="Jouw AI-gegenereerde flyer">
+                    <img id="flyerAfbeelding" src="" alt="Jouw AI-gegenereerde flyer" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    <p id="debugInfo" style="color: #666; font-size: 12px; margin-top: 10px;"></p>
+                    <div id="imageError" class="hidden" style="color: #e74c3c; background: #ffeaea; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                        <strong>⚠️ Afbeelding kon niet worden geladen</strong><br>
+                        <small>De afbeelding is mogelijk verlopen of er is een verbindingsprobleem.</small>
+                        <br><button id="retryBtn" style="margin-top: 10px; padding: 5px 10px; background: #3498db; color: white; border: none; border-radius: 3px; cursor: pointer;">Opnieuw proberen</button>
+                    </div>
                 </div>
                 <p><small>Let op: De URL van deze afbeelding verloopt na 2 uur. Sla de afbeelding op als je deze wilt bewaren.</small></p>
-                <button class="btn-reset" onclick="location.reload()">Nieuwe Flyer Uploaden</button>
+                <div class="button-group">
+                    <button id="downloadBtn" class="btn-download"> Flyer Downloaden</button>
+                    <button class="btn-reset" onclick="location.reload()">Nieuwe Flyer Uploaden</button>
+                </div>
             </section>
 
         </main>
