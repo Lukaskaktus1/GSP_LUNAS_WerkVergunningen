@@ -159,6 +159,22 @@ button:active {
     margin-top: 1rem;
 }
 
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-direction: column;
+}
+
+.btn-download {
+    background-color: var(--primary-color);
+    width: 100%;
+}
+
+.btn-download:hover {
+    background-color: #2980b9;
+}
+
 .footer {
     text-align: center;
     padding: 1.5rem;
