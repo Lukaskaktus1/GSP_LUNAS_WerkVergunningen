@@ -4,8 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>AI Flyer Redesigner | GTI Beveren</title>
-        <link rel="stylesheet" href="../3/style.css">
-        <script src="../3/script.js"></script>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
     </head>
     <body>
         <header>
@@ -46,6 +46,7 @@
 
                     <button type="submit">Start Redesign</button>
                 </form>
+                
             </section>
 
             <section id="laden" class="hidden">
@@ -59,18 +60,11 @@
                 <h2>Resultaat</h2>
                 <p>Hieronder zie je jouw vernieuwde flyer:</p>
                 <div class="result-card">
-                    <img id="flyerAfbeelding" src="" alt="Jouw AI-gegenereerde flyer" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                    <p id="debugInfo" style="color: #666; font-size: 12px; margin-top: 10px;"></p>
-                    <div id="imageError" class="hidden" style="color: #e74c3c; background: #ffeaea; padding: 10px; border-radius: 5px; margin-top: 10px;">
-                        <strong>⚠️ Afbeelding kon niet worden geladen</strong><br>
-                        <small>De afbeelding is mogelijk verlopen of er is een verbindingsprobleem.</small>
-                        <br><button id="retryBtn" style="margin-top: 10px; padding: 5px 10px; background: #3498db; color: white; border: none; border-radius: 3px; cursor: pointer;">Opnieuw proberen</button>
+                    <img id="flyerAfbeelding" alt="Jouw AI-gegenereerde flyer" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                    <div class="button-group">
+                        <a id="downloadKnop" class="btn-download" href="#" download="flyer-redesign.png">Download flyer</a>
+                        <button id="backBtn" type="button" class="btn-reset">Terug naar start</button>
                     </div>
-                </div>
-                <p><small>Let op: De URL van deze afbeelding verloopt na 2 uur. Sla de afbeelding op als je deze wilt bewaren.</small></p>
-                <div class="button-group">
-                    <button id="downloadBtn" class="btn-download"> Flyer Downloaden</button>
-                    <button class="btn-reset" onclick="location.reload()">Nieuwe Flyer Uploaden</button>
                 </div>
             </section>
 

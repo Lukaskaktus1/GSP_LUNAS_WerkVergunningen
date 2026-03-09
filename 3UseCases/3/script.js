@@ -1,137 +1,87 @@
+document.addEventListener("DOMContentLoaded", function () {
+  // De webhook URL van Make.com
+  const webhookUrl = "https://hook.eu1.make.com/ovpqna7vldy6ssxtvx3hrswk95uv40zh";
 
-document.addEventListener('DOMContentLoaded', function()
-{
-    const form = document.getElementById('foto-formulier');
-    const formSection = document.getElementById('form-container');
-    const loadingSection = document.getElementById('laden');
-    const resultSection = document.getElementById('resultaat');
-    const flyerImg = document.getElementById('flyerAfbeelding');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const debugInfo = document.getElementById('debugInfo');
-    const imageError = document.getElementById('imageError');
-    const retryBtn = document.getElementById('retryBtn');
+  // Selecteer de elementen
+  var formulier = document.getElementById("foto-formulier");
+  var formSection = document.getElementById("form-container");
+  var laadSectie = document.getElementById("laden");
+  var resultaatSectie = document.getElementById("resultaat");
+  var resultaatAfbeelding = document.getElementById("flyerAfbeelding");
+  var downloadKnop = document.getElementById("downloadKnop");
+  var backBtn = document.getElementById("backBtn");
 
-    form.addEventListener('submit', function(e)
-    {
-        e.preventDefault();
+  if (!formulier) {
+    console.error("Formulier #foto-formulier niet gevonden.");
+    return;
+  }
 
-        formSection.classList.add('hidden');
-        loadingSection.classList.remove('hidden');
+  // Luister naar het verzenden van het formulier
+  formulier.addEventListener("submit", function (e) {
+    // Voorkom standaard formulier verzending
+    e.preventDefault();
 
-        const formData = new FormData(form);
+    // Toon de laad-sectie en verberg het formulier
+    formSection.classList.add("hidden");
+    resultaatSectie.classList.add("hidden");
+    laadSectie.classList.remove("hidden");
 
-        const webhookUrl = 'https://hook.eu1.make.com/ovpqna7vldy6ssxtvx3hrswk95uv40zh';
+    // Verzamel de data uit het formulier
+    var formData = new FormData(formulier);
 
-        fetch(webhookUrl,
-        {
-            method: 'POST',
-            body: formData
-        })
-        .then(response =>
-        {
-            if (!response.ok)
-            {
-                throw new Error('Er was een probleem met de serververbinding.');
-            }
-            return response.text();
-        })
-        .then(url =>
-        {
-            console.log('Ontvangen antwoord:', url);
-            console.log('Antwoord type:', typeof url);
-            console.log('Antwoord lengte:', url ? url.length : 0);
-
-
-            const cleanUrl = url ? url.trim() : '';
-
-            if (cleanUrl && cleanUrl.startsWith('http'))
-            {
-                flyerImg.src = cleanUrl;
-                flyerImg.crossOrigin = 'anonymous';
-
-                // Debug info tonen
-                debugInfo.textContent = 'Afbeelding URL: ' + cleanUrl;
-
-                // Verberg error bericht eerst
-                imageError.classList.add('hidden');
-
-                // Afbeelding load event
-                flyerImg.onload = function() {
-                    console.log('Afbeelding succesvol geladen');
-                    debugInfo.textContent += ' (geladen)';
-                    imageError.classList.add('hidden');
-                };
-
-                flyerImg.onerror = function() {
-                    console.error('Afbeelding kon niet worden geladen');
-                    debugInfo.textContent += ' (FOUT: kon niet laden)';
-                    imageError.classList.remove('hidden');
-                };
-
-                // Retry button functionaliteit
-                retryBtn.onclick = function() {
-                    console.log('Opnieuw proberen afbeelding te laden...');
-                    flyerImg.src = cleanUrl + '?t=' + Date.now(); // Cache busting
-                    imageError.classList.add('hidden');
-                    debugInfo.textContent = 'Afbeelding URL: ' + cleanUrl + ' (opnieuw proberen...)';
-                };
-
-                // Download functie instellen
-                downloadBtn.onclick = function() {
-                    downloadImage(cleanUrl, 'flyer-redesign.png');
-                };
-
-                loadingSection.classList.add('hidden');
-                resultSection.classList.remove('hidden');
-            }
-            else
-            {
-                console.error('Fout: Ongeldig antwoord ontvangen. Volledige antwoord: "' + url + '"');
-                throw new Error('Geen geldige flyer-URL ontvangen. Controleer je Make.com scenario. Ontvangen: ' + (url ? '"' + url + '"' : 'leeg'));
-            }
-        })
-        .catch(error =>
-        {
-            console.error('Error:', error);
-            alert('Er ging iets mis: ' + error.message);
-
-            loadingSection.classList.add('hidden');
-            formSection.classList.remove('hidden');
-        });
-    });
-
-    // Download functie
-    function downloadImage(imageUrl, filename) {
-        try {
-            console.log('Download starten voor:', imageUrl);
-
-            // Probeer eerst de standaard download
-            const link = document.createElement('a');
-            link.href = imageUrl;
-            link.download = filename;
-            link.target = '_blank';
-
-            // Voor CORS problemen, probeer de afbeelding eerst te laden
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = function() {
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                console.log('Download succesvol gestart');
-            };
-            img.onerror = function() {
-                console.warn('CORS probleem gedetecteerd, open in nieuw tabblad');
-                window.open(imageUrl, '_blank');
-                alert('Download geopend in nieuw tabblad vanwege beveiligingsbeperkingen. Gebruik Ctrl+S om op te slaan.');
-            };
-            img.src = imageUrl;
-
-        } catch (error) {
-            console.error('Download fout:', error);
-            // Fallback: open in nieuw tabblad
-            window.open(imageUrl, '_blank');
-            alert('Download geopend in nieuw tabblad. Gebruik Ctrl+S om op te slaan.');
+    // Verstuur de data naar de webhook
+    fetch(webhookUrl, {
+      method: "POST",
+      body: formData,
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error("Netwerk response was niet ok");
         }
-    }
+        // Make.com stuurt een raw image (PNG) terug
+        return response.blob();
+      })
+      .then(function (blob) {
+        // Zet de ontvangen binary blob om in een lokale object URL
+        const flyerUrl = URL.createObjectURL(blob);
+
+        // Zet de ontvangen URL in het src attribuut van de afbeelding
+        resultaatAfbeelding.src = flyerUrl;
+
+        // Stel de link in voor de downloadknop
+        downloadKnop.href = flyerUrl;
+        downloadKnop.download = "flyer-redesign.png";
+
+        // Verberg de laad-sectie en toon het resultaat
+        laadSectie.classList.add("hidden");
+        resultaatSectie.classList.remove("hidden");
+      })
+      .catch(function (error) {
+        // Foutafhandeling
+        console.error("Er is een probleem opgetreden:", error);
+        laadSectie.classList.add("hidden");
+        formSection.classList.remove("hidden");
+
+        // Simpele melding aan de gebruiker
+        var errorMsg = document.createElement("p");
+        errorMsg.style.color = "red";
+        errorMsg.innerText =
+          "Oeps! Er ging iets mis bij het genereren. Probeer het later opnieuw.";
+        formSection.appendChild(errorMsg);
+      });
+  });
+
+  // Terug naar start: formulier opnieuw tonen, resultaat verbergen, afbeelding resetten
+  if (backBtn) {
+    backBtn.addEventListener("click", function () {
+      resultaatSectie.classList.add("hidden");
+      laadSectie.classList.add("hidden");
+      formSection.classList.remove("hidden");
+      resultaatAfbeelding.src = "";
+      // optioneel: formulier resetten
+      if (formulier) {
+        formulier.reset();
+      }
+    });
+  }
 });
