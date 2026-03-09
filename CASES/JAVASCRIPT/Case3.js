@@ -1,39 +1,57 @@
-var formulier = document.getElementById('foto-formulier');
+document.addEventListener("DOMContentLoaded", function () {
 
-formulier.addEventListener('submit', function(e) {
+    const formulier = document.getElementById("foto-formulier");
+    const formSection = document.querySelector(".form-section");
+    const laden = document.getElementById("laden");
+    const resultaat = document.getElementById("resultaat");
+    const flyerAfbeelding = document.getElementById("flyerAfbeelding");
 
-    e.preventDefault();
+    const webhookUrl = "https://hook.eu1.make.com/du5haqcvk8a6qgopbzoqs2ovyf6y1hk3";
 
-    // toon laden
-    document.querySelector('.form-section').style.display = 'none';
-    document.getElementById('laden').style.display = 'block';
+    formulier.addEventListener("submit", function(e) {
 
-    // formdata maken
-    var formData = new FormData(formulier);
+        e.preventDefault();
 
-    // 👉 VERVANG MET JOUW MAKE WEBHOOK
-    var webhookUrl = "https://hook.eu1.make.com/du5haqcvk8a6qgopbzoqs2ovyf6y1hk3";
+        // Formulier verbergen
+        formSection.style.display = "none";
 
-    fetch(webhookUrl, {
-        method: 'POST',
-        body: formData
-    })
-    .then(function(response) {
-        return response.text();
-    })
-    .then(function(flyerUrl) {
+        // Loading tonen
+        laden.style.display = "block";
 
-        document.getElementById('laden').style.display = 'none';
-        document.getElementById('resultaat').style.display = 'block';
+        const formData = new FormData(formulier);
 
-        document.getElementById('flyerAfbeelding').src = flyerUrl;
-    })
-    .catch(function(error) {
+        fetch(webhookUrl, {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
 
-        document.getElementById('laden').style.display = 'none';
-        document.querySelector('.form-section').style.display = 'block';
+            console.log("Webhook response:", data);
 
-        alert("Er ging iets mis: " + error.message);
+            // eventuele spaties of linebreaks verwijderen
+            const flyerUrl = data.trim();
+
+            // loading verbergen
+            laden.style.display = "none";
+
+            // resultaat tonen
+            resultaat.style.display = "block";
+
+            // afbeelding tonen
+            flyerAfbeelding.src = flyerUrl;
+
+        })
+        .catch(error => {
+
+            console.error("Fout:", error);
+
+            laden.style.display = "none";
+            formSection.style.display = "block";
+
+            alert("Er ging iets mis bij het genereren van de flyer.");
+        });
+
     });
 
 });
