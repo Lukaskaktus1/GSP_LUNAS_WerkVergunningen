@@ -129,7 +129,7 @@
 
 <!-- Opslaan Button -->
 <div class="navigation-buttons" style="margin-top: 30px; padding: 20px 0;">
-    <button class="nav-button button next" onclick="saveAllChanges()">Wijzigingen Opslaan</button>
+    <button class="nav-button button next" type="button" onclick="saveAndReturn()">Werkvergunning opslaan &amp; terug naar overzicht</button>
 </div>
 
 <!-- ===================== SCRIPT ===================== -->
@@ -251,9 +251,104 @@ document.addEventListener('DOMContentLoaded', () => {
         saveText('vak6_afdeling');
         saveText('vak6_uitvoerder');
         saveText('vak7_inspectie');
-        
-        alert('Wijzigingen opgeslagen!');
     }
+
+    // Maak functies globaal beschikbaar voor de button
+    window.saveAllChanges = saveAllChanges;
+
+    // Volledige werkvergunning in localStorage opslaan en terug naar juiste overzichtspagina gaan
+    window.saveAndReturn = function () {
+        // Eerst alle wijzigingen uit dit scherm opslaan naar sessionStorage
+        saveAllChanges();
+
+        const ownerEmail = sessionStorage.getItem('userEmail') || '';
+        const ownerRole = sessionStorage.getItem('userRole') || '';
+
+        // Basisvelden uit dit scherm ophalen
+        const fieldIds = [
+            'vak1_naam','vak1_tel','vak1_afdeling','vak1_werkbeschrijving','vak1_exzone',
+            'vak2_naam','vak2_firma','vak2_veiligheidstest','vak2_datumwerken','vak2_medewerkers',
+            'vak3_aandachtspunten','vak3_parkeerplaats',
+            'vak4_naam','vak4_afdeling','vak4_aandachtspunten',
+            'vak6_lototo','vak6_afdeling','vak6_uitvoerder',
+            'vak7_inspectie'
+        ];
+
+        const fields = {};
+        fieldIds.forEach(id => {
+            const el = document.getElementById(id);
+            fields[id] = el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') ? el.value : '';
+        });
+
+        // Tabellen / lijsten uit sessionStorage meenemen
+        const lists = {
+            vak2_act_koud: sessionStorage.getItem('vak2_act_koud') || '',
+            vak2_act_warm: sessionStorage.getItem('vak2_act_warm') || '',
+            vak2_vervoer: sessionStorage.getItem('vak2_vervoer') || '',
+            vak2_stoffen: sessionStorage.getItem('vak2_stoffen') || '',
+            vak2_chemicalien: sessionStorage.getItem('vak2_chemicalien') || '',
+            vak5_vergunningen: sessionStorage.getItem('vak5_vergunningen') || '',
+            vak5_toelatingen: sessionStorage.getItem('vak5_toelatingen') || '',
+            vak5_preventie: sessionStorage.getItem('vak5_preventie') || ''
+        };
+
+        const tables = {
+            vak6_tabel: sessionStorage.getItem('vak6_tabel') || '[]',
+            vak7_tabel: sessionStorage.getItem('vak7_tabel') || '[]'
+        };
+
+        const signatures = {
+            inspecteur: sessionStorage.getItem('handtekening_inspecteur') || ''
+        };
+
+        // Samenvatting voor overzicht: datum + geldige datums
+        let geldigeDatums = [];
+        try {
+            const vak6Rows = JSON.parse(tables.vak6_tabel || '[]');
+            geldigeDatums = vak6Rows.map(r => r.datum).filter(Boolean);
+        } catch (e) {
+            geldigeDatums = [];
+        }
+
+        const permit = {
+            id: Date.now().toString(),
+            createdAt: new Date().toISOString(),
+            ownerEmail,
+            ownerRole,
+            datumWerken: fields['vak2_datumwerken'] || '',
+            geldigeDatums,
+            beschrijving: fields['vak1_werkbeschrijving'] || '',
+            data: {
+                fields,
+                lists,
+                tables,
+                signatures
+            }
+        };
+
+        // Bestaande werkvergunningen laden en nieuwe toevoegen
+        let db = [];
+        try {
+            db = JSON.parse(localStorage.getItem('werkvergunningen_db') || '[]');
+        } catch (e) {
+            db = [];
+        }
+        db.push(permit);
+        localStorage.setItem('werkvergunningen_db', JSON.stringify(db));
+
+        // Onthoud welke vergunning nu actief is voor "meer info"
+        sessionStorage.setItem('currentPermitId', permit.id);
+
+        // Terug naar juiste overzichtspagina op basis van rol
+        const pages = {
+            leerling: 'overzicht_leerling.html',
+            leerkracht: 'overzicht_leerkracht.html',
+            ta: 'overzicht_ta.html',
+            directeur: 'overzicht_directeur.html'
+        };
+        const target = pages[ownerRole] || 'overzicht_leerling.html';
+        window.location.href = target;
+    };
 
 });
 </script>
