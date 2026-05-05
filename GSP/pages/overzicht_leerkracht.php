@@ -48,7 +48,7 @@ requireRole(['leerkracht']);
         <h2 class="section-title">Snelle acties</h2>
 
         <div class="quick-actions">
-            <div class="action-card highlighted" onclick="window.location.href='../HTML/werkvergunning_vak1.html'">
+            <div class="action-card highlighted" onclick="window.location.href='../PHP/werkvergunning_vak1.php'">
                 <div class="action-card-icon">
                     <i class="fas fa-plus"></i>
                 </div>

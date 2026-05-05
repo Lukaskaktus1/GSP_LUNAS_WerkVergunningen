@@ -1,0 +1,150 @@
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../auth/auth.php';
+
+$role = (string) ($_SESSION['rol'] ?? '');
+
+$overzichtPagina = match ($role) {
+    'leerling' => '../pages/overzicht_leerling.php',
+    'leerkracht' => '../pages/overzicht_leerkracht.php',
+    'ta' => '../pages/overzicht_ta.php',
+    'directeur' => '../pages/overzicht_directeur.php',
+    'admin' => '../pages/overzicht_admin.php',
+    default => '../pages/overzicht_leerling.php',
+};
+?>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts overzicht - Werkvergunning Portaal</title>
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="far fa-file-lines"></i>
+            </div>
+            <div class="header-title">
+                <h1>Werkvergunning Portaal</h1>
+                <p>Accounts overzicht</p>
+            </div>
+        </div>
+        <div class="header-center">
+            <img src="../IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="header-logo">
+        </div>
+        <div class="header-right">
+            <button class="logout-btn" onclick="window.location.href='<?= e($overzichtPagina) ?>'">
+                <i class="fas fa-arrow-left"></i>
+                <span>Terug</span>
+            </button>
+            <button class="logout-btn" onclick="window.location.href='../logout.php'">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Uitloggen</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="form-card">
+            <div class="form-title">
+                <span>Geregistreerde accounts</span>
+            </div>
+
+            <div id="accountsTableContainer"></div>
+
+            <h2 class="section-title" style="margin-top:30px;">Loginhistoriek</h2>
+            <div id="historyTableContainer"></div>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script>
+        function requireAdminRole() {
+            const role = sessionStorage.getItem('userRole');
+            if (!role || role === 'leerling') {
+                alert('U heeft geen toegang tot deze pagina.');
+                window.location.href = '<?= e($overzichtPagina) ?>';
+            }
+        }
+
+        function loadUsersDb() {
+            try {
+                return JSON.parse(localStorage.getItem('users_db') || '{}');
+            } catch {
+                return {};
+            }
+        }
+
+        function loadLoginHistory() {
+            try {
+                return JSON.parse(localStorage.getItem('login_history') || '[]');
+            } catch {
+                return [];
+            }
+        }
+
+        function renderAccounts() {
+            const container = document.getElementById('accountsTableContainer');
+            const db = loadUsersDb();
+            const users = Object.values(db);
+
+            if (users.length === 0) {
+                container.innerHTML = '<p>Nog geen accounts geregistreerd.</p>';
+                return;
+            }
+
+            let html = '<table class="form-table"><thead><tr>' +
+                '<th>E-mailadres</th><th>Rol</th><th>Aangemaakt op</th>' +
+                '</tr></thead><tbody>';
+
+            users.forEach(u => {
+                html += `<tr>
+                    <td>${u.email}</td>
+                    <td>${u.role}</td>
+                    <td>${u.createdAt ? new Date(u.createdAt).toLocaleString('nl-BE') : ''}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyTableContainer');
+            const history = loadLoginHistory();
+
+            if (history.length === 0) {
+                container.innerHTML = '<p>Er zijn nog geen logins geregistreerd.</p>';
+                return;
+            }
+
+            let html = '<table class="form-table"><thead><tr>' +
+                '<th>E-mailadres</th><th>Rol</th><th>Login tijdstip</th>' +
+                '</tr></thead><tbody>';
+
+            history.slice().reverse().forEach(h => {
+                html += `<tr>
+                    <td>${h.email}</td>
+                    <td>${h.role}</td>
+                    <td>${new Date(h.loginAt).toLocaleString('nl-BE')}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            requireAdminRole();
+            renderAccounts();
+            renderHistory();
+        });
+    </script>
+</body>
+</html>

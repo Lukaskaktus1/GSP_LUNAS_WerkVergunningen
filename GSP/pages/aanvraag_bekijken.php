@@ -164,8 +164,8 @@ function terugNaarVorigePagina(): string
             <h1>Aanvraag bekijken</h1>
             <p>
                 Status:
-                <span class="status-badge <?= e(statusClassAanvraag((string) $aanvraag['status'])) ?>">
-                    <?= e(statusLabelAanvraag((string) $aanvraag['status'])) ?>
+                <span class="status-badge <?= e(statusClassAanvraag((string) ($aanvraag['status'] ?? ''))) ?>">
+                    <?= e(statusLabelAanvraag((string) ($aanvraag['status'] ?? ''))) ?>
                 </span>
             </p>
         </div>

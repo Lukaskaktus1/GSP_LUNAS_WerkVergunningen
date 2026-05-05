@@ -654,9 +654,9 @@ function navigateFromLOTO() {
     // Controleer waar we vandaan komen en ga naar volgende stap
     const referrer = document.referrer;
     if (referrer.includes('werkvergunning_vak5') || referrer.includes('werkvergunning_preventie')) {
-        window.location.href = 'werkvergunning_preventie.html';
+        window.location.href = 'werkvergunning_preventie.php';
     } else {
-        window.location.href = 'werkvergunning_vak6.html';
+        window.location.href = 'werkvergunning_vak6.php';
     }
 }
 

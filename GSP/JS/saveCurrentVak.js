@@ -44,64 +44,82 @@ function navigateToNext(url) {
 function saveCurrentVak() {
 
     /* =========================
-       VAK I t/m V (bestaande logica)
+       VAK I
        ========================= */
-    // … behouden zoals eerder …
     const vak1Fields = ['vak1_naam','vak1_tel','vak1_afdeling','vak1_werkbeschrijving'];
     vak1Fields.forEach(id => { const el = document.getElementById(id); if(el) sessionStorage.setItem(id, el.value); });
-    const exzones = []; document.querySelectorAll('input[name="exzone"]:checked').forEach(cb => exzones.push(cb.value||'Ja'));
-    if(exzones.length) sessionStorage.setItem('vak1_exzone', exzones.join(','));
+    // Exzone uit vak1 (radio buttons)
+    const exzone = document.querySelector('input[name="vak1_exzone"]:checked');
+    if(exzone) sessionStorage.setItem('vak1_exzone', exzone.value);
     
-    const vak2Fields = ['vak2_naam','vak2_firma','vak2_veiligheidstest','vak2_datumwerken','vak2_medewerkers'];
-    vak2Fields.forEach(id => { const el=document.getElementById(id); if(el) sessionStorage.setItem(id, el.value); });
+    /* =========================
+       VAK II
+       ========================= */
+    const vak2Fields = ['vak2_naam','vak2_firma','vak2_datumwerken','vak2_medewerkers'];
+    vak2Fields.forEach(id => { 
+        const el = document.getElementById(id); 
+        if(el) sessionStorage.setItem(id, el.value); 
+    });
+    // vak2_veiligheidstest (radio)
+    const veiligheid = document.querySelector('input[name="vak2_veiligheidstest"]:checked');
+    if(veiligheid) sessionStorage.setItem('vak2_veiligheidstest', veiligheid.value);
+    
+    // Activiteiten lists
     saveCheckboxGroup('activiteit_koud','vak2_act_koud');
     saveCheckboxGroup('activiteit_warm','vak2_act_warm');
     saveCheckboxGroup('vervoer_machine','vak2_vervoer');
     saveCheckboxGroup('schadelijke_stoffen','vak2_stoffen');
     saveCheckboxGroup('chemicalien','vak2_chemicalien');
 
-    const vak3Aandacht=document.getElementById('vak3_aandachtspunten');
-    if(vak3Aandacht) sessionStorage.setItem('vak3_aandachtspunten',vak3Aandacht.value||vak3Aandacht.textContent);
-    const vak3Parkeer=document.getElementById('vak3_parkeerplaats');
-    if(vak3Parkeer) sessionStorage.setItem('vak3_parkeerplaats',vak3Parkeer.value);
+    /* =========================
+       VAK III
+       ========================= */
+    const vak3Aandacht = document.getElementById('vak3_aandachtspunten');
+    if(vak3Aandacht) sessionStorage.setItem('vak3_aandachtspunten', vak3Aandacht.value);
+    const vak3Parkeer = document.getElementById('vak3_parkeerplaats');
+    if(vak3Parkeer) sessionStorage.setItem('vak3_parkeerplaats', vak3Parkeer.value);
 
-    const vak4Fields=['vak4_naam','vak4_afdeling'];
-    vak4Fields.forEach(id=>{const el=document.getElementById(id);if(el) sessionStorage.setItem(id,el.value);});
-    const vak4Aandacht=document.getElementById('vak4_aandachtspunten');
-    if(vak4Aandacht) sessionStorage.setItem('vak4_aandachtspunten',vak4Aandacht.value||vak4Aandacht.textContent);
+    /* =========================
+       VAK IV
+       ========================= */
+    const vak4Fields = ['vak4_naam','vak4_afdeling','vak4_aandachtspunten'];
+    vak4Fields.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) sessionStorage.setItem(id, el.value);
+    });
 
-    saveCheckboxGroup('vergunningen','vak5_vergunningen');
-    saveCheckboxGroup('toelatingen','vak5_toelatingen');
+    /* =========================
+       VAK V - Vergunningen, Toelatingen, Preventie
+       ========================= */
+    saveCheckboxGroup('verg_betreding','vak5_vergunningen');
+    saveCheckboxGroup('verg_electro','vak5_vergunningen');
+    saveCheckboxGroup('verg_graaf','vak5_vergunningen');
+    saveCheckboxGroup('verg_hoogte','vak5_vergunningen');
+    saveCheckboxGroup('verg_lijnbreking','vak5_vergunningen');
+    saveCheckboxGroup('verg_loto','vak5_vergunningen');
+    saveCheckboxGroup('verg_stelling','vak5_vergunningen');
+    saveCheckboxGroup('verg_tijdelijk','vak5_vergunningen');
+    saveCheckboxGroup('verg_vuur','vak5_vergunningen');
+    
+    saveCheckboxGroup('toel_muur_dak','vak5_toelatingen');
+    saveCheckboxGroup('toel_versperren','vak5_toelatingen');
+    saveCheckboxGroup('toel_hijsen','vak5_toelatingen');
+    saveCheckboxGroup('toel_bluswater','vak5_toelatingen');
+    saveCheckboxGroup('toel_werken_bluswater','vak5_toelatingen');
+    saveCheckboxGroup('toel_alarm','vak5_toelatingen');
+    
     saveCheckboxGroup('preventie','vak5_preventie');
 
     /* =========================
-       VAK VI – LOTO / BEKRACHTIGING
+       VAK VI - BEKRACHTIGING
        ========================= */
-    const lotoForm = document.querySelector('.form-card'); // of specifieke ID als beschikbaar
-    if(lotoForm) {
-        // Alle inputs en selects
-        lotoForm.querySelectorAll('input, select, textarea').forEach(el=>{
-            if(el.type==='checkbox') {
-                sessionStorage.setItem(el.id || el.name, el.checked ? 'Ja' : 'Neen');
-            } else {
-                sessionStorage.setItem(el.id || el.name, el.value);
-            }
-        });
+    const vak6Fields = ['vak6_afdeling','vak6_uitvoerder'];
+    vak6Fields.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) sessionStorage.setItem(id, el.value);
+    });
 
-        // Handtekeningen (canvas)
-        lotoForm.querySelectorAll('canvas').forEach(canvas=>{
-            if(canvas.id && canvas.toDataURL){
-                sessionStorage.setItem(canvas.id, canvas.toDataURL());
-            }
-        });
-
-        // Audit trail opslaan
-        sessionStorage.setItem('vak6_auditTrail', JSON.stringify(auditTrail || []));
-    }
-
-    /* =========================
-       VAK VI TABEL
-       ========================= */
+    // VAK VI TABEL
     const vak6Table = document.getElementById('vak6_tabel');
     if(vak6Table){
         const data=[];
@@ -118,8 +136,13 @@ function saveCurrentVak() {
     }
 
     /* =========================
-       VAK VII TABEL
+       VAK VII - AFMELDING
        ========================= */
+    // vak7_inspectie (checkbox)
+    const inspectie = document.getElementById('inspectie_ja');
+    if(inspectie) sessionStorage.setItem('vak7_inspectie', inspectie.checked ? 'ja' : 'neen');
+    
+    // VAK VII TABEL
     const vak7Table = document.getElementById('vak7_tabel');
     if(vak7Table){
         const data=[];
@@ -141,18 +164,28 @@ function saveCurrentVak() {
         sessionStorage.setItem('werkvergunning_nummer', nummerInput.value);
     }
 
-    console.log('✅ Alles opgeslagen inclusief LOTO');
+    console.log('✅ Alles opgeslagen naar sessionStorage');
 }
 
 /* =========================
-   Checkbox helper
+   Checkbox helper - verzamelt meerdere checkboxes met dezelfde name
    ========================= */
-function saveCheckboxGroup(name, storageKey){
+function saveCheckboxGroup(namePattern, storageKey){
     const values=[];
-    document.querySelectorAll(`input[name="${name}"]:checked`).forEach(cb=>{
-        values.push(cb.value || cb.nextElementSibling?.textContent || 'Ja');
+    
+    // Als namePattern met wildcards begint, is het een pattern (voor Vak5)
+    // Als het exact matched, gebruik exact match
+    document.querySelectorAll(`input[type="checkbox"]`).forEach(cb=>{
+        if(cb.name === namePattern || cb.name.startsWith(namePattern)) {
+            if(cb.checked) {
+                values.push(cb.value || cb.nextElementSibling?.textContent?.trim() || 'Ja');
+            }
+        }
     });
-    if(values.length) sessionStorage.setItem(storageKey, values.join(','));
+    
+    if(values.length) {
+        sessionStorage.setItem(storageKey, JSON.stringify(values));
+    }
 }
 
 /* =========================

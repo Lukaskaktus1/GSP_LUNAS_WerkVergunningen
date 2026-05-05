@@ -21,6 +21,8 @@ $stmt->execute([
 ]);
 
 $aanvragen = $stmt->fetchAll();
+$flash = getFlashMessage();
+
 
 function statusClass(string $status): string
 {
@@ -171,6 +173,12 @@ function statusLabel(string $status): string
     <section class="applications-section">
         <h2 class="section-title">Uw aanvragen</h2>
 
+        <?php if ($flash !== null): ?>
+            <p style="margin-bottom:16px; color:<?= ($flash['type'] ?? '') === 'success' ? '#067647' : '#b42318' ?>;">
+                <?= e((string) ($flash['message'] ?? '')) ?>
+            </p>
+        <?php endif; ?>
+
         <div class="applications-container">
             <?php if (empty($aanvragen)): ?>
                 <div class="empty-state">
@@ -179,7 +187,7 @@ function statusLabel(string $status): string
                     </div>
                     <div class="empty-state-text">Nog geen aanvragen ingediend</div>
 
-                    <button class="empty-state-button" onclick="window.location.href='../HTML/werkvergunning_vak1.html'">
+                    <button class="empty-state-button" onclick="window.location.href='../PHP/werkvergunning_vak1.php'">
                         Start uw eerste aanvraag
                     </button>
                 </div>
