@@ -36,7 +36,7 @@ $flash = getFlashMessage();
                 <p class="subtitle">Log in om uw werkvergunning aan te vragen</p>
 
                 <?php if ($flash !== null): ?>
-                    <p style="margin-bottom:16px;color:#b42318;"><?= e($flash['message']) ?></p>
+                    <p style="margin-bottom:16px;color:#b42318;"><?= e((string) ($flash['message'] ?? '')) ?></p>
                 <?php endif; ?>
 
                 <form class="login-form" action="login.php" method="POST">
@@ -55,6 +55,12 @@ $flash = getFlashMessage();
                     </div>
 
                     <button type="submit" class="login-button">Inloggen</button>
+
+                    <p style="text-align:center; margin-top:16px;">
+                        Nog geen account?
+                        <a href="register.php">Account aanmaken</a>
+                    </p>
+                    
                 </form>
             </div>
 

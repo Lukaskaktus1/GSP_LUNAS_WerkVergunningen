@@ -46,6 +46,7 @@ function getCurrentUserRoleLabel(): string
         'leerkracht' => 'Leerkracht',
         'ta' => 'TA',
         'directeur' => 'Directeur',
+        'admin' => 'Admin',
         default => 'Gebruiker',
     };
 }

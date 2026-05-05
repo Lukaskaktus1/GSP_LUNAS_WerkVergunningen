@@ -3,19 +3,18 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../auth/auth.php';
-requireRole(['directeur']);
+requireRole(['admin']);
 ?>
 <!DOCTYPE html>
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Overzicht - Werkvergunning Portaal</title>
+    <title>Admin overzicht - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <div class="header-left">
             <div class="header-icon">
@@ -23,7 +22,13 @@ requireRole(['directeur']);
             </div>
             <div class="header-title">
                 <h1>Werkvergunning Portaal</h1>
-                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <?= e(getCurrentUserRoleLabel()) ?></span></p>
+                <p>
+                    Welkom,
+                    <span class="role-badge">
+                        <i class="fas fa-user-shield"></i>
+                        <?= e(getCurrentUserRoleLabel()) ?>
+                    </span>
+                </p>
             </div>
         </div>
 
@@ -37,11 +42,6 @@ requireRole(['directeur']);
                 <span>PortfolioPagina</span>
             </button>
 
-            <button class="logout-btn" onclick="window.location.href='mijn_keuringen.php'">
-                <i class="fas fa-users"></i>
-                <span>Keuringen</span>
-            </button>
-
             <button class="logout-btn" onclick="window.location.href='../logout.php'">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Uitloggen</span>
@@ -49,19 +49,33 @@ requireRole(['directeur']);
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="main-container">
-        <!-- Quick Actions -->
         <section class="quick-actions-section">
-            <h2 class="section-title">Snelle acties</h2>
+            <h2 class="section-title">Admin acties</h2>
 
             <div class="quick-actions">
-                <div class="action-card highlighted" onclick="window.location.href='../HTML/werkvergunning_vak1.html'">
+                <div class="action-card highlighted" onclick="window.location.href='admin_gebruikers.php'">
                     <div class="action-card-icon">
-                        <i class="fas fa-plus"></i>
+                        <i class="fas fa-users-cog"></i>
                     </div>
-                    <div class="action-card-title">Nieuwe aanvraag</div>
-                    <div class="action-card-subtitle">Start werkvergunning aanvraag</div>
+                    <div class="action-card-title">Gebruikers beheren</div>
+                    <div class="action-card-subtitle">Rollen en accounts aanpassen</div>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='keuringen.php'">
+                    <div class="action-card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="action-card-title">Keuringen</div>
+                    <div class="action-card-subtitle">Openstaande aanvragen bekijken</div>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='mijn_aanvragen.php'">
+                    <div class="action-card-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="action-card-title">Mijn aanvragen</div>
+                    <div class="action-card-subtitle">Eigen aanvragen bekijken</div>
                 </div>
 
                 <div class="action-card" onclick="window.location.href='/index.html'">
@@ -79,45 +93,20 @@ requireRole(['directeur']);
                     <div class="action-card-title">Contact</div>
                     <div class="action-card-subtitle">Neem contact op</div>
                 </div>
-
-                <div class="action-card" onclick="window.location.href='account.php'">
-                    <div class="action-card-icon">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="action-card-title">Account</div>
-                    <div class="action-card-subtitle">Beheer uw profiel</div>
-                </div>
             </div>
         </section>
 
-        <!-- Your Applications -->
         <section class="applications-section">
-            <h2 class="section-title">Uw aanvragen</h2>
-            <div class="applications-container">
-                <div class="empty-state">
-                    <div class="empty-state-icon">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                    <div class="empty-state-text">Nog geen aanvragen ingediend</div>
-                    <button class="empty-state-button" onclick="window.location.href='../HTML/werkvergunning_vak1.html'">
-                        Start uw eerste aanvraag
-                    </button>
-                </div>
-            </div>
-        </section>
+            <h2 class="section-title">Admin overzicht</h2>
 
-        <!-- Your Approvals -->
-        <section class="applications-section">
-            <h2 class="section-title">Uw keuringen</h2>
             <div class="applications-container">
                 <div class="empty-state">
                     <div class="empty-state-icon">
-                        <i class="fas fa-file-alt"></i>
+                        <i class="fas fa-user-shield"></i>
                     </div>
-                    <div class="empty-state-text">Nog geen keuringen beschikbaar</div>
-                    <button class="empty-state-button" onclick="window.location.href='keuringen.php'">
-                        Bekijk keuringen
-                    </button>
+                    <div class="empty-state-text">
+                        U bent ingelogd als admin. Vanuit hier kunt u later gebruikers, rollen en aanvragen beheren.
+                    </div>
                 </div>
             </div>
         </section>
