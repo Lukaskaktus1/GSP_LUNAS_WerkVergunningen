@@ -15,103 +15,111 @@ requireRole(['admin']);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header class="header">
-        <div class="header-left">
-            <div class="header-icon">
-                <i class="far fa-file-lines"></i>
+<header class="header">
+    <div class="header-left">
+        <div class="header-icon">
+            <i class="far fa-file-lines"></i>
+        </div>
+        <div class="header-title">
+            <h1>Werkvergunning Portaal</h1>
+            <p>
+                Welkom,
+                <span class="role-badge">
+                    <i class="fas fa-user-shield"></i>
+                    <?= e(getCurrentUserRoleLabel()) ?>
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <div class="header-center">
+        <img src="../IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="header-logo">
+    </div>
+
+    <div class="header-right">
+        <button class="logout-btn" onclick="window.location.href='/index.html'">
+            <i class="fas fa-home"></i>
+            <span>PortfolioPagina</span>
+        </button>
+
+        <button class="logout-btn" onclick="window.location.href='../logout.php'">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Uitloggen</span>
+        </button>
+    </div>
+</header>
+
+<main class="main-container">
+    <section class="quick-actions-section">
+        <h2 class="section-title">Admin acties</h2>
+
+        <div class="quick-actions">
+            <div class="action-card highlighted" onclick="window.location.href='admin_gebruikers.php'">
+                <div class="action-card-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <div class="action-card-title">Gebruikers beheren</div>
+                <div class="action-card-subtitle">Rollen en accounts aanpassen</div>
             </div>
-            <div class="header-title">
-                <h1>Werkvergunning Portaal</h1>
-                <p>
-                    Welkom,
-                    <span class="role-badge">
-                        <i class="fas fa-user-shield"></i>
-                        <?= e(getCurrentUserRoleLabel()) ?>
-                    </span>
-                </p>
+
+            <div class="action-card" onclick="window.location.href='keuringen.php'">
+                <div class="action-card-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="action-card-title">Keuringen</div>
+                <div class="action-card-subtitle">Openstaande aanvragen bekijken</div>
+            </div>
+
+            <div class="action-card" onclick="window.location.href='mijn_keuringen.php'">
+                <div class="action-card-icon">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <div class="action-card-title">Mijn keuringen</div>
+                <div class="action-card-subtitle">Bekijk gekeurde aanvragen</div>
+            </div>
+
+            <div class="action-card" onclick="window.location.href='mijn_aanvragen.php'">
+                <div class="action-card-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div class="action-card-title">Mijn aanvragen</div>
+                <div class="action-card-subtitle">Eigen aanvragen bekijken</div>
+            </div>
+
+            <div class="action-card" onclick="window.location.href='/index.html'">
+                <div class="action-card-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="action-card-title">Portfolio</div>
+                <div class="action-card-subtitle">Terug naar portfolio</div>
+            </div>
+
+            <div class="action-card" onclick="window.location.href='contact.php'">
+                <div class="action-card-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="action-card-title">Contact</div>
+                <div class="action-card-subtitle">Neem contact op</div>
             </div>
         </div>
+    </section>
 
-        <div class="header-center">
-            <img src="../IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="header-logo">
-        </div>
+    <section class="applications-section">
+        <h2 class="section-title">Admin overzicht</h2>
 
-        <div class="header-right">
-            <button class="logout-btn" onclick="window.location.href='/index.html'">
-                <i class="fas fa-home"></i>
-                <span>PortfolioPagina</span>
-            </button>
-
-            <button class="logout-btn" onclick="window.location.href='../logout.php'">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Uitloggen</span>
-            </button>
-        </div>
-    </header>
-
-    <main class="main-container">
-        <section class="quick-actions-section">
-            <h2 class="section-title">Admin acties</h2>
-
-            <div class="quick-actions">
-                <div class="action-card highlighted" onclick="window.location.href='admin_gebruikers.php'">
-                    <div class="action-card-icon">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
-                    <div class="action-card-title">Gebruikers beheren</div>
-                    <div class="action-card-subtitle">Rollen en accounts aanpassen</div>
+        <div class="applications-container">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-user-shield"></i>
                 </div>
-
-                <div class="action-card" onclick="window.location.href='keuringen.php'">
-                    <div class="action-card-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="action-card-title">Keuringen</div>
-                    <div class="action-card-subtitle">Openstaande aanvragen bekijken</div>
-                </div>
-
-                <div class="action-card" onclick="window.location.href='mijn_aanvragen.php'">
-                    <div class="action-card-icon">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                    <div class="action-card-title">Mijn aanvragen</div>
-                    <div class="action-card-subtitle">Eigen aanvragen bekijken</div>
-                </div>
-
-                <div class="action-card" onclick="window.location.href='/index.html'">
-                    <div class="action-card-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <div class="action-card-title">Portfolio</div>
-                    <div class="action-card-subtitle">Terug naar portfolio</div>
-                </div>
-
-                <div class="action-card" onclick="window.location.href='contact.php'">
-                    <div class="action-card-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="action-card-title">Contact</div>
-                    <div class="action-card-subtitle">Neem contact op</div>
+                <div class="empty-state-text">
+                    U bent ingelogd als admin. Vanuit hier kunt u gebruikers, rollen en aanvragen beheren.
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
+</main>
 
-        <section class="applications-section">
-            <h2 class="section-title">Admin overzicht</h2>
-
-            <div class="applications-container">
-                <div class="empty-state">
-                    <div class="empty-state-icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <div class="empty-state-text">
-                        U bent ingelogd als admin. Vanuit hier kunt u later gebruikers, rollen en aanvragen beheren.
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
 </body>
 </html>
