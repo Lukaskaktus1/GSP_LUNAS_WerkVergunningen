@@ -1,0 +1,8 @@
+# Geheime configbestanden
+config/config.secret.php
+
+# Tijdelijke bestanden
+hash.php
+
+# Logs
+*.log

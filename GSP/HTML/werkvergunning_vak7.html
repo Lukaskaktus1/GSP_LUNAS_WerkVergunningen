@@ -342,14 +342,14 @@
         const role = sessionStorage.getItem('userRole');
 
         const rolePages = {
-            'leerling': 'overzicht_leerling.html',
-            'leerkracht': 'overzicht_leerkracht.html',
-            'ta': 'overzicht_ta.html',
-            'directeur': 'overzicht_directeur.html'
+            'leerling': '../pages/overzicht_leerling.php',
+            'leerkracht': '../pages/overzicht_leerkracht.php',
+            'ta': '../pages/overzicht_ta.php',
+            'directeur': '../pages/overzicht_directeur.php'
         };
 
         // Fallback = leerling
-        const targetPage = rolePages[role] || 'overzicht_leerling.html';
+        const targetPage = rolePages[role] || '../pages/overzicht_leerling.php';
 
         window.location.href = targetPage;
     }

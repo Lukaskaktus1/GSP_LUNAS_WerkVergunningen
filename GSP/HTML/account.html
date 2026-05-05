@@ -76,12 +76,12 @@
         function redirectToOverview() {
             const role = sessionStorage.getItem('userRole');
             const pages = {
-                'leerling': 'overzicht_leerling.html',
-                'leerkracht': 'overzicht_leerkracht.html',
-                'ta': 'overzicht_ta.html',
-                'directeur': 'overzicht_directeur.html'
+                'leerling': '../pages/overzicht_leerling.php',
+                'leerkracht': '../pages/overzicht_leerkracht.php',
+                'ta': '../pages/overzicht_ta.php',
+                'directeur': '../pages/overzicht_directeur.php'
             };
-            window.location.href = pages[role] || 'overzicht_leerling.html';
+            window.location.href = pages[role] || '../pages/overzicht_leerling.php';
         }
 
         function initAccount() {

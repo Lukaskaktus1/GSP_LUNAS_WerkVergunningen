@@ -63,12 +63,13 @@ try {
     ]);
 
     $redirects = [
-        'leerling' => 'pages/overzicht_leerling.php',
-        'leerkracht' => 'pages/overzicht_leerkracht.php',
-        'ta' => 'pages/overzicht_ta.php',
-        'directeur' => 'pages/overzicht_directeur.php',
+    'leerling' => 'pages/overzicht_leerling.php',
+    'leerkracht' => 'pages/overzicht_leerkracht.php',
+    'ta' => 'pages/overzicht_ta.php',
+    'directeur' => 'pages/overzicht_directeur.php',
+    'admin' => 'pages/overzicht_admin.php',
     ];
-
+    
     redirect($redirects[$user['rol']] ?? 'pages/overzicht_leerling.php');
 } catch (Throwable $exception) {
     error_log('Login failed: ' . $exception->getMessage());

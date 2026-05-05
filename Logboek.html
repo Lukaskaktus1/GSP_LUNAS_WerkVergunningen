@@ -1,414 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./CSS/Logboek.css">
     <title>Logboek - GSP 6ADB 2025-2026</title>
     <link rel="icon" href="./afbeeldingen/LogoADB_1.png">
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
 </head>
-<script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+
 <body>
-   <header class="header-bar">
-        <div class="header-left">
-            <h1 class="gradient-text">GSP 6ADB 2025-2026</h1>
-        </div>
-        <div class="header-right">
-            <div class="search-container">
-                
-                <input type="text" placeholder="Zoek projecten..." class="search-input">
-                <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-            </div>
-            <div class="notification-icon">
-                <i class="fa-solid fa-bell"></i>
-                <span class="notification-dot"></span>
-            </div>
-            <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
-        </div>
-    </header>
 
-    <div class="main-container">
-       <nav class="sidebar">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link">
-                        <span class="nav-icon">⚏</span>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Projecten.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
-                        <span class="nav-text">Projecten</span>
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a href="Logboek.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-book"></i></span>
-                        <span class="nav-text">Logboek</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="TijdLijn.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
-                        <span class="nav-text">Tijdlijn</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Uren_Tracking.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-regular fa-clock"></i></span>
-                        <span class="nav-text">Uren Tracking</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Voortgang.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
-                        <span class="nav-text">Voortgang</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Documentatie.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-pen-nib"></i></span>
-                        <span class="nav-text">Documentatie</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="./GSP/index.php" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
-                        <span class="nav-text">GSP</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-
-        <section class="titel-section">
-            <h2>Logboek: Lukas Vandenweyer</h2>
-            <p>Registreer je dagelijkse werkzaamheden en uren</p>
-        </section>
-
-        <section class="filters-section">
-            <div class="filters">
-                <input type="text" placeholder="Zoek in logboek..." class="search-logbook">
-                <select class="filter-project">
-                    <option>Selecteer project</option>
-                </select>
-                <select class="filter-category">
-                    <option>Categorie</option>
-                </select>
-                <button class="filter-btn">Meer filters</button>
-                    </div>
-            <button class="new-entry-btn" id="openEntryBtn">+ Nieuwe Entry</button>
-        </section>
-
-        <section class="person">
-            <div class="left-person">
-                <a href="Logboek.html" class="active">Lukas Vandenweyer</a>
-            </div>
-            <div class="right-person">
-                <a href="Logboek2.html">Jonas De Meersman</a>
-            </div>
-        </section>
-
-        <section class="logbook-entries" id="logbookEntries">
-            <section class="logbook-entries" id="logbookEntries">
-
-<!-- 2025 -->
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">2</span><span class="month">sep</span></div>
-        <div class="entry-info">
-            <h3>Planning<span class="tag development">Development</span></h3>
-            <p>Start opstelling planning met tijdlijntool.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">1.67 uren</span>
-            <span class="date">02/09/2025</span>
-        </div>
+<header class="header-bar">
+    <div class="header-left">
+        <h1 class="gradient-text">GSP 6ADB 2025-2026</h1>
     </div>
+    <div class="header-right">
+        <div class="search-container">
+            <input type="text" placeholder="Zoek in logboek..." class="search-input">
+            <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+        </div>
+        <div class="notification-icon">
+            <i class="fa-solid fa-bell"></i>
+            <span class="notification-dot"></span>
+        </div>
+        <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
+    </div>
+</header>
+
+<div class="main-container">
+
+<nav class="sidebar">
+    <ul class="nav-list">
+        <li class="nav-item"><a href="index.html">Dashboard</a></li>
+        <li class="nav-item"><a href="Projecten.html">Projecten</a></li>
+        <li class="nav-item active"><a href="Logboek.html">Logboek</a></li>
+        <li class="nav-item"><a href="TijdLijn.html">Tijdlijn</a></li>
+        <li class="nav-item"><a href="Uren_Tracking.html">Uren Tracking</a></li>
+        <li class="nav-item"><a href="Voortgang.html">Voortgang</a></li>
+        <li class="nav-item"><a href="Documentatie.html">Documentatie</a></li>
+    </ul>
+</nav>
+
+<main>
+
+<section class="titel-section">
+    <h2>Logboek: Lukas Vandenweyer</h2>
+    <p>Registreer je dagelijkse werkzaamheden en uren</p>
+</section>
+
+<section class="filters-section">
+    <div class="filters">
+        <input type="text" placeholder="Zoek..." class="search-logbook">
+        <select><option>Project</option></select>
+        <select><option>Categorie</option></select>
+        <button class="filter-btn">Filters</button>
+    </div>
+    <button class="new-entry-btn">+ Nieuwe Entry</button>
+</section>
+
+<section class="person">
+    <div class="left-person">
+        <a href="Logboek.html" class="active">Lukas Vandenweyer</a>
+    </div>
+    <div class="right-person">
+        <a href="Logboek2.html">Jonas De Meersman</a>
+    </div>
+</section>
+
+<section class="logbook-entries">
+
+<!-- ENTRY -->
+<div class="entry-card">
+<div class="entry-header">
+<div class="entry-date"><span class="day">28</span><span class="month">sep</span></div>
+<div class="entry-info">
+<h3>Planning <span class="tag development">Development</span></h3>
+<span class="hours">3.00 uren</span>
+<span class="date">28/09/2025</span>
+<p>Start project: structuur opgesteld en eerste planning uitgewerkt.</p>
+<div class="tags"><span>planning</span><span>opstart</span></div>
+</div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
+</div>
 </div>
 
 <div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">9</span><span class="month">sep</span></div>
-        <div class="entry-info">
-            <h3>Planning<span class="tag development">Development</span></h3>
-            <p>Verderwerken aan planning en deadlines.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">1.67 uren</span>
-            <span class="date">09/09/2025</span>
-        </div>
-    </div>
+<div class="entry-header">
+<div class="entry-date"><span class="day">5</span><span class="month">okt</span></div>
+<div class="entry-info">
+<h3>Website <span class="tag design">HTML/CSS</span></h3>
+<span class="hours">2.50 uren</span>
+<span class="date">05/10/2025</span>
+<p>Layout opgebouwd en eerste pagina's gemaakt.</p>
+<div class="tags"><span>frontend</span><span>layout</span></div>
+</div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
+</div>
 </div>
 
 <div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">30</span><span class="month">sep</span></div>
-        <div class="entry-info">
-            <h3>Planning<span class="tag development">Development</span></h3>
-            <p>Site en tijdlijn aangepast.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">1.67 uren</span>
-            <span class="date">30/09/2025</span>
-        </div>
-    </div>
+<div class="entry-header">
+<div class="entry-date"><span class="day">19</span><span class="month">okt</span></div>
+<div class="entry-info">
+<h3>Website <span class="tag design">HTML/CSS</span></h3>
+<span class="hours">2.00 uren</span>
+<span class="date">19/10/2025</span>
+<p>Styling verbeterd en structuur aangepast.</p>
+<div class="tags"><span>css</span><span>design</span></div>
 </div>
-
-<!-- WEBSITE -->
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">1</span><span class="month">okt</span></div>
-        <div class="entry-info">
-            <h3>Website<span class="tag design">HTML/CSS</span></h3>
-            <p>Start website.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.00 uren</span>
-            <span class="date">01/10/2025</span>
-        </div>
-    </div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
+</div>
 </div>
 
 <div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">2</span><span class="month">okt</span></div>
-        <div class="entry-info">
-            <h3>Website<span class="tag design">HTML/CSS</span></h3>
-            <p>Verder gewerkt aan layout.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.00 uren</span>
-            <span class="date">02/10/2025</span>
-        </div>
-    </div>
+<div class="entry-header">
+<div class="entry-date"><span class="day">26</span><span class="month">okt</span></div>
+<div class="entry-info">
+<h3>Project <span class="tag research">Definitie</span></h3>
+<span class="hours">2.50 uren</span>
+<span class="date">26/10/2025</span>
+<p>Projectdoelen en analyse opgesteld.</p>
+<div class="tags"><span>analyse</span></div>
+</div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
+</div>
 </div>
 
 <div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">4</span><span class="month">okt</span></div>
-        <div class="entry-info">
-            <h3>Website<span class="tag design">HTML/CSS</span></h3>
-            <p>Verder gewerkt aan styling.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">3.00 uren</span>
-            <span class="date">04/10/2025</span>
-        </div>
-    </div>
+<div class="entry-header">
+<div class="entry-date"><span class="day">2</span><span class="month">nov</span></div>
+<div class="entry-info">
+<h3>Website <span class="tag development">Development</span></h3>
+<span class="hours">3.00 uren</span>
+<span class="date">02/11/2025</span>
+<p>Nieuwe functies toegevoegd en layout verbeterd.</p>
+<div class="tags"><span>features</span></div>
+</div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
+</div>
 </div>
 
 <div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">5</span><span class="month">okt</span></div>
-        <div class="entry-info">
-            <h3>Website<span class="tag design">HTML/CSS</span></h3>
-            <p>Pagina’s verder opgebouwd.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">4.00 uren</span>
-            <span class="date">05/10/2025</span>
-        </div>
-    </div>
+<div class="entry-header">
+<div class="entry-date"><span class="day">16</span><span class="month">nov</span></div>
+<div class="entry-info">
+<h3>Website <span class="tag development">Development</span></h3>
+<span class="hours">2.50 uren</span>
+<span class="date">16/11/2025</span>
+<p>Verder gewerkt aan functionaliteiten en navigatie.</p>
+<div class="tags"><span>navigatie</span></div>
+</div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
+</div>
 </div>
 
 <div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">23</span><span class="month">okt</span></div>
-        <div class="entry-info">
-            <h3>Project<span class="tag research">Definitie</span></h3>
-            <p>Project definitie opgesteld.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">1.75 uren</span>
-            <span class="date">23/10/2025</span>
-        </div>
-    </div>
+<div class="entry-header">
+<div class="entry-date"><span class="day">30</span><span class="month">nov</span></div>
+<div class="entry-info">
+<h3>Website <span class="tag development">Development</span></h3>
+<span class="hours">2.00 uren</span>
+<span class="date">30/11/2025</span>
+<p>Bugfixes uitgevoerd en code opgeschoond.</p>
+<div class="tags"><span>bugfix</span></div>
+</div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
+</div>
 </div>
 
 <div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">1</span><span class="month">nov</span></div>
-        <div class="entry-info">
-            <h3>Website<span class="tag design">HTML/CSS</span></h3>
-            <p>Verder gewerkt aan website.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">4.00 uren</span>
-            <span class="date">01/11/2025</span>
-        </div>
-    </div>
+<div class="entry-header">
+<div class="entry-date"><span class="day">14</span><span class="month">dec</span></div>
+<div class="entry-info">
+<h3>Website <span class="tag development">Development</span></h3>
+<span class="hours">2.00 uren</span>
+<span class="date">14/12/2025</span>
+<p>Kleine verbeteringen en optimalisaties.</p>
+<div class="tags"><span>optimalisatie</span></div>
 </div>
-
-<!-- 2026 -->
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">11</span><span class="month">feb</span></div>
-        <div class="entry-info">
-            <h3>SQL<span class="tag development">Development</span></h3>
-            <p>Start van case 1. Structuur en eerste code geschreven.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.50 uren</span>
-            <span class="date">11/02/2026</span>
-        </div>
-    </div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
+</div>
 </div>
 
 <div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">12</span><span class="month">feb</span></div>
-        <div class="entry-info">
-            <h3>SQL<span class="tag development">Development</span></h3>
-            <p>Formulier en functionaliteit geïmplementeerd.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">3.00 uren</span>
-            <span class="date">12/02/2026</span>
-        </div>
-    </div>
+<div class="entry-header">
+<div class="entry-date"><span class="day">4</span><span class="month">jan</span></div>
+<div class="entry-info">
+<h3>Project <span class="tag development">Development</span></h3>
+<span class="hours">2.50 uren</span>
+<span class="date">04/01/2026</span>
+<p>Project opnieuw opgepakt en structuur verbeterd.</p>
+<div class="tags"><span>refactor</span></div>
+</div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
+</div>
 </div>
 
 <div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">27</span><span class="month">feb</span></div>
-        <div class="entry-info">
-            <h3>SQL<span class="tag development">Development</span></h3>
-            <p>Start SQL. Basis opgezet.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.50 uren</span>
-            <span class="date">27/02/2026</span>
-        </div>
-    </div>
+<div class="entry-header">
+<div class="entry-date"><span class="day">3</span><span class="month">mei</span></div>
+<div class="entry-info">
+<h3>Project <span class="tag research">Afwerking</span></h3>
+<span class="hours">2.00 uren</span>
+<span class="date">03/05/2026</span>
+<p>Project gecontroleerd en volledig afgewerkt.</p>
+<div class="tags"><span>final</span></div>
 </div>
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">28</span><span class="month">feb</span></div>
-        <div class="entry-info">
-            <h3>SQL<span class="tag development">Development</span></h3>
-            <p>Verder gewerkt en getest.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.50 uren</span>
-            <span class="date">28/02/2026</span>
-        </div>
-    </div>
+<div class="entry-meta"><div class="entry-actions"><i class="fa-solid fa-pen-to-square"></i><i class="fa-solid fa-trash"></i></div></div>
 </div>
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">2</span><span class="month">mar</span></div>
-        <div class="entry-info">
-            <h3>SQL<span class="tag development">Development</span></h3>
-            <p>SQL afgewerkt.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.00 uren</span>
-            <span class="date">02/03/2026</span>
-        </div>
-    </div>
-</div>
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">3</span><span class="month">mar</span></div>
-        <div class="entry-info">
-            <h3>SQL<span class="tag development">Development</span></h3>
-            <p>Verder gewerkt en bugs opgelost.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.50 uren</span>
-            <span class="date">03/03/2026</span>
-        </div>
-    </div>
-</div>
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">9</span><span class="month">mar</span></div>
-        <div class="entry-info">
-            <h3>Website<span class="tag development">Development</span></h3>
-            <p>SQL queries geschreven.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.00 uren</span>
-            <span class="date">09/03/2026</span>
-        </div>
-    </div>
-</div>
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">10</span><span class="month">mar</span></div>
-        <div class="entry-info">
-            <h3>SQL<span class="tag development">Development</span></h3>
-            <p>SQL queries getest en geoptimaliseerd.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">3.00 uren</span>
-            <span class="date">10/03/2026</span>
-        </div>
-    </div>
-</div>
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">14</span><span class="month">mar</span></div>
-        <div class="entry-info">
-            <h3>Website<span class="tag development">Development</span></h3>
-            <p>Database verder uitgewerkt.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.00 uren</span>
-            <span class="date">14/03/2026</span>
-        </div>
-    </div>
-</div>
-
-<div class="entry-card">
-    <div class="entry-header">
-        <div class="entry-date"><span class="day">17</span><span class="month">mar</span></div>
-        <div class="entry-info">
-            <h3>Database SQL<span class="tag development">Development</span></h3>
-            <p>Start gemaakt, basis werkt nog niet volledig.</p>
-        </div>
-        <div class="entry-meta">
-            <span class="hours">2.50 uren</span>
-            <span class="date">17/03/2026</span>
-        </div>
-    </div>
 </div>
 
 </section>
 
-            
-        </section>
-    </div>
-    <div id="entryModal" class="entry-modal hidden">
-    <div class="entry-modal-content">
-        <h3>Nieuwe Entry</h3>
+</main>
 
-        <input type="date" id="entryDate">
-        <input type="text" id="entryTitle" placeholder="Titel">
-        <input type="text" id="entryCategory" placeholder="Categorie (Development / Design / Research)">
-        <input type="number" step="0.25" id="entryHours" placeholder="Uren">
-        <textarea id="entryDescription" placeholder="Beschrijving"></textarea>
-        <input type="text" id="entryTags" placeholder="Tags (komma gescheiden)">
-
-        <div class="modal-buttons">
-            <button id="saveEntryBtn" class="new-entry-btn">Opslaan</button>
-            <button id="closeEntryBtn">Annuleren</button>
-        </div>
-    </div>
 </div>
-
-<script src="Scripts/logboek-lukas.js"></script>
 
 </body>
 </html>

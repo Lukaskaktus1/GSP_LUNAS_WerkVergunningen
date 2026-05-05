@@ -10,6 +10,7 @@ if (isset($_SESSION['user_id'], $_SESSION['rol'])) {
         'leerkracht' => 'pages/overzicht_leerkracht.php',
         'ta' => 'pages/overzicht_ta.php',
         'directeur' => 'pages/overzicht_directeur.php',
+        'admin' => 'pages/overzicht_admin.php',
     ];
 
     redirect($redirects[$_SESSION['rol']] ?? 'pages/overzicht_leerling.php');

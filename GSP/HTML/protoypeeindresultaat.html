@@ -341,12 +341,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Terug naar juiste overzichtspagina op basis van rol
         const pages = {
-            leerling: 'overzicht_leerling.html',
-            leerkracht: 'overzicht_leerkracht.html',
-            ta: 'overzicht_ta.html',
-            directeur: 'overzicht_directeur.html'
+            leerling: '../pages/overzicht_leerling.php',
+            leerkracht: '../pages/overzicht_leerkracht.php',
+            ta: '../pages/overzicht_ta.php',
+            directeur: '../pages/overzicht_directeur.php'
         };
-        const target = pages[ownerRole] || 'overzicht_leerling.html';
+        const target = pages[ownerRole] || '../pages/overzicht_leerling.php';
         window.location.href = target;
     };
 

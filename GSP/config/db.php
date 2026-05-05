@@ -13,7 +13,7 @@ function getDbConnection(): PDO
     $host = 'ID480922_DATABASE.db.webhosting.be';
     $database = 'ID480922_DATABASE';
     $username = 'ID480922_DATABASE';
-    $password = $_ENV['DB_PASSWORD'] ?? getenv('DB_PASSWORD') ?: 'VUL_HIER_DB_WACHTWOORD_IN';
+    $password = $_ENV['DB_PASSWORD'] ?? getenv('DB_PASSWORD') ?: 'team99!00';
 
     try {
         $pdo = new PDO(
