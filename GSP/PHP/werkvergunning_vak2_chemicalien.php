@@ -67,70 +67,70 @@ $overzichtPagina = match ($role) {
                 </div>
                 <div class="checkbox-grid-4">
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_corrosief" name="chem_corrosief">
+                        <input type="checkbox" id="chem_corrosief" name="chem_corrosief" value="1">
                         <label for="chem_corrosief" class="label-with-icon">
                             <img src="../IMAGES/Corrosief.png" alt="Corrosief" class="ghs-icon">
                             corrosief
                         </label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_toxisch" name="chem_toxisch">
+                        <input type="checkbox" id="chem_toxisch" name="chem_toxisch" value="2">
                         <label for="chem_toxisch" class="label-with-icon">
                             <img src="../IMAGES/Giftig.png" alt="Giftig" class="ghs-icon">
                             (zeer) giftig
                         </label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_oxyderend" name="chem_oxyderend">
+                        <input type="checkbox" id="chem_oxyderend" name="chem_oxyderend" value="3">
                         <label for="chem_oxyderend" class="label-with-icon">
                             <img src="../IMAGES/Oxiderend.png" alt="Oxiderend" class="ghs-icon">
                             oxyderend
                         </label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_ontvlambaar" name="chem_ontvlambaar">
+                        <input type="checkbox" id="chem_ontvlambaar" name="chem_ontvlambaar" value="4">
                         <label for="chem_ontvlambaar" class="label-with-icon">
                             <img src="../IMAGES/Ontvlambaar.png" alt="Ontvlambaar" class="ghs-icon">
                             (z)(l)ontvlambaar
                         </label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_gassen" name="chem_gassen">
+                        <input type="checkbox" id="chem_gassen" name="chem_gassen" value="5">
                         <label for="chem_gassen" class="label-with-icon">
                             <img src="../IMAGES/OpDruk.png" alt="Gassen" class="ghs-icon">
                             gassen (cilinders)
                         </label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_irriterend" name="chem_irriterend">
+                        <input type="checkbox" id="chem_irriterend" name="chem_irriterend" value="6">
                         <label for="chem_irriterend" class="label-with-icon">
                             <img src="../IMAGES/Schadelijk.png" alt="Irriterend" class="ghs-icon">
                             irriterend
                         </label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_schadelijk" name="chem_schadelijk">
+                        <input type="checkbox" id="chem_schadelijk" name="chem_schadelijk" value="7">
                         <label for="chem_schadelijk" class="label-with-icon">
                             <img src="../IMAGES/Schadelijk.png" alt="Schadelijk" class="ghs-icon">
                             schadelijk
                         </label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_explosief" name="chem_explosief">
+                        <input type="checkbox" id="chem_explosief" name="chem_explosief" value="8">
                         <label for="chem_explosief" class="label-with-icon">
                             <img src="../IMAGES/Explosief.png" alt="Explosief" class="ghs-icon">
                             explosief
                         </label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_milieu" name="chem_milieu">
+                        <input type="checkbox" id="chem_milieu" name="chem_milieu" value="9">
                         <label for="chem_milieu" class="label-with-icon">
                             <img src="../IMAGES/Milieu-Schadelijk.png" alt="Milieu-schadelijk" class="ghs-icon">
                             milieu-schadelijk
                         </label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="chem_gezondheid" name="chem_gezondheid">
+                        <input type="checkbox" id="chem_gezondheid" name="chem_gezondheid" value="10">
                         <label for="chem_gezondheid" class="label-with-icon">
                             <img src="../IMAGES/LangeTermijnGezondheidsschade.png" alt="Lange termijn gezondheidsschadelijk" class="ghs-icon">
                             lange termijn gezondheidsschadelijk

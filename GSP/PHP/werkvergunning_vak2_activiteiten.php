@@ -67,75 +67,75 @@ $overzichtPagina = match ($role) {
                 </div>
                 <div class="checkbox-grid">
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_monteren" name="koud_monteren">
+                        <input type="checkbox" id="koud_monteren" name="koud_monteren" value="2">
                         <label for="koud_monteren">monteren</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_demonteren" name="koud_demonteren">
+                        <input type="checkbox" id="koud_demonteren" name="koud_demonteren" value="3">
                         <label for="koud_demonteren">demonteren</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_koud_snijden" name="koud_koud_snijden">
+                        <input type="checkbox" id="koud_koud_snijden" name="koud_koud_snijden" value="4">
                         <label for="koud_koud_snijden">koud snijden</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_manueel_zagen" name="koud_manueel_zagen">
+                        <input type="checkbox" id="koud_manueel_zagen" name="koud_manueel_zagen" value="5">
                         <label for="koud_manueel_zagen">manueel zagen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_afkoppelen" name="koud_afkoppelen">
+                        <input type="checkbox" id="koud_afkoppelen" name="koud_afkoppelen" value="6">
                         <label for="koud_afkoppelen">E/l afkoppelen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_aansluiten" name="koud_aansluiten">
+                        <input type="checkbox" id="koud_aansluiten" name="koud_aansluiten" value="7">
                         <label for="koud_aansluiten">E/l aansluiten</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_schilderen" name="koud_schilderen">
+                        <input type="checkbox" id="koud_schilderen" name="koud_schilderen" value="8">
                         <label for="koud_schilderen">schilderen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_stellingbouw" name="koud_stellingbouw">
+                        <input type="checkbox" id="koud_stellingbouw" name="koud_stellingbouw" value="9">
                         <label for="koud_stellingbouw">stellingbouw</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_opmeten" name="koud_opmeten">
+                        <input type="checkbox" id="koud_opmeten" name="koud_opmeten" value="10">
                         <label for="koud_opmeten">opmeten</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_hogedrukreinigen" name="koud_hogedrukreinigen">
+                        <input type="checkbox" id="koud_hogedrukreinigen" name="koud_hogedrukreinigen" value="11">
                         <label for="koud_hogedrukreinigen">hogedrukreinigen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_hijswerken" name="koud_hijswerken">
+                        <input type="checkbox" id="koud_hijswerken" name="koud_hijswerken" value="12">
                         <label for="koud_hijswerken">hijswerken</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_werken_boven_2m_1" name="koud_werken_boven_2m_1">
+                        <input type="checkbox" id="koud_werken_boven_2m_1" name="koud_werken_boven_2m_1" value="13">
                         <label for="koud_werken_boven_2m_1">werken boven 2m</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_werken_boven_2m_2" name="koud_werken_boven_2m_2">
+                        <input type="checkbox" id="koud_werken_boven_2m_2" name="koud_werken_boven_2m_2" value="14">
                         <label for="koud_werken_boven_2m_2">werken boven 2m</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_nieuwe_isolatie" name="koud_nieuwe_isolatie">
+                        <input type="checkbox" id="koud_nieuwe_isolatie" name="koud_nieuwe_isolatie" value="15">
                         <label for="koud_nieuwe_isolatie">nieuwe isolatie</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_verwijderen_isolatie" name="koud_verwijderen_isolatie">
+                        <input type="checkbox" id="koud_verwijderen_isolatie" name="koud_verwijderen_isolatie" value="16">
                         <label for="koud_verwijderen_isolatie">verwijderen isolatie</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_druktesten" name="koud_druktesten">
+                        <input type="checkbox" id="koud_druktesten" name="koud_druktesten" value="17">
                         <label for="koud_druktesten">druktesten</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_testen_algemeen" name="koud_testen_algemeen">
+                        <input type="checkbox" id="koud_testen_algemeen" name="koud_testen_algemeen" value="18">
                         <label for="koud_testen_algemeen">testen algemeen</label>
                     </div>
                     <div class="checkbox-item checkbox-item-span-2">
-                        <input type="checkbox" id="koud_andere" name="koud_andere">
+                        <input type="checkbox" id="koud_andere" name="koud_andere" value="99">
                         <label for="koud_andere">andere:</label>
                         <input type="text" class="inline-input">
                     </div>
@@ -153,35 +153,35 @@ $overzichtPagina = match ($role) {
                 </div>
                 <div class="checkbox-grid">
                     <div class="checkbox-item">
-                        <input type="checkbox" id="warm_lassen" name="warm_lassen">
+                        <input type="checkbox" id="warm_lassen" name="warm_lassen" value="2">
                         <label for="warm_lassen">lassen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="warm_branden" name="warm_branden">
+                        <input type="checkbox" id="warm_branden" name="warm_branden" value="3">
                         <label for="warm_branden">branden</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="warm_slijpen" name="warm_slijpen">
+                        <input type="checkbox" id="warm_slijpen" name="warm_slijpen" value="4">
                         <label for="warm_slijpen">slijpen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="warm_elektrisch_boren" name="warm_elektrisch_boren">
+                        <input type="checkbox" id="warm_elektrisch_boren" name="warm_elektrisch_boren" value="5">
                         <label for="warm_elektrisch_boren">elektrisch boren</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="warm_openen_kasten" name="warm_openen_kasten">
+                        <input type="checkbox" id="warm_openen_kasten" name="warm_openen_kasten" value="6">
                         <label for="warm_openen_kasten">openen E/l kasten onder spanning</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="warm_pneumatisch_boren" name="warm_pneumatisch_boren">
+                        <input type="checkbox" id="warm_pneumatisch_boren" name="warm_pneumatisch_boren" value="7">
                         <label for="warm_pneumatisch_boren">pneumatisch boren</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="warm_kappen_beton" name="warm_kappen_beton">
+                        <input type="checkbox" id="warm_kappen_beton" name="warm_kappen_beton" value="8">
                         <label for="warm_kappen_beton">kappen beton</label>
                     </div>
                     <div class="checkbox-item checkbox-item-span-2">
-                        <input type="checkbox" id="warm_andere" name="warm_andere">
+                        <input type="checkbox" id="warm_andere" name="warm_andere" value="99">
                         <label for="warm_andere">andere:</label>
                         <input type="text" class="inline-input">
                     </div>
@@ -199,60 +199,60 @@ $overzichtPagina = match ($role) {
                 </div>
                 <div class="checkbox-grid">
                     <div class="checkbox-item">
-                        <input type="checkbox" id="vervoer_personenwagen" name="vervoer_personenwagen">
+                        <input type="checkbox" id="vervoer_personenwagen" name="vervoer_personenwagen" value="1">
                         <label for="vervoer_personenwagen">personenwagen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="vervoer_bestelwagen" name="vervoer_bestelwagen">
+                        <input type="checkbox" id="vervoer_bestelwagen" name="vervoer_bestelwagen" value="2">
                         <label for="vervoer_bestelwagen">bestelwagen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="vervoer_vrachtwagen" name="vervoer_vrachtwagen">
+                        <input type="checkbox" id="vervoer_vrachtwagen" name="vervoer_vrachtwagen" value="3">
                         <label for="vervoer_vrachtwagen">vrachtwagen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="vervoer_zuigwagen" name="vervoer_zuigwagen">
+                        <input type="checkbox" id="vervoer_zuigwagen" name="vervoer_zuigwagen" value="4">
                         <label for="vervoer_zuigwagen">zuigwagen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="vervoer_graafmachine" name="vervoer_graafmachine">
+                        <input type="checkbox" id="vervoer_graafmachine" name="vervoer_graafmachine" value="5">
                         <label for="vervoer_graafmachine">graafmachine</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="vervoer_compressor" name="vervoer_compressor">
+                        <input type="checkbox" id="vervoer_compressor" name="vervoer_compressor" value="6">
                         <label for="vervoer_compressor">compressor</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="vervoer_generator" name="vervoer_generator">
+                        <input type="checkbox" id="vervoer_generator" name="vervoer_generator" value="7">
                         <label for="vervoer_generator">generator</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_kraan" name="vervoer_kraan">
+                        <input type="checkbox" id="vervoer_kraan" name="vervoer_kraan" value="8">
                         <label for="vervoer_kraan">kraan</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_heftruck" name="vervoer_heftruck">
+                        <input type="checkbox" id="vervoer_heftruck" name="vervoer_heftruck" value="9">
                         <label for="vervoer_heftruck">heftruck</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_hoogtewerker" name="vervoer_hoogtewerker">
+                        <input type="checkbox" id="vervoer_hoogtewerker" name="vervoer_hoogtewerker" value="10">
                         <label for="vervoer_hoogtewerker">hoogtewerker</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_schaarlift" name="vervoer_schaarlift">
+                        <input type="checkbox" id="vervoer_schaarlift" name="vervoer_schaarlift" value="11">
                         <label for="vervoer_schaarlift">schaarlift</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_verreiker" name="vervoer_verreiker">
+                        <input type="checkbox" id="vervoer_verreiker" name="vervoer_verreiker" value="12">
                         <label for="vervoer_verreiker">verreiker</label>
                     </div>
                     <div class="checkbox-item checkbox-item-span-2">
-                        <input type="checkbox" id="vervoer_andere" name="vervoer_andere">
+                        <input type="checkbox" id="vervoer_andere" name="vervoer_andere" value="99">
                         <label for="vervoer_andere">andere:</label>
                         <input type="text" class="inline-input">
                     </div>
@@ -275,35 +275,35 @@ $overzichtPagina = match ($role) {
                 </div>
                 <div class="checkbox-grid">
                     <div class="checkbox-item">
-                        <input type="checkbox" id="stoffen_asbest" name="stoffen_asbest">
+                        <input type="checkbox" id="stoffen_asbest" name="stoffen_asbest" value="2">
                         <label for="stoffen_asbest">asbest</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="stoffen_stikstof" name="stoffen_stikstof">
+                        <input type="checkbox" id="stoffen_stikstof" name="stoffen_stikstof" value="3">
                         <label for="stoffen_stikstof">stikstof</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="stoffen_glas_steenwol" name="stoffen_glas_steenwol">
+                        <input type="checkbox" id="stoffen_glas_steenwol" name="stoffen_glas_steenwol" value="4">
                         <label for="stoffen_glas_steenwol">glas/steen wol</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="stoffen_foamglass" name="stoffen_foamglass">
+                        <input type="checkbox" id="stoffen_foamglass" name="stoffen_foamglass" value="5">
                         <label for="stoffen_foamglass">foam-glass</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="stoffen_lasdampen" name="stoffen_lasdampen">
+                        <input type="checkbox" id="stoffen_lasdampen" name="stoffen_lasdampen" value="6">
                         <label for="stoffen_lasdampen">lasdampen</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="stoffen_straling" name="stoffen_straling">
+                        <input type="checkbox" id="stoffen_straling" name="stoffen_straling" value="7">
                         <label for="stoffen_straling">straling</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="stoffen_waterevel" name="stoffen_waterevel">
+                        <input type="checkbox" id="stoffen_waterevel" name="stoffen_waterevel" value="8">
                         <label for="stoffen_waterevel">waterevel</label>
                     </div>
                     <div class="checkbox-item checkbox-item-span-2">
-                        <input type="checkbox" id="stoffen_andere" name="stoffen_andere">
+                        <input type="checkbox" id="stoffen_andere" name="stoffen_andere" value="99">
                         <label for="stoffen_andere">andere:</label>
                         <input type="text" class="inline-input">
                     </div>

@@ -43,9 +43,31 @@ function boolFromText(?string $value): int
     return in_array($value, ['ja', 'yes', '1', 'true', 'aan'], true) ? 1 : 0;
 }
 
-function generateVergunningNummer(): string
+function generateVergunningNummer(PDO $pdo): string
 {
-    return 'WV-' . date('Ymd-His') . '-' . random_int(100, 999);
+    $datumKey = date('Ymd');
+
+    $stmt = $pdo->prepare("
+        UPDATE vergunning_nummer_counter
+        SET laatste_nummer = laatste_nummer + 1
+        WHERE id = 1
+    ");
+    $stmt->execute();
+
+    $selectStmt = $pdo->query("
+        SELECT laatste_nummer
+        FROM vergunning_nummer_counter
+        WHERE id = 1
+        LIMIT 1
+    ");
+
+    $nummer = (int) $selectStmt->fetchColumn();
+
+    if ($nummer <= 0) {
+        throw new RuntimeException('Werkvergunning teller kon niet worden opgehaald.');
+    }
+
+    return 'WV-' . $datumKey . '-' . str_pad((string) $nummer, 6, '0', STR_PAD_LEFT);
 }
 
 try {
@@ -53,14 +75,14 @@ try {
 
     $pdo->beginTransaction();
 
-    $vergunningNummer = generateVergunningNummer();
+    $vergunningNummer = generateVergunningNummer($pdo);
 
     $werkbeschrijving = fieldValue($fields, 'vak1_werkbeschrijving');
 
     if ($werkbeschrijving === null) {
         $pdo->rollBack();
         setFlashMessage('error', 'Werkbeschrijving is verplicht.');
-        redirect('mijn_aanvragen.php');
+        redirect('../PHP/werkvergunning_vak1.php');
     }
 
     $stmt = $pdo->prepare("
@@ -111,36 +133,50 @@ try {
         )
     ");
 
-    $lotoVerplicht = 0;  // LOTO niet meer verplicht in de flow
-
     $stmt->execute([
         'vergunning_nummer' => $vergunningNummer,
         'eigenaar_user_id' => (int) $_SESSION['user_id'],
         'eigenaar_email' => (string) ($_SESSION['email'] ?? ''),
         'eigenaar_rol' => (string) ($_SESSION['rol'] ?? ''),
+
         'werkbeschrijving' => $werkbeschrijving,
+
+        // Voorlopige mapping naar hoofdtabel werkvergunning
+        // Later kunnen activiteiten/machines/preventie apart naar koppeltabellen.
         'werkzaamheden' => fieldValue($fields, 'vak2_naam'),
         'aandachtspunten_vak3' => fieldValue($fields, 'vak3_aandachtspunten'),
         'andere_werkzaamheden' => fieldValue($fields, 'vak4_aandachtspunten'),
         'naam_afdelingsverantwoordelijke' => fieldValue($fields, 'vak4_naam'),
-        'afdeling_tekst' => fieldValue($fields, 'vak1_afdeling') ?? fieldValue($fields, 'vak4_afdeling'),
+
+        'afdeling_tekst' =>
+            fieldValue($fields, 'vak1_afdeling')
+            ?? fieldValue($fields, 'vak4_afdeling'),
+
         'datum_werken' => fieldValue($fields, 'vak2_datumwerken'),
+
+        // Deze velden worden voorlopig nog niet duidelijk uit de flow gehaald.
         'werktijd_van' => null,
         'werktijd_tot' => null,
         'vermoedelijke_duur' => null,
+
         'ex_zone' => boolFromText(fieldValue($fields, 'vak1_exzone')),
         'veiligheidstest_status' => fieldValue($fields, 'vak2_veiligheidstest') ?: 'NVT',
+
+        // VCA wordt later eventueel uitgebreider gekoppeld.
         'vca_verplicht' => 0,
         'vca_geldig_tot' => null,
+
+        // LOTO behoort niet meer tot het pakket.
         'loto_verplicht' => 0,
         'loto_status' => 'niet_van_toepassing',
+
         'status' => 'ingediend',
     ]);
 
     $pdo->commit();
 
     setFlashMessage('success', 'Werkvergunning succesvol ingediend.');
-    redirect('mijn_aanvragen.php');
+    redirect('mijn_aanvragen.php?submitted=1');
 
 } catch (Throwable $exception) {
     if (isset($pdo) && $pdo instanceof PDO && $pdo->inTransaction()) {

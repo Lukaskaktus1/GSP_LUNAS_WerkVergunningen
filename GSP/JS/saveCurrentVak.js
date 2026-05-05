@@ -173,16 +173,17 @@ function saveCurrentVak() {
 function saveCheckboxGroup(namePattern, storageKey){
     const values=[];
     
-    // Als namePattern met wildcards begint, is het een pattern (voor Vak5)
-    // Als het exact matched, gebruik exact match
+    // Verzamel alle gecheckte checkboxes met de gegeven name pattern
+    // Sla ALTIJD de value op (niet de name of "on")
     document.querySelectorAll(`input[type="checkbox"]`).forEach(cb=>{
         if(cb.name === namePattern || cb.name.startsWith(namePattern)) {
-            if(cb.checked) {
-                values.push(cb.value || cb.nextElementSibling?.textContent?.trim() || 'Ja');
+            if(cb.checked && cb.value) {
+                values.push(cb.value);
             }
         }
     });
     
+    // Sla de array van values op als JSON
     if(values.length) {
         sessionStorage.setItem(storageKey, JSON.stringify(values));
     }

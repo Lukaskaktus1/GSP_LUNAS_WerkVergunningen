@@ -65,19 +65,19 @@ $overzichtPagina = match ($role) {
                         <h3>HUID</h3>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="checkbox" id="huid_tyvec_classic" name="huid_tyvec_classic">
+                                <input type="checkbox" id="huid_tyvec_classic" name="huid_tyvec_classic" value="1">
                                 <label for="huid_tyvec_classic">Tyvec Classic (wit-pak)</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="huid_tyvec_f" name="huid_tyvec_f">
+                                <input type="checkbox" id="huid_tyvec_f" name="huid_tyvec_f" value="2">
                                 <label for="huid_tyvec_f">Tyvec F (grijs-pak)</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="huid_hitte" name="huid_hitte">
+                                <input type="checkbox" id="huid_hitte" name="huid_hitte" value="3">
                                 <label for="huid_hitte">hitte-werende kledij</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="huid_andere" name="huid_andere">
+                                <input type="checkbox" id="huid_andere" name="huid_andere" value="99">
                                 <label for="huid_andere">andere:</label>
                                 <input type="text" class="inline-input-medium">
                             </div>
@@ -89,23 +89,23 @@ $overzichtPagina = match ($role) {
                         <h3>OGEN/OREN</h3>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="checkbox" id="ogen_gelaatscherm" name="ogen_gelaatscherm">
+                                <input type="checkbox" id="ogen_gelaatscherm" name="ogen_gelaatscherm" value="1">
                                 <label for="ogen_gelaatscherm">gelaatscherm</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="ogen_goggles" name="ogen_goggles">
+                                <input type="checkbox" id="ogen_goggles" name="ogen_goggles" value="2">
                                 <label for="ogen_goggles">goggles (ruimzichtbril)</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="oren_bescherming" name="oren_bescherming">
+                                <input type="checkbox" id="oren_bescherming" name="oren_bescherming" value="3">
                                 <label for="oren_bescherming">oorbescherming</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="ogen_verlichting" name="ogen_verlichting">
+                                <input type="checkbox" id="ogen_verlichting" name="ogen_verlichting" value="4">
                                 <label for="ogen_verlichting">bijkomende verlichting</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="ogen_andere" name="ogen_andere">
+                                <input type="checkbox" id="ogen_andere" name="ogen_andere" value="99">
                                 <label for="ogen_andere">andere:</label>
                                 <input type="text" class="inline-input-medium">
                             </div>
@@ -117,24 +117,24 @@ $overzichtPagina = match ($role) {
                         <h3>HAND/VOETEN</h3>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="checkbox" id="hand_handschoenen" name="hand_handschoenen">
+                                <input type="checkbox" id="hand_handschoenen" name="hand_handschoenen" value="1">
                                 <label for="hand_handschoenen">handschoenen type...</label>
                                 <input type="text" class="inline-input-very-small">
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="hand_laarzen" name="hand_laarzen">
+                                <input type="checkbox" id="hand_laarzen" name="hand_laarzen" value="2">
                                 <label for="hand_laarzen">rubberen laarzen</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="hand_polsbeschermers" name="hand_polsbeschermers">
+                                <input type="checkbox" id="hand_polsbeschermers" name="hand_polsbeschermers" value="3">
                                 <label for="hand_polsbeschermers">polsbeschermers</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="hand_tape" name="hand_tape">
+                                <input type="checkbox" id="hand_tape" name="hand_tape" value="4">
                                 <label for="hand_tape">vast-TAPEN: handschoenen /laarzen</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="hand_andere" name="hand_andere">
+                                <input type="checkbox" id="hand_andere" name="hand_andere" value="99">
                                 <label for="hand_andere">andere:</label>
                                 <input type="text" class="inline-input-medium">
                             </div>
@@ -146,29 +146,29 @@ $overzichtPagina = match ($role) {
                         <h3>ADEMHALING</h3>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="checkbox" id="adem_afzuiging" name="adem_afzuiging">
+                                <input type="checkbox" id="adem_afzuiging" name="adem_afzuiging" value="1">
                                 <label for="adem_afzuiging">afzuiging/ventilatie voorzien</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="adem_stofmasker" name="adem_stofmasker">
+                                <input type="checkbox" id="adem_stofmasker" name="adem_stofmasker" value="2">
                                 <label for="adem_stofmasker">stofmasker P1/P2/P3</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="adem_halfgelaatsmasker" name="adem_halfgelaatsmasker">
+                                <input type="checkbox" id="adem_halfgelaatsmasker" name="adem_halfgelaatsmasker" value="3">
                                 <label for="adem_halfgelaatsmasker">halfgelaatsmasker type.....</label>
                                 <input type="text" class="inline-input-small">
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="adem_volgelaatsmasker" name="adem_volgelaatsmasker">
+                                <input type="checkbox" id="adem_volgelaatsmasker" name="adem_volgelaatsmasker" value="4">
                                 <label for="adem_volgelaatsmasker">volgelaatsmasker type.....</label>
                                 <input type="text" class="inline-input-small">
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="adem_luchtkap" name="adem_luchtkap">
+                                <input type="checkbox" id="adem_luchtkap" name="adem_luchtkap" value="5">
                                 <label for="adem_luchtkap">luchtkap</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="adem_autonoom" name="adem_autonoom">
+                                <input type="checkbox" id="adem_autonoom" name="adem_autonoom" value="6">
                                 <label for="adem_autonoom">autonome ademlucht</label>
                             </div>
                         </div>
@@ -179,28 +179,28 @@ $overzichtPagina = match ($role) {
                         <h3>VALLEN</h3>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="checkbox" id="vallen_stelling" name="vallen_stelling">
+                                <input type="checkbox" id="vallen_stelling" name="vallen_stelling" value="1">
                                 <label for="vallen_stelling">stelling</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="vallen_collectief" name="vallen_collectief">
+                                <input type="checkbox" id="vallen_collectief" name="vallen_collectief" value="2">
                                 <label for="vallen_collectief">collectieve valbescherming</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="vallen_persoonlijk" name="vallen_persoonlijk">
+                                <input type="checkbox" id="vallen_persoonlijk" name="vallen_persoonlijk" value="3">
                                 <label for="vallen_persoonlijk">persoonlijke valbescherming</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="vallen_gekeurd" name="vallen_gekeurd">
+                                <input type="checkbox" id="vallen_gekeurd" name="vallen_gekeurd" value="4">
                                 <label for="vallen_gekeurd">gekeurd tot:</label>
                                 <input type="date" class="inline-input-medium">
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="vallen_dichtleggen" name="vallen_dichtleggen">
+                                <input type="checkbox" id="vallen_dichtleggen" name="vallen_dichtleggen" value="5">
                                 <label for="vallen_dichtleggen">dichtleggen openingen vloer</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="vallen_andere" name="vallen_andere">
+                                <input type="checkbox" id="vallen_andere" name="vallen_andere" value="99">
                                 <label for="vallen_andere">andere:</label>
                                 <input type="text" class="inline-input-medium">
                             </div>
@@ -212,31 +212,31 @@ $overzichtPagina = match ($role) {
                         <h3>COMMUNICATIE</h3>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="checkbox" id="comm_radio" name="comm_radio">
+                                <input type="checkbox" id="comm_radio" name="comm_radio" value="1">
                                 <label for="comm_radio">extra radio (portofoon)</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="comm_tweede_persoon" name="comm_tweede_persoon">
+                                <input type="checkbox" id="comm_tweede_persoon" name="comm_tweede_persoon" value="2">
                                 <label for="comm_tweede_persoon">+2° persoon</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="comm_productinfo" name="comm_productinfo">
+                                <input type="checkbox" id="comm_productinfo" name="comm_productinfo" value="3">
                                 <label for="comm_productinfo">bezit productinfo (SDS-database)</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="comm_signalisatie" name="comm_signalisatie">
+                                <input type="checkbox" id="comm_signalisatie" name="comm_signalisatie" value="4">
                                 <label for="comm_signalisatie">signalisatie (pictogrammen,...)</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="comm_markeren" name="comm_markeren">
+                                <input type="checkbox" id="comm_markeren" name="comm_markeren" value="5">
                                 <label for="comm_markeren">markeren werkplek</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="comm_gevarentags" name="comm_gevarentags">
+                                <input type="checkbox" id="comm_gevarentags" name="comm_gevarentags" value="6">
                                 <label for="comm_gevarentags">aanbrengen gevarentags</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="comm_andere" name="comm_andere">
+                                <input type="checkbox" id="comm_andere" name="comm_andere" value="99">
                                 <label for="comm_andere">andere:</label>
                                 <input type="text" class="inline-input-medium">
                             </div>
@@ -248,24 +248,24 @@ $overzichtPagina = match ($role) {
                         <h3>ANDERE</h3>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="checkbox" id="andere_handgraven" name="andere_handgraven">
+                                <input type="checkbox" id="andere_handgraven" name="andere_handgraven" value="1">
                                 <label for="andere_handgraven">handgraven tot ... cm</label>
                                 <input type="text" class="inline-input-extra-small">
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="andere_afdekken" name="andere_afdekken">
+                                <input type="checkbox" id="andere_afdekken" name="andere_afdekken" value="2">
                                 <label for="andere_afdekken">afdekken riolering</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="andere_stockageplaats" name="andere_stockageplaats">
+                                <input type="checkbox" id="andere_stockageplaats" name="andere_stockageplaats" value="3">
                                 <label for="andere_stockageplaats">aanduiden stockageplaats</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="andere_hijsplan" name="andere_hijsplan">
+                                <input type="checkbox" id="andere_hijsplan" name="andere_hijsplan" value="4">
                                 <label for="andere_hijsplan">goedgekeurd hijsplan kritische lasten</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="andere_andere" name="andere_andere">
+                                <input type="checkbox" id="andere_andere" name="andere_andere" value="99">
                                 <label for="andere_andere">andere:</label>
                                 <input type="text" class="inline-input-medium">
                             </div>
@@ -277,32 +277,32 @@ $overzichtPagina = match ($role) {
                         <h3>MILIEU</h3>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="checkbox" id="milieu_lucht" name="milieu_lucht">
+                                <input type="checkbox" id="milieu_lucht" name="milieu_lucht" value="1">
                                 <label for="milieu_lucht">vermijden luchtverontreiniging</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="milieu_bodem" name="milieu_bodem">
+                                <input type="checkbox" id="milieu_bodem" name="milieu_bodem" value="2">
                                 <label for="milieu_bodem">vermijden bodemverontreiniging</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="milieu_water" name="milieu_water">
+                                <input type="checkbox" id="milieu_water" name="milieu_water" value="3">
                                 <label for="milieu_water">vermijden waterverontreiniging</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="milieu_afval" name="milieu_afval">
+                                <input type="checkbox" id="milieu_afval" name="milieu_afval" value="4">
                                 <label for="milieu_afval">afval in juiste container:</label>
                                 <input type="text" class="inline-input-medium">
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="milieu_isolatie" name="milieu_isolatie">
+                                <input type="checkbox" id="milieu_isolatie" name="milieu_isolatie" value="5">
                                 <label for="milieu_isolatie">isolatie (afgekoeld) in gesloten zakken</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="milieu_draaien" name="milieu_draaien">
+                                <input type="checkbox" id="milieu_draaien" name="milieu_draaien" value="6">
                                 <label for="milieu_draaien">vermijden onnodig draaien van machine</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="checkbox" id="milieu_andere" name="milieu_andere">
+                                <input type="checkbox" id="milieu_andere" name="milieu_andere" value="99">
                                 <label for="milieu_andere">andere:</label>
                                 <input type="text" class="inline-input-medium">
                             </div>

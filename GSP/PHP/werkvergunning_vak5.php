@@ -71,39 +71,39 @@ $overzichtPagina = match ($role) {
                     </div>
                     <div class="checkbox-grid ">
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_betreding" name="verg_betreding">
+                            <input type="checkbox" id="verg_betreding" name="verg_betreding" value="2">
                             <label for="verg_betreding">Betreding-</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_electro" name="verg_electro">
+                            <input type="checkbox" id="verg_electro" name="verg_electro" value="3">
                             <label for="verg_electro">Electro-</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_graaf" name="verg_graaf">
+                            <input type="checkbox" id="verg_graaf" name="verg_graaf" value="4">
                             <label for="verg_graaf">Graaf-</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_hoogte" name="verg_hoogte">
+                            <input type="checkbox" id="verg_hoogte" name="verg_hoogte" value="5">
                             <label for="verg_hoogte">Hoogte- (*)</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_lijnbreking" name="verg_lijnbreking">
+                            <input type="checkbox" id="verg_lijnbreking" name="verg_lijnbreking" value="6">
                             <label for="verg_lijnbreking">Lijnbreking-</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_loto" name="verg_loto">
+                            <input type="checkbox" id="verg_loto" name="verg_loto" value="7">
                             <label for="verg_loto">Loto-</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_stelling" name="verg_stelling">
+                            <input type="checkbox" id="verg_stelling" name="verg_stelling" value="8">
                             <label for="verg_stelling">Stelling- (**)</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_tijdelijk" name="verg_tijdelijk">
+                            <input type="checkbox" id="verg_tijdelijk" name="verg_tijdelijk" value="9">
                             <label for="verg_tijdelijk">Tijdelijke-</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_vuur" name="verg_vuur">
+                            <input type="checkbox" id="verg_vuur" name="verg_vuur" value="10">
                             <label for="verg_vuur">Vuur-</label>
                         </div>
                     </div>
@@ -124,31 +124,31 @@ $overzichtPagina = match ($role) {
                     </div>
                     <div class="checkbox-grid">
                         <div class="checkbox-item">
-                            <input type="checkbox" id="toel_muur_dak" name="toel_muur_dak">
+                            <input type="checkbox" id="toel_muur_dak" name="toel_muur_dak" value="2">
                             <label for="toel_muur_dak">muur, dak & vloerdoorvoer</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="toel_versperren" name="toel_versperren">
+                            <input type="checkbox" id="toel_versperren" name="toel_versperren" value="3">
                             <label for="toel_versperren">versperren doorgangen</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="toel_hijsen" name="toel_hijsen">
+                            <input type="checkbox" id="toel_hijsen" name="toel_hijsen" value="4">
                             <label for="toel_hijsen">hijsen boven pipe-racks</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="toel_bluswater" name="toel_bluswater">
+                            <input type="checkbox" id="toel_bluswater" name="toel_bluswater" value="5">
                             <label for="toel_bluswater">gebruik bluswater</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="toel_werken_bluswater" name="toel_werken_bluswater">
+                            <input type="checkbox" id="toel_werken_bluswater" name="toel_werken_bluswater" value="6">
                             <label for="toel_werken_bluswater">werken aan bluswater/sprinklers</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="toel_alarm" name="toel_alarm">
+                            <input type="checkbox" id="toel_alarm" name="toel_alarm" value="7">
                             <label for="toel_alarm">werken aan alarm-installatie</label>
                         </div>
                         <div class="checkbox-item checkbox-item-span-2">
-                            <input type="checkbox" id="toel_andere" name="toel_andere">
+                            <input type="checkbox" id="toel_andere" name="toel_andere" value="99">
                             <label for="toel_andere">andere:</label>
                             <input type="text" class="inline-input">
                         </div>

@@ -205,22 +205,20 @@ $overzichtPagina = match ($role) {
             
             if (form) {
                 form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Sla eerst alle Vak 7 velden op naar sessionStorage
                     saveVak7Data();
-                    
-                    // Verzamel alle data uit sessionStorage
+
                     const aanvraagData = collectAllAanvraagData();
-                    
-                    // Zet JSON in hidden input
-                    const aanvraag_data_input = document.getElementById('aanvraag_data');
-                    if (aanvraag_data_input) {
-                        aanvraag_data_input.value = JSON.stringify(aanvraagData);
+                    const aanvraagDataInput = document.getElementById('aanvraag_data');
+
+                    if (!aanvraagData.fields.vak1_werkbeschrijving) {
+                        alert('Werkbeschrijving ontbreekt. Ga terug naar Vak 1 en vul de werkbeschrijving in.');
+                        e.preventDefault();
+                        return;
                     }
-                    
-                    // Submit het formulier
-                    form.submit();
+
+                    if (aanvraagDataInput) {
+                        aanvraagDataInput.value = JSON.stringify(aanvraagData);
+                    }
                 });
             }
         });
@@ -280,50 +278,67 @@ $overzichtPagina = match ($role) {
 
         // Verzamel alle aanvraaggegevens uit sessionStorage
         function collectAllAanvraagData() {
+
             const fields = {};
             const lists = {};
             const tables = {};
             const signatures = {};
 
-            // Verzamel alle velden uit sessionStorage
-            for (let i = 0; i < sessionStorage.length; i++) {
-                const key = sessionStorage.key(i);
-                const value = sessionStorage.getItem(key);
-                
-                if (!key) continue;
-                
-                // Skip werkvergunning_nummer - dat wordt in PHP gegenereerd
-                if (key === 'werkvergunning_nummer') continue;
-                
-                // Bepaal of het een field, list, table of signature is
-                if (key.includes('_tabel')) {
-                    // Tabellen
-                    tables[key] = value;
-                } else if (key === 'handtekening_inspecteur') {
-                    // Speciale behandeling voor inspecteur handtekening
-                    signatures['inspecteur'] = value;
-                } else if (key.includes('handtekening') || key.includes('signature')) {
-                    // Overige handtekeningen (evt later gebruikt)
-                    signatures[key] = value;
-                } else if (Array.isArray(JSON.parse(value || '[]')) && (key.includes('_act_') || key.includes('_vergunning') || key.includes('_toelat') || key.includes('_prevent'))) {
-                    // Arrays/lijsten (vak2_act_*, vak5_*)
-                    try {
-                        lists[key] = JSON.parse(value);
-                    } catch (e) {
-                        lists[key] = value;
-                    }
-                } else if (value && (value.startsWith('[') || value.startsWith('{'))) {
-                    // JSON arrays/objects
-                    try {
-                        lists[key] = JSON.parse(value);
-                    } catch (e) {
-                        fields[key] = value;
-                    }
-                } else {
-                    // Gewone velden
-                    fields[key] = value;
-                }
-            }
+            const fieldKeys = [
+                'vak1_naam',
+                'vak1_tel',
+                'vak1_afdeling',
+                'vak1_werkbeschrijving',
+                'vak1_exzone',
+
+                'vak2_naam',
+                'vak2_firma',
+                'vak2_veiligheidstest',
+                'vak2_datumwerken',
+                'vak2_medewerkers',
+
+                'vak3_aandachtspunten',
+                'vak3_parkeerplaats',
+
+                'vak4_naam',
+                'vak4_afdeling',
+                'vak4_aandachtspunten',
+
+                'vak6_afdeling',
+                'vak6_uitvoerder',
+
+                'vak7_inspectie'
+            ];
+
+            const listKeys = [
+                'vak2_act_koud',
+                'vak2_act_warm',
+                'vak2_vervoer',
+                'vak2_stoffen',
+                'vak2_chemicalien',
+                'vak5_vergunningen',
+                'vak5_toelatingen',
+                'vak5_preventie'
+            ];
+
+            const tableKeys = [
+                'vak6_tabel',
+                'vak7_tabel'
+            ];
+
+            fieldKeys.forEach(key => {
+                fields[key] = sessionStorage.getItem(key) || '';
+            });
+
+            listKeys.forEach(key => {
+                lists[key] = sessionStorage.getItem(key) || '';
+            });
+
+            tableKeys.forEach(key => {
+                tables[key] = sessionStorage.getItem(key) || '[]';
+            });
+
+            signatures.inspecteur = sessionStorage.getItem('handtekening_inspecteur') || '';
 
             return {
                 fields: fields,

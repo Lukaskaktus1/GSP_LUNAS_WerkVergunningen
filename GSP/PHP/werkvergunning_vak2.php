@@ -106,7 +106,7 @@ $overzichtPagina = match ($role) {
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>VCA-certificaten: Ja/Nee. Indien ja, kopiëren en bewaren (*)</label>
+                        <label>VCA-certificaten: Ja/Nee.</label>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
                                 <input type="radio" id="vca_ja" name="vca" value="ja">
