@@ -13,18 +13,28 @@ body {
 header {
     background-color: #2E4057;
     color: white;
-    padding: 15px 40px;
+    padding: clamp(12px, 3vw, 15px) clamp(15px, 5vw, 40px);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 header img {
     border-radius: 8px;
+    max-width: clamp(50px, 15vw, 100px);
+    height: auto;
 }
 
 header h1 {
-    font-size: 24px;
+    font-size: clamp(18px, 4vw, 24px);
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 nav a {
@@ -32,9 +42,10 @@ nav a {
     text-decoration: none;
     font-weight: bold;
     background-color: #76A89C;
-    padding: 8px 15px;
+    padding: clamp(6px, 1vw, 8px) clamp(10px, 2vw, 15px);
     border-radius: 5px;
     transition: 0.3s;
+    font-size: clamp(12px, 3vw, 14px);
 }
 
 nav a:hover {
@@ -45,19 +56,19 @@ nav a:hover {
 main {
     display: flex;
     justify-content: center;
-    padding: 40px 20px;
+    padding: clamp(20px, 5vw, 40px) clamp(10px, 3vw, 20px);
 }
 
 .formulier {
     width: 100%;
     max-width: 650px;
     background-color: white;
-    padding: 30px;
+    padding: clamp(20px, 5vw, 30px);
     border-radius: 10px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: clamp(12px, 2vw, 15px);
 }
 
 .formulier h3 {
@@ -160,4 +171,126 @@ footer {
     background-color: #2E4057;
     color: white;
     margin-top: 40px;
+}
+
+/* Tablet Responsive 768px */
+@media (max-width: 768px) {
+    header {
+        padding: 12px 15px;
+        gap: 10px;
+    }
+    
+    header h1 {
+        font-size: 18px;
+    }
+    
+    nav a {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+    
+    main {
+        padding: 30px 15px;
+    }
+    
+    .formulier {
+        padding: 20px;
+        gap: 12px;
+    }
+    
+    input, select, textarea {
+        font-size: 13px;
+        padding: 8px;
+    }
+    
+    .beschikbaarheid, .vaardigheden {
+        padding: 8px;
+        gap: 8px;
+    }
+    
+    button {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    footer {
+        margin-top: 30px;
+        padding: 12px;
+    }
+}
+
+/* Mobile Responsive 480px */
+@media (max-width: 480px) {
+    header {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    
+    header h1 {
+        font-size: 16px;
+    }
+    
+    nav {
+        width: 100%;
+        gap: 5px;
+    }
+    
+    nav a {
+        flex: 1 1 calc(50% - 5px);
+        padding: 6px 8px;
+        font-size: 12px;
+        text-align: center;
+    }
+    
+    main {
+        padding: 15px 10px;
+    }
+    
+    .formulier {
+        padding: 15px;
+        gap: 10px;
+    }
+    
+    .formulier h3 {
+        font-size: 14px;
+    }
+    
+    input, select, textarea {
+        font-size: 14px;
+        padding: 8px;
+    }
+    
+    .beschikbaarheid, .vaardigheden {
+        padding: 8px;
+        gap: 8px;
+    }
+    
+    .CSS, .JavaScript, .HTML, .Python, .Netwerken {
+        gap: 5px;
+    }
+    
+    .bijsluiter {
+        max-width: 100%;
+        font-size: 11px;
+    }
+    
+    button {
+        padding: 10px;
+        font-size: 13px;
+        margin-top: 8px;
+    }
+    
+    .buttons {
+        gap: 5px;
+    }
+    
+    .slide-in {
+        transform: translateX(-100px);
+    }
+    
+    footer {
+        margin-top: 20px;
+        padding: 10px;
+        font-size: 12px;
+    }
 }

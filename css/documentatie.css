@@ -27,9 +27,9 @@ body {
 }
 
 .header-left h1 {
-    font-size: 18px;
+    font-size: clamp(14px, 3vw, 18px);
     font-weight: 600;
-    margin-left: 100px;
+    margin-left: clamp(10px, 8vw, 100px);
 }
 
 .gradient-text {
@@ -235,14 +235,20 @@ body {
 
 @media (max-width: 480px) {
     .sidebar {
-        width: 100%;
-        position: relative;
-        top: 0;
+        width: 150px;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        height: calc(100vh - 60px);
+        min-height: calc(100vh - 60px);
+        border-right: 1px solid #e0e0e0;
+        border-bottom: none;
+        z-index: 100;
     }
     
     .main-content {
-        margin-left: 0;
-        width: 100%;
+        margin-left: 150px;
+        width: calc(100% - 150px);
     }
     
     .summary-cards {

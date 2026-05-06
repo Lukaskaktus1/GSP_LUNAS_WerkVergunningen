@@ -15,17 +15,20 @@ body {
 /* Header Styles */
 .header {
     background-color: white;
-    padding: 20px 40px;
+    padding: clamp(12px, 3vw, 20px) clamp(15px, 4vw, 40px);
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+    gap: clamp(10px, 2vw, 15px);
 }
 
 .header-left {
     display: flex;
     align-items: center;
     gap: 15px;
+    min-width: 0;
 }
 
 .header-icon {
@@ -50,13 +53,13 @@ body {
 }
 
 .header-title h1 {
-    font-size: 20px;
+    font-size: clamp(16px, 4vw, 20px);
     font-weight: bold;
     color: #333;
 }
 
 .header-title p {
-    font-size: 14px;
+    font-size: clamp(12px, 2.5vw, 14px);
     color: #666;
 }
 
@@ -81,11 +84,13 @@ body {
     align-items: center;
     justify-content: center;
     flex: 1;
+    min-width: 0;
 }
 
 .header-logo {
-    max-height: 100px;
-    max-width: 550px;
+    max-height: clamp(60px, 10vw, 100px);
+    width: min(100%, clamp(200px, 40vw, 550px));
+    max-width: 100%;
     object-fit: contain;
 }
 
@@ -93,6 +98,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    min-width: 0;
 }
 
 .logout-btn {
@@ -102,11 +108,12 @@ body {
     background: none;
     border: none;
     color: #333;
-    font-size: 14px;
+    font-size: clamp(12px, 2.5vw, 14px);
     cursor: pointer;
-    padding: 8px 12px;
+    padding: clamp(6px, 1.5vw, 8px) clamp(8px, 2vw, 12px);
     border-radius: 6px;
     transition: background-color 0.3s;
+    white-space: nowrap;
 }
 
 .logout-btn:hover {
@@ -120,8 +127,8 @@ body {
 /* Main Container */
 .main-container {
     max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 40px;
+    margin: clamp(20px, 3vw, 40px) auto;
+    padding: 0 clamp(12px, 3vw, 40px);
 }
 
 /* Quick Actions Section */
@@ -130,16 +137,16 @@ body {
 }
 
 .section-title {
-    font-size: 24px;
+    font-size: clamp(18px, 5vw, 24px);
     font-weight: bold;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: clamp(12px, 2vw, 20px);
 }
 
 .quick-actions {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 30vw, 250px), 1fr));
+    gap: clamp(12px, 2vw, 20px);
 }
 
 .action-card {
@@ -185,12 +192,12 @@ body {
 
 .action-card.highlighted .action-card-icon i {
     color: white;
-    font-size: 32px;
+    font-size: clamp(24px, 5vw, 32px);
 }
 
 .action-card:not(.highlighted) .action-card-icon i {
     color: #6b7280;
-    font-size: 32px;
+    font-size: clamp(24px, 5vw, 32px);
 }
 
 .action-card-title {
@@ -213,7 +220,7 @@ body {
 .applications-container {
     background: white;
     border-radius: 12px;
-    padding: 40px;
+    padding: clamp(20px, 4vw, 40px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     min-height: 400px;
 }
@@ -228,34 +235,34 @@ body {
 }
 
 .empty-state-icon {
-    width: 80px;
-    height: 80px;
+    width: clamp(60px, 15vw, 80px);
+    height: clamp(60px, 15vw, 80px);
     background-color: #f3f4f6;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: clamp(12px, 2vw, 20px);
 }
 
 .empty-state-icon i {
-    font-size: 40px;
+    font-size: clamp(28px, 5vw, 40px);
     color: #9ca3af;
 }
 
 .empty-state-text {
-    font-size: 16px;
+    font-size: clamp(14px, 3vw, 16px);
     color: #6b7280;
-    margin-bottom: 30px;
+    margin-bottom: clamp(20px, 3vw, 30px);
 }
 
 .empty-state-button {
     background-color: #1f2937;
     color: white;
-    padding: 12px 24px;
+    padding: clamp(10px, 2vw, 12px) clamp(16px, 3vw, 24px);
     border: none;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: clamp(12px, 2.5vw, 14px);
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -269,20 +276,213 @@ body {
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
-        gap: 20px;
-        padding: 20px;
+        gap: clamp(10px, 2vw, 20px);
+        padding: clamp(12px, 2vw, 20px);
+        align-items: flex-start;
     }
 
     .header-center {
         flex-wrap: wrap;
-        gap: 15px;
+        gap: clamp(12px, 2vw, 15px);
+        order: 3;
+        width: 100%;
     }
 
     .main-container {
-        padding: 0 20px;
+        padding: 0 clamp(12px, 2vw, 20px);
+        margin: clamp(20px, 2vw, 30px) auto;
+    }
+
+    .section-title {
+        font-size: clamp(16px, 4vw, 22px);
+    }
+
+    .quick-actions {
+        grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 40vw, 200px), 1fr));
+        gap: clamp(10px, 2vw, 15px);
+    }
+
+    .applications-section {
+        margin-bottom: clamp(20px, 3vw, 30px);
+    }
+    
+    .applications-container {
+        padding: clamp(16px, 3vw, 30px);
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        flex-direction: column;
+        gap: clamp(8px, 2vw, 12px);
+        padding: clamp(10px, 2vw, 15px);
+        align-items: stretch;
+    }
+
+    .header-left {
+        order: 1;
+        flex: 1 100%;
+        gap: clamp(8px, 1.5vw, 10px);
+    }
+
+    .header-center {
+        order: 3;
+        flex: 1 100%;
+        gap: clamp(10px, 2vw, 12px);
+        margin: clamp(8px, 1.5vw, 10px) 0;
+    }
+
+    .header-right {
+        order: 2;
+        flex: 1 100%;
+        gap: clamp(8px, 1.5vw, 10px);
+    }
+
+    .header-icon {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    .header-icon i {
+        font-size: 18px;
+    }
+
+    .header-title h1 {
+        font-size: clamp(14px, 3vw, 18px);
+    }
+
+    .header-title p {
+        font-size: clamp(11px, 2.5vw, 12px);
+    }
+
+    .logout-btn {
+        flex: 1;
+        justify-content: center;
+        padding: clamp(6px, 1.5vw, 8px);
+        font-size: clamp(11px, 2vw, 12px);
+        white-space: nowrap;
+    }
+
+    .main-container {
+        padding: 0 clamp(10px, 2vw, 15px);
+        margin: clamp(12px, 2vw, 20px) auto;
+    }
+
+    .section-title {
+        font-size: clamp(15px, 3.5vw, 20px);
+        margin-bottom: clamp(10px, 2vw, 15px);
     }
 
     .quick-actions {
         grid-template-columns: 1fr;
+        gap: clamp(10px, 2vw, 12px);
+    }
+
+    .action-card {
+        padding: clamp(12px, 2vw, 20px);
+    }
+
+    .action-card-icon {
+        width: clamp(45px, 10vw, 60px);
+        height: clamp(45px, 10vw, 60px);
+        margin-bottom: clamp(8px, 1.5vw, 12px);
+    }
+
+    .action-card-title {
+        font-size: clamp(14px, 3vw, 16px);
+        margin-bottom: clamp(4px, 1vw, 6px);
+    }
+
+    .action-card-subtitle {
+        font-size: clamp(11px, 2.5vw, 13px);
+    }
+
+    .applications-section {
+        margin-bottom: clamp(15px, 2vw, 20px);
+    }
+
+    .applications-container {
+        padding: clamp(12px, 2vw, 20px);
+        min-height: 250px;
+    }
+
+    .empty-state {
+        padding: clamp(20px, 4vw, 40px) clamp(10px, 2vw, 20px);
+    }
+
+    .empty-state-icon {
+        width: clamp(50px, 12vw, 70px);
+        height: clamp(50px, 12vw, 70px);
+        margin-bottom: clamp(10px, 2vw, 15px);
+    }
+
+    .empty-state-icon i {
+        font-size: clamp(24px, 4vw, 32px);
+    }
+
+    .empty-state-text {
+        font-size: clamp(13px, 2.5vw, 15px);
+        margin-bottom: clamp(15px, 2vw, 20px);
+    }
+
+    .empty-state-button {
+        font-size: clamp(11px, 2vw, 13px);
+        padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2vw, 16px);
+    }
+}
+
+@media (max-width: 360px) {
+    .header {
+        padding: clamp(8px, 1.5vw, 12px);
+        gap: clamp(6px, 1.5vw, 8px);
+    }
+
+    .header-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .header-icon i {
+        font-size: 16px;
+    }
+
+    .header-title h1 {
+        font-size: clamp(12px, 2.5vw, 14px);
+    }
+
+    .header-title p {
+        font-size: 10px;
+    }
+
+    .logout-btn {
+        font-size: 10px;
+        padding: 4px 6px;
+    }
+
+    .logout-btn i {
+        font-size: 12px;
+    }
+
+    .section-title {
+        font-size: clamp(14px, 3vw, 18px);
+    }
+
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .action-card {
+        padding: clamp(10px, 2vw, 15px);
+    }
+
+    .action-card-icon {
+        width: clamp(40px, 8vw, 50px);
+        height: clamp(40px, 8vw, 50px);
+    }
+
+    .action-card-icon i {
+        font-size: clamp(20px, 3.5vw, 24px);
     }
 }
