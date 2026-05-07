@@ -1,0 +1,35 @@
+# SEO Robots Configuration for Werkvergunningen Portaal
+# GTI Beveren Werkvergunningen Portal
+# Domain: https://adbvandenweyer2205.be
+
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /Projecten.html
+Allow: /Logboek.html
+Allow: /Voortgang.html
+Allow: /Uren_Tracking.html
+Allow: /TijdLijn.html
+Allow: /Documentatie.html
+Allow: /GSP/index.php
+Allow: /GSP/register.php
+Allow: /afbeeldingen/
+
+Disallow: /GSP/includes/
+Disallow: /GSP/auth/
+Disallow: /GSP/config/
+Disallow: /GSP/pages/
+Disallow: /GSP/_backup_html/
+Disallow: /CSS/
+Disallow: /Scripts/
+Disallow: /MD/
+
+# Crawl Delay in seconds (optional, helps with server load)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://adbvandenweyer2205.be/sitemap.xml
+
+# Block specific bots if needed
+# User-agent: BadBot
+# Disallow: /

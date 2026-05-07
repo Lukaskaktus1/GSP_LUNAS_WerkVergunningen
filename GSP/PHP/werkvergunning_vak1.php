@@ -20,7 +20,20 @@ $overzichtPagina = match ($role) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Werkvergunning - Vak I</title>
+    <title>Werkvergunning Vak 1 – GTI Beveren | Digitale Werkvergunning</title>
+    <meta name="description" content="Werkvergunning formulier Vak 1 - GTI Beveren. Vul de eerste sectie van je werkvergunning in.">
+    <meta name="keywords" content="werkvergunning vak 1, GTI Beveren formulier, digitale werkvergunning">
+    <meta name="author" content="Lukas Vandenweyer, Jonas De Meersman">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_vak1.php">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_vak1.php">
+    <meta property="og:title" content="Werkvergunning Vak 1 – GTI Beveren">
+    <meta property="og:description" content="Werkvergunning formulier Vak 1 - Vul de eerste sectie van je werkvergunning in.">
+    <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
+    
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/werkvergunning_vak1.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">

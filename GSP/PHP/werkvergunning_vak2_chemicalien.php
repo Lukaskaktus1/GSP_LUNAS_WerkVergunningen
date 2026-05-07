@@ -20,6 +20,22 @@ $overzichtPagina = match ($role) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werkvergunning Vak 2 - Chemicalien – GTI Beveren</title>
+    <meta name="description" content="Werkvergunning formulier Vak 2 - Chemicalien. Registreer chemicaliën en stoffen die gebruikt worden.">
+    <meta name="keywords" content="werkvergunning chemicalien, vak 2, GTI Beveren, veiligheid">
+    <meta name="author" content="Lukas Vandenweyer, Jonas De Meersman">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_vak2_chemicalien.php">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_vak2_chemicalien.php">
+    <meta property="og:title" content="Werkvergunning Vak 2 - Chemicalien – GTI Beveren">
+    <meta property="og:description" content="Werkvergunning formulier Vak 2 - Chemicalien. Registreer chemicaliën en stoffen.">
+    <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
+</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Werkvergunning - Chemicaliën</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/werkvergunning_vak2_chemicalien.css">

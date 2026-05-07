@@ -15,7 +15,20 @@ $flash = getFlashMessage();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account aanmaken - Werkvergunning Portaal</title>
+    <title>Account Aanmaken – Werkvergunningen Portaal GTI Beveren</title>
+    <meta name="description" content="Account aanmaken voor het werkvergunningen portaal. Registreer je nu als leerling, leerkracht of TA.">
+    <meta name="keywords" content="werkvergunningen account aanmaken, GTI Beveren registratie, digitale werkvergunningen registreren">
+    <meta name="author" content="Lukas Vandenweyer, Jonas De Meersman">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://adbvandenweyer2205.be/GSP/register.php">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://adbvandenweyer2205.be/GSP/register.php">
+    <meta property="og:title" content="Account Aanmaken – Werkvergunningen Portaal GTI Beveren">
+    <meta property="og:description" content="Account aanmaken voor het werkvergunningen portaal. Registreer je nu als leerling, leerkracht of TA.">
+    <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
+    
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>

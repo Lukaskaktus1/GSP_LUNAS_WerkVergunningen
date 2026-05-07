@@ -23,7 +23,20 @@ $flash = getFlashMessage();
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Inlogpagina - Werkvergunning Portaal</title>
+        <title>Werkvergunningen Portaal Inloggen – GTI Beveren</title>
+        <meta name="description" content="Login voor het werkvergunningen portaal. Leerlingen, leerkrachten en TA's kunnen hier inloggen voor werkvergunningen.">
+        <meta name="keywords" content="GTI Beveren werkvergunningen login, digitale werkvergunningen inloggen">
+        <meta name="author" content="Lukas Vandenweyer, Jonas De Meersman">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="https://adbvandenweyer2205.be/GSP/index.php">
+        
+        <!-- Open Graph / Social Media -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://adbvandenweyer2205.be/GSP/index.php">
+        <meta property="og:title" content="Werkvergunningen Portaal Inloggen – GTI Beveren">
+        <meta property="og:description" content="Login voor het werkvergunningen portaal. Leerlingen, leerkrachten en TA's kunnen hier inloggen.">
+        <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
+        
         <link rel="stylesheet" href="CSS/style.css">
     </head>
     <body>
