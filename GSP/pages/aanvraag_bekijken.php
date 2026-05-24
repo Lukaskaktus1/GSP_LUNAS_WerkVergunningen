@@ -43,6 +43,121 @@ if (!$magAllesZien && !$isEigenaar) {
     redirect('mijn_aanvragen.php');
 }
 
+function haalGekoppeldeWaarden(PDO $pdo, string $sql, int $aanvraagId): array
+{
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        'vergunning_id' => $aanvraagId,
+    ]);
+
+    return array_values(array_filter(
+        array_map('strval', $stmt->fetchAll(PDO::FETCH_COLUMN)),
+        static fn (string $waarde): bool => $waarde !== ''
+    ));
+}
+
+function toonLijst(array $waarden): string
+{
+    return $waarden === [] ? 'Geen geselecteerd' : implode(', ', $waarden);
+}
+
+$activiteitenKoud = haalGekoppeldeWaarden(
+    $pdo,
+    "
+        SELECT ak.naam
+        FROM vergunning_activiteit_koud vak
+        INNER JOIN activiteit_koud ak ON ak.id = vak.activiteit_koud_id
+        WHERE vak.vergunning_id = :vergunning_id
+        ORDER BY ak.naam ASC
+    ",
+    $aanvraagId
+);
+
+$activiteitenWarm = haalGekoppeldeWaarden(
+    $pdo,
+    "
+        SELECT aw.naam
+        FROM vergunning_activiteit_warm vaw
+        INNER JOIN activiteit_warm aw ON aw.id = vaw.activiteit_warm_id
+        WHERE vaw.vergunning_id = :vergunning_id
+        ORDER BY aw.naam ASC
+    ",
+    $aanvraagId
+);
+
+$machines = haalGekoppeldeWaarden(
+    $pdo,
+    "
+        SELECT m.naam
+        FROM vergunning_machine vm
+        INNER JOIN machine m ON m.id = vm.machine_id
+        WHERE vm.vergunning_id = :vergunning_id
+        ORDER BY m.naam ASC
+    ",
+    $aanvraagId
+);
+
+$gevaarlijkeStoffen = haalGekoppeldeWaarden(
+    $pdo,
+    "
+        SELECT gs.naam
+        FROM vergunning_gevaarlijke_stof vgs
+        INNER JOIN gevaarlijke_stof gs ON gs.id = vgs.gevaarlijke_stof_id
+        WHERE vgs.vergunning_id = :vergunning_id
+        ORDER BY gs.naam ASC
+    ",
+    $aanvraagId
+);
+
+$chemischePictogrammen = haalGekoppeldeWaarden(
+    $pdo,
+    "
+        SELECT cp.naam
+        FROM vergunning_chemisch_pictogram vcp
+        INNER JOIN chemisch_pictogram cp ON cp.id = vcp.chemisch_pictogram_id
+        WHERE vcp.vergunning_id = :vergunning_id
+        ORDER BY cp.naam ASC
+    ",
+    $aanvraagId
+);
+
+$andereVergunningen = haalGekoppeldeWaarden(
+    $pdo,
+    "
+        SELECT av.naam
+        FROM vergunning_andere_vergunning vav
+        INNER JOIN andere_vergunning av ON av.id = vav.andere_vergunning_id
+        WHERE vav.vergunning_id = :vergunning_id
+        ORDER BY av.naam ASC
+    ",
+    $aanvraagId
+);
+
+$toelatingen = haalGekoppeldeWaarden(
+    $pdo,
+    "
+        SELECT t.naam
+        FROM vergunning_toelating vt
+        INNER JOIN toelating t ON t.id = vt.toelating_id
+        WHERE vt.vergunning_id = :vergunning_id
+        ORDER BY t.naam ASC
+    ",
+    $aanvraagId
+);
+
+$preventiemaatregelen = haalGekoppeldeWaarden(
+    $pdo,
+    "
+        SELECT po.label_tekst
+        FROM vergunning_preventie_item vpi
+        INNER JOIN preventie_optie po ON po.id = vpi.preventie_optie_id
+        WHERE vpi.vergunning_id = :vergunning_id
+          AND vpi.aangevinkt = 1
+        ORDER BY po.label_tekst ASC
+    ",
+    $aanvraagId
+);
+
 function statusLabelAanvraag(string $status): string
 {
     return match ($status) {
@@ -275,16 +390,6 @@ function terugNaarVorigePagina(): string
                 </div>
 
                 <div class="detail-field">
-                    <label>LOTO verplicht</label>
-                    <div class="readonly-box"><?= (int) ($aanvraag['loto_verplicht'] ?? 0) === 1 ? 'Ja' : 'Nee' ?></div>
-                </div>
-
-                <div class="detail-field">
-                    <label>LOTO status</label>
-                    <div class="readonly-box"><?= e((string) ($aanvraag['loto_status'] ?? '')) ?></div>
-                </div>
-
-                <div class="detail-field">
                     <label>Aangemaakt</label>
                     <div class="readonly-box"><?= e((string) ($aanvraag['created_at'] ?? '')) ?></div>
                 </div>
@@ -292,6 +397,54 @@ function terugNaarVorigePagina(): string
                 <div class="detail-field">
                     <label>Laatst aangepast</label>
                     <div class="readonly-box"><?= e((string) ($aanvraag['updated_at'] ?? '')) ?></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="applications-section">
+        <h2 class="section-title">Geselecteerde activiteiten en maatregelen</h2>
+
+        <div class="applications-container">
+            <div class="detail-grid">
+                <div class="detail-field full">
+                    <label>Koude activiteiten</label>
+                    <div class="readonly-box"><?= e(toonLijst($activiteitenKoud)) ?></div>
+                </div>
+
+                <div class="detail-field full">
+                    <label>Warme activiteiten</label>
+                    <div class="readonly-box"><?= e(toonLijst($activiteitenWarm)) ?></div>
+                </div>
+
+                <div class="detail-field full">
+                    <label>Machines / vervoer</label>
+                    <div class="readonly-box"><?= e(toonLijst($machines)) ?></div>
+                </div>
+
+                <div class="detail-field full">
+                    <label>Gevaarlijke stoffen</label>
+                    <div class="readonly-box"><?= e(toonLijst($gevaarlijkeStoffen)) ?></div>
+                </div>
+
+                <div class="detail-field full">
+                    <label>Chemische pictogrammen</label>
+                    <div class="readonly-box"><?= e(toonLijst($chemischePictogrammen)) ?></div>
+                </div>
+
+                <div class="detail-field full">
+                    <label>Andere vergunningen</label>
+                    <div class="readonly-box"><?= e(toonLijst($andereVergunningen)) ?></div>
+                </div>
+
+                <div class="detail-field full">
+                    <label>Bijkomende toelatingen</label>
+                    <div class="readonly-box"><?= e(toonLijst($toelatingen)) ?></div>
+                </div>
+
+                <div class="detail-field full">
+                    <label>Preventiemaatregelen</label>
+                    <div class="readonly-box"><?= e(toonLijst($preventiemaatregelen)) ?></div>
                 </div>
             </div>
         </div>
