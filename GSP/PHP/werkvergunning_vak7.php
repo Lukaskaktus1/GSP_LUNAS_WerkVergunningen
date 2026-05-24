@@ -281,7 +281,16 @@ $overzichtPagina = match ($role) {
         // Verzamel alle aanvraaggegevens uit sessionStorage
         function collectAllAanvraagData() {
             const fields = {};
-            const lists = {};
+            const lists = {
+                vak2_act_koud: sessionStorage.getItem('vak2_act_koud') || '[]',
+                vak2_act_warm: sessionStorage.getItem('vak2_act_warm') || '[]',
+                vak2_vervoer: sessionStorage.getItem('vak2_vervoer') || '[]',
+                vak2_stoffen: sessionStorage.getItem('vak2_stoffen') || '[]',
+                vak2_chemicalien: sessionStorage.getItem('vak2_chemicalien') || '[]',
+                vak5_vergunningen: sessionStorage.getItem('vak5_vergunningen') || '[]',
+                vak5_toelatingen: sessionStorage.getItem('vak5_toelatingen') || '[]',
+                vak5_preventie: sessionStorage.getItem('vak5_preventie') || '[]'
+            };
             const tables = {};
             const signatures = {};
 
@@ -294,6 +303,9 @@ $overzichtPagina = match ($role) {
                 
                 // Skip werkvergunning_nummer - dat wordt in PHP gegenereerd
                 if (key === 'werkvergunning_nummer') continue;
+
+                // Deze lijst-keys worden expliciet als sessionStorage-string meegegeven.
+                if (Object.prototype.hasOwnProperty.call(lists, key)) continue;
                 
                 // Bepaal of het een field, list, table of signature is
                 if (key.includes('_tabel')) {
@@ -305,13 +317,6 @@ $overzichtPagina = match ($role) {
                 } else if (key.includes('handtekening') || key.includes('signature')) {
                     // Overige handtekeningen (evt later gebruikt)
                     signatures[key] = value;
-                } else if (Array.isArray(JSON.parse(value || '[]')) && (key.includes('_act_') || key.includes('_vergunning') || key.includes('_toelat') || key.includes('_prevent'))) {
-                    // Arrays/lijsten (vak2_act_*, vak5_*)
-                    try {
-                        lists[key] = JSON.parse(value);
-                    } catch (e) {
-                        lists[key] = value;
-                    }
                 } else if (value && (value.startsWith('[') || value.startsWith('{'))) {
                     // JSON arrays/objects
                     try {

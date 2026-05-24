@@ -157,7 +157,7 @@ $overzichtPagina = match ($role) {
 
             <!-- Navigation Buttons -->
             <div class="navigation-buttons">
-                <button class="nav-button prev" onclick="window.location.href='werkvergunning_vak2_activiteiten.php'">Vorige</button>
+                <button class="nav-button prev" onclick="navigateToNext('werkvergunning_vak2_activiteiten.php')">Vorige</button>
                 <button class="nav-button button next" onclick="navigateToNext('werkvergunning_vak3.php')">Volgende</button>
 
             </div>

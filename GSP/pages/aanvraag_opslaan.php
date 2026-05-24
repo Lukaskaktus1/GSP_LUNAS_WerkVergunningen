@@ -30,6 +30,12 @@ if (!is_array($fields)) {
     redirect('mijn_aanvragen.php');
 }
 
+$lists = $data['lists'] ?? [];
+
+if (!is_array($lists)) {
+    $lists = [];
+}
+
 function fieldValue(array $fields, string $key): ?string
 {
     $value = trim((string) ($fields[$key] ?? ''));
@@ -41,6 +47,61 @@ function boolFromText(?string $value): int
     $value = strtolower(trim((string) $value));
 
     return in_array($value, ['ja', 'yes', '1', 'true', 'aan'], true) ? 1 : 0;
+}
+
+function selectedIds(array $lists, string $key): array
+{
+    $raw = $lists[$key] ?? [];
+
+    if (is_string($raw)) {
+        $decoded = json_decode($raw, true);
+        $raw = is_array($decoded) ? $decoded : [];
+    }
+
+    if (!is_array($raw)) {
+        return [];
+    }
+
+    $ids = [];
+
+    foreach ($raw as $value) {
+        $id = filter_var($value, FILTER_VALIDATE_INT);
+
+        if ($id !== false && $id > 0) {
+            $ids[] = (int) $id;
+        }
+    }
+
+    return array_values(array_unique($ids));
+}
+
+function existingReferenceIds(PDO $pdo, string $table, array $ids): array
+{
+    $allowedTables = [
+        'activiteit_koud',
+        'activiteit_warm',
+        'machine',
+        'gevaarlijke_stof',
+        'chemisch_pictogram',
+        'andere_vergunning',
+        'toelating',
+        'preventie_optie',
+    ];
+
+    if (!in_array($table, $allowedTables, true)) {
+        throw new InvalidArgumentException('Ongeldige referentietabel.');
+    }
+
+    if ($ids === []) {
+        return [];
+    }
+
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+    $stmt = $pdo->prepare("SELECT id FROM {$table} WHERE id IN ({$placeholders})");
+    $stmt->execute($ids);
+
+    return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
 }
 
 function generateVergunningNummer(PDO $pdo): string
@@ -172,6 +233,192 @@ try {
 
         'status' => 'ingediend',
     ]);
+
+    $vergunningId = (int) $pdo->lastInsertId();
+
+    if ($vergunningId <= 0) {
+        throw new RuntimeException('Vergunning-ID kon niet worden bepaald.');
+    }
+
+    $koudeIds = existingReferenceIds(
+        $pdo,
+        'activiteit_koud',
+        selectedIds($lists, 'vak2_act_koud')
+    );
+
+    $stmtKoud = $pdo->prepare(<<<'SQL'
+        INSERT INTO vergunning_activiteit_koud (vergunning_id, activiteit_koud_id)
+        VALUES (:vergunning_id, :activiteit_id)
+SQL);
+
+    foreach ($koudeIds as $id) {
+        $stmtKoud->execute([
+            'vergunning_id' => $vergunningId,
+            'activiteit_id' => $id,
+        ]);
+    }
+
+    $warmeIds = existingReferenceIds(
+        $pdo,
+        'activiteit_warm',
+        selectedIds($lists, 'vak2_act_warm')
+    );
+
+    $stmtWarm = $pdo->prepare(<<<'SQL'
+        INSERT INTO vergunning_activiteit_warm (vergunning_id, activiteit_warm_id)
+        VALUES (:vergunning_id, :activiteit_id)
+SQL);
+
+    foreach ($warmeIds as $id) {
+        $stmtWarm->execute([
+            'vergunning_id' => $vergunningId,
+            'activiteit_id' => $id,
+        ]);
+    }
+
+    $machineIds = existingReferenceIds(
+        $pdo,
+        'machine',
+        selectedIds($lists, 'vak2_vervoer')
+    );
+
+    $stmtMachine = $pdo->prepare(<<<'SQL'
+        INSERT INTO vergunning_machine (
+            vergunning_id,
+            machine_id,
+            attest_geldig_tot,
+            extra_info
+        ) VALUES (
+            :vergunning_id,
+            :machine_id,
+            NULL,
+            NULL
+        )
+SQL);
+
+    foreach ($machineIds as $id) {
+        $stmtMachine->execute([
+            'vergunning_id' => $vergunningId,
+            'machine_id' => $id,
+        ]);
+    }
+
+    $stoffenIds = existingReferenceIds(
+        $pdo,
+        'gevaarlijke_stof',
+        selectedIds($lists, 'vak2_stoffen')
+    );
+
+    $stmtStof = $pdo->prepare(<<<'SQL'
+        INSERT INTO vergunning_gevaarlijke_stof (
+            vergunning_id,
+            gevaarlijke_stof_id,
+            extra_info
+        ) VALUES (
+            :vergunning_id,
+            :gevaarlijke_stof_id,
+            NULL
+        )
+SQL);
+
+    foreach ($stoffenIds as $id) {
+        $stmtStof->execute([
+            'vergunning_id' => $vergunningId,
+            'gevaarlijke_stof_id' => $id,
+        ]);
+    }
+
+    $pictogramIds = existingReferenceIds(
+        $pdo,
+        'chemisch_pictogram',
+        selectedIds($lists, 'vak2_chemicalien')
+    );
+
+    $stmtPictogram = $pdo->prepare(<<<'SQL'
+        INSERT INTO vergunning_chemisch_pictogram (vergunning_id, chemisch_pictogram_id)
+        VALUES (:vergunning_id, :pictogram_id)
+SQL);
+
+    foreach ($pictogramIds as $id) {
+        $stmtPictogram->execute([
+            'vergunning_id' => $vergunningId,
+            'pictogram_id' => $id,
+        ]);
+    }
+
+    $andereVergunningIds = existingReferenceIds(
+        $pdo,
+        'andere_vergunning',
+        selectedIds($lists, 'vak5_vergunningen')
+    );
+
+    $stmtAndereVergunning = $pdo->prepare(<<<'SQL'
+        INSERT INTO vergunning_andere_vergunning (vergunning_id, andere_vergunning_id)
+        VALUES (:vergunning_id, :andere_vergunning_id)
+SQL);
+
+    foreach ($andereVergunningIds as $id) {
+        $stmtAndereVergunning->execute([
+            'vergunning_id' => $vergunningId,
+            'andere_vergunning_id' => $id,
+        ]);
+    }
+
+    $toelatingIds = existingReferenceIds(
+        $pdo,
+        'toelating',
+        selectedIds($lists, 'vak5_toelatingen')
+    );
+
+    $stmtToelating = $pdo->prepare(<<<'SQL'
+        INSERT INTO vergunning_toelating (
+            vergunning_id,
+            toelating_id,
+            vrije_tekst
+        ) VALUES (
+            :vergunning_id,
+            :toelating_id,
+            NULL
+        )
+SQL);
+
+    foreach ($toelatingIds as $id) {
+        $stmtToelating->execute([
+            'vergunning_id' => $vergunningId,
+            'toelating_id' => $id,
+        ]);
+    }
+
+    $preventieIds = existingReferenceIds(
+        $pdo,
+        'preventie_optie',
+        selectedIds($lists, 'vak5_preventie')
+    );
+
+    $stmtPreventie = $pdo->prepare(<<<'SQL'
+        INSERT INTO vergunning_preventie_item (
+            vergunning_id,
+            preventie_optie_id,
+            aangevinkt,
+            extra_tekst,
+            extra_datum,
+            extra_korte_tekst
+        ) VALUES (
+            :vergunning_id,
+            :preventie_optie_id,
+            1,
+            NULL,
+            NULL,
+            NULL
+        )
+SQL);
+
+    foreach ($preventieIds as $id) {
+        $stmtPreventie->execute([
+            'vergunning_id' => $vergunningId,
+            'preventie_optie_id' => $id,
+        ]);
+    }
 
     $pdo->commit();
 

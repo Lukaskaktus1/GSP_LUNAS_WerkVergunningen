@@ -77,7 +77,7 @@ $overzichtPagina = match ($role) {
                 <div class="section-header-row">
                     <h3 class="subsection-title subsection-title-no-margin">II.1. ACTIVITEITEN KOUD</h3>
                     <div class="checkbox-item geen-checkbox">
-                        <input type="checkbox" id="koud_geen" name="koud_geen">
+                        <input type="checkbox" id="koud_geen" name="koud_geen" value="1">
                         <label for="koud_geen">GEEN</label>
                     </div>
                 </div>
@@ -131,27 +131,23 @@ $overzichtPagina = match ($role) {
                         <label for="koud_werken_boven_2m_1">werken boven 2m</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_werken_boven_2m_2" name="koud_werken_boven_2m_2" value="14">
-                        <label for="koud_werken_boven_2m_2">werken boven 2m</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="koud_nieuwe_isolatie" name="koud_nieuwe_isolatie" value="15">
+                        <input type="checkbox" id="koud_nieuwe_isolatie" name="koud_nieuwe_isolatie" value="14">
                         <label for="koud_nieuwe_isolatie">nieuwe isolatie</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_verwijderen_isolatie" name="koud_verwijderen_isolatie" value="16">
+                        <input type="checkbox" id="koud_verwijderen_isolatie" name="koud_verwijderen_isolatie" value="15">
                         <label for="koud_verwijderen_isolatie">verwijderen isolatie</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_druktesten" name="koud_druktesten" value="17">
+                        <input type="checkbox" id="koud_druktesten" name="koud_druktesten" value="16">
                         <label for="koud_druktesten">druktesten</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="koud_testen_algemeen" name="koud_testen_algemeen" value="18">
+                        <input type="checkbox" id="koud_testen_algemeen" name="koud_testen_algemeen" value="17">
                         <label for="koud_testen_algemeen">testen algemeen</label>
                     </div>
                     <div class="checkbox-item checkbox-item-span-2">
-                        <input type="checkbox" id="koud_andere" name="koud_andere" value="99">
+                        <input type="checkbox" id="koud_andere" name="koud_andere" value="18">
                         <label for="koud_andere">andere:</label>
                         <input type="text" class="inline-input">
                     </div>
@@ -163,7 +159,7 @@ $overzichtPagina = match ($role) {
                 <div class="section-header-row">
                     <h3 class="subsection-title subsection-title-no-margin">II.2. ACTIVITEITEN WARM</h3>
                     <div class="checkbox-item geen-checkbox">
-                        <input type="checkbox" id="warm_geen" name="warm_geen">
+                        <input type="checkbox" id="warm_geen" name="warm_geen" value="1">
                         <label for="warm_geen">GEEN</label>
                     </div>
                 </div>
@@ -197,7 +193,7 @@ $overzichtPagina = match ($role) {
                         <label for="warm_kappen_beton">kappen beton</label>
                     </div>
                     <div class="checkbox-item checkbox-item-span-2">
-                        <input type="checkbox" id="warm_andere" name="warm_andere" value="99">
+                        <input type="checkbox" id="warm_andere" name="warm_andere" value="9">
                         <label for="warm_andere">andere:</label>
                         <input type="text" class="inline-input">
                     </div>
@@ -209,7 +205,7 @@ $overzichtPagina = match ($role) {
                 <div class="section-header-row">
                     <h3 class="subsection-title subsection-title-no-margin">II.3. VERVOER EN MACHINES</h3>
                     <div class="checkbox-item geen-checkbox">
-                        <input type="checkbox" id="vervoer_geen" name="vervoer_geen">
+                        <input type="checkbox" id="vervoer_geen" name="vervoer_geen" value="14">
                         <label for="vervoer_geen">GEEN</label>
                     </div>
                 </div>
@@ -239,36 +235,36 @@ $overzichtPagina = match ($role) {
                         <label for="vervoer_compressor">compressor</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="vervoer_generator" name="vervoer_generator" value="7">
+                        <input type="checkbox" id="vervoer_generator" name="vervoer_generator" value="12">
                         <label for="vervoer_generator">generator</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_kraan" name="vervoer_kraan" value="8">
+                        <input type="checkbox" id="vervoer_kraan" name="vervoer_kraan" value="7">
                         <label for="vervoer_kraan">kraan</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_heftruck" name="vervoer_heftruck" value="9">
+                        <input type="checkbox" id="vervoer_heftruck" name="vervoer_heftruck" value="8">
                         <label for="vervoer_heftruck">heftruck</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_hoogtewerker" name="vervoer_hoogtewerker" value="10">
+                        <input type="checkbox" id="vervoer_hoogtewerker" name="vervoer_hoogtewerker" value="9">
                         <label for="vervoer_hoogtewerker">hoogtewerker</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_schaarlift" name="vervoer_schaarlift" value="11">
+                        <input type="checkbox" id="vervoer_schaarlift" name="vervoer_schaarlift" value="10">
                         <label for="vervoer_schaarlift">schaarlift</label>
                     </div>
                     <div class="checkbox-item">
                         <span class="special-icon icon-diamond">◊</span>
-                        <input type="checkbox" id="vervoer_verreiker" name="vervoer_verreiker" value="12">
+                        <input type="checkbox" id="vervoer_verreiker" name="vervoer_verreiker" value="11">
                         <label for="vervoer_verreiker">verreiker</label>
                     </div>
                     <div class="checkbox-item checkbox-item-span-2">
-                        <input type="checkbox" id="vervoer_andere" name="vervoer_andere" value="99">
+                        <input type="checkbox" id="vervoer_andere" name="vervoer_andere" value="13">
                         <label for="vervoer_andere">andere:</label>
                         <input type="text" class="inline-input">
                     </div>
@@ -285,7 +281,7 @@ $overzichtPagina = match ($role) {
                 <div class="section-header-row">
                     <h3 class="subsection-title subsection-title-no-margin">II.4. SCHADELIJKE OF GEVAARLIJKE STOFFEN EIGEN AAN DE UITVOERING VAN HET WERK</h3>
                     <div class="checkbox-item geen-checkbox">
-                        <input type="checkbox" id="stoffen_geen" name="stoffen_geen">
+                        <input type="checkbox" id="stoffen_geen" name="stoffen_geen" value="1">
                         <label for="stoffen_geen">GEEN</label>
                     </div>
                 </div>
@@ -319,7 +315,7 @@ $overzichtPagina = match ($role) {
                         <label for="stoffen_waterevel">waterevel</label>
                     </div>
                     <div class="checkbox-item checkbox-item-span-2">
-                        <input type="checkbox" id="stoffen_andere" name="stoffen_andere" value="99">
+                        <input type="checkbox" id="stoffen_andere" name="stoffen_andere" value="9">
                         <label for="stoffen_andere">andere:</label>
                         <input type="text" class="inline-input">
                     </div>
@@ -328,7 +324,7 @@ $overzichtPagina = match ($role) {
 
             <!-- Navigation Buttons -->
             <div class="navigation-buttons">
-                <button class="nav-button prev" onclick="window.location.href='werkvergunning_vak2.php'">Vorige</button>
+                <button class="nav-button prev" onclick="navigateToNext('werkvergunning_vak2.php')">Vorige</button>
                 <button class="nav-button next" onclick="navigateToNext('werkvergunning_vak2_chemicalien.php')">Volgende</button>
 
             </div>

@@ -81,7 +81,7 @@ $overzichtPagina = match ($role) {
                     <div class="section-header-row">
                         <h3 class="subsection-title subsection-title-no-margin">ANDERE VERGUNNINGEN?</h3>
                         <div class="checkbox-item geen-checkbox">
-                            <input type="checkbox" id="andere_verg_geen" name="andere_verg_geen">
+                            <input type="checkbox" id="andere_verg_geen" name="andere_verg_geen" value="1">
                             <label for="andere_verg_geen">GEEN</label>
                         </div>
                     </div>
@@ -107,10 +107,6 @@ $overzichtPagina = match ($role) {
                             <label for="verg_lijnbreking">Lijnbreking-</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="verg_loto" name="verg_loto" value="7">
-                            <label for="verg_loto">Loto-</label>
-                        </div>
-                        <div class="checkbox-item">
                             <input type="checkbox" id="verg_stelling" name="verg_stelling" value="8">
                             <label for="verg_stelling">Stelling- (**)</label>
                         </div>
@@ -134,7 +130,7 @@ $overzichtPagina = match ($role) {
                     <div class="section-header-row">
                         <h3 class="subsection-title subsection-title-no-margin">BIJKOMENDE TOELATINGEN?</h3>
                         <div class="checkbox-item geen-checkbox">
-                            <input type="checkbox" id="toel_geen" name="toel_geen">
+                            <input type="checkbox" id="toel_geen" name="toel_geen" value="1">
                             <label for="toel_geen">GEEN</label>
                         </div>
                     </div>
@@ -164,7 +160,7 @@ $overzichtPagina = match ($role) {
                             <label for="toel_alarm">werken aan alarm-installatie</label>
                         </div>
                         <div class="checkbox-item checkbox-item-span-2">
-                            <input type="checkbox" id="toel_andere" name="toel_andere" value="99">
+                            <input type="checkbox" id="toel_andere" name="toel_andere" value="8">
                             <label for="toel_andere">andere:</label>
                             <input type="text" class="inline-input">
                         </div>
@@ -174,8 +170,8 @@ $overzichtPagina = match ($role) {
 
             <!-- Navigation Buttons -->
             <div class="navigation-buttons">
-                <button class="nav-button prev" onclick="window.location.href='werkvergunning_vak4.php'">Vorige</button>
-                <button class="nav-button button next" onclick="window.location.href='werkvergunning_preventie.php'">Volgende</button>
+                <button class="nav-button prev" onclick="navigateToNext('werkvergunning_vak4.php')">Vorige</button>
+                <button class="nav-button button next" onclick="navigateToNext('werkvergunning_preventie.php')">Volgende</button>
             </div>
         </div>
     </main>
@@ -236,25 +232,9 @@ $overzichtPagina = match ($role) {
             });
         }
 
-        // Functie om naar volgende stap te navigeren
-        function navigateToNextStep(url) {
-            saveCurrentVak();
-            const lotoCheckbox = document.getElementById('verg_loto');
-            
-            // Als LOTO checkbox is aangevinkt, ga naar LOTO pagina
-            if (lotoCheckbox && lotoCheckbox.checked) {
-                // Sla LOTO status op in sessionStorage
-                sessionStorage.setItem('loto_required', 'true');
-                window.location.href = 'werkvergunning_loto.php';
-            } else {
-                // Anders ga naar preventie pagina
-                sessionStorage.setItem('loto_required', 'false');
-                window.location.href = url || 'werkvergunning_preventie.php';
-            }
-        }
-
         // Setup voor elke sectie in Vak V
         document.addEventListener('DOMContentLoaded', function() {
+            sessionStorage.setItem('loto_required', 'false');
             setupVak5GeenCheckbox('andere_verg_geen', 'verg');
             setupVak5GeenCheckbox('toel_geen', 'toel');
         });
