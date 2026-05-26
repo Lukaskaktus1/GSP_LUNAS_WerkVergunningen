@@ -235,6 +235,11 @@ body {
     width: fit-content;
 }
 
+.entries-buttons button.active {
+    background-color: #007bff;
+    color: white;
+}
+
 .uren{
     background-color: white;
     color: black;

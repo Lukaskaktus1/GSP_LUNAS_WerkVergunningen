@@ -413,6 +413,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
     padding: 12px 15px;
     border-radius: 6px;
     margin-bottom: 10px;
@@ -428,13 +429,25 @@ body {
     color: white;
 }
 
+.member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
 .member-name {
     font-size: 14px;
     font-weight: 500;
 }
 
+.member-entries {
+    font-size: 12px;
+    opacity: 0.85;
+}
+
 .member-hours {
-    font-size: 14px;
+    flex-shrink: 0;
+    font-size: 16px;
     font-weight: 600;
 }
 

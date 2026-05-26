@@ -109,7 +109,7 @@
                 <select class="filter-category">
                     <option>Categorie</option>
                 </select>
-                <button class="filter-btn">Meer filters</button>
+                <button class="filter-btn" type="button">Reset filters</button>
                     </div>
             <button class="new-entry-btn">+ Nieuwe Entry</button>
         </section>
@@ -901,5 +901,31 @@
                 </div>
         </section>
     </div>
+    <div class="entry-modal hidden" id="entryModal">
+        <form class="entry-modal-content" id="entryForm">
+            <h3>Nieuwe logboek entry</h3>
+            <input type="hidden" id="entryEditId">
+            <label for="entryDate">Datum</label>
+            <input type="date" id="entryDate" required>
+            <label for="entryTitle">Titel</label>
+            <input type="text" id="entryTitle" placeholder="Waar heb je aan gewerkt?" required>
+            <label for="entryCategory">Categorie</label>
+            <input type="text" id="entryCategory" placeholder="Bijvoorbeeld Backend" required>
+            <label for="entryProject">Project</label>
+            <select id="entryProject" required></select>
+            <label for="entryHours">Uren</label>
+            <input type="number" id="entryHours" min="0.25" step="0.25" placeholder="2.00" required>
+            <label for="entryDescription">Beschrijving</label>
+            <textarea id="entryDescription" rows="4" placeholder="Korte beschrijving van het werk"></textarea>
+            <label for="entryTags">Tags</label>
+            <input type="text" id="entryTags" placeholder="php, sql, testen">
+            <div class="modal-buttons">
+                <button type="button" id="closeEntryBtn">Annuleren</button>
+                <button type="submit" id="saveEntryBtn">Opslaan</button>
+            </div>
+        </form>
+    </div>
+    <script src="./Scripts/portfolio-data.js"></script>
+    <script src="./Scripts/portfolio-pages.js"></script>
 </body>
 </html>

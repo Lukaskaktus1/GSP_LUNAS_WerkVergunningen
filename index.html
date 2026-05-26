@@ -163,30 +163,6 @@
                         <span class="nav-text">GSP</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/CASES/index.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
-                        <span class="nav-text">CASE 1 Lukas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/CASES/HTML/Case2.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
-                        <span class="nav-text">CASE 2 Lukas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/3UseCases/3/index.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
-                        <span class="nav-text">CASE 3 Jonas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/CASES/HTML/Case3.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
-                        <span class="nav-text">CASE 3</span>
-                    </a>
-                </li>
             </ul>
         </nav>
 
@@ -212,8 +188,8 @@
                         <span class="card-icon"><i class="fa-solid fa-bars-progress"></i></span>
                     </div>
                     <div class="card-content">
-                        <div class="card-value">3</div>
-                        <div class="card-subtitle">2 in voorbereiding</div>
+                        <div class="card-value" id="dashboard-active-projects">3</div>
+                        <div class="card-subtitle" id="dashboard-active-projects-subtitle">3 projecten afgerond</div>
                     </div>
                 </div>
 
@@ -223,8 +199,8 @@
                         <span class="card-icon"><i class="fa-regular fa-clock"></i></span>
                     </div>
                     <div class="card-content">
-                        <div class="card-value">27</div>
-                        <div class="card-subtitle">Deze week: 34u</div>
+                        <div class="card-value" id="dashboard-total-hours">141,84u</div>
+                        <div class="card-subtitle" id="dashboard-total-hours-subtitle">Automatisch uit logboek</div>
                     </div>
                 </div>
 
@@ -234,8 +210,8 @@
                         <span class="card-icon"><i class="fa-solid fa-file"></i></span>
                     </div>
                     <div class="card-content">
-                        <div class="card-value">16</div>
-                        <div class="card-subtitle">Laatste entry vandaag</div>
+                        <div class="card-value" id="dashboard-total-entries">67</div>
+                        <div class="card-subtitle" id="dashboard-total-entries-subtitle">36 Lukas / 31 Jonas</div>
                     </div>
                 </div>
 
@@ -245,8 +221,8 @@
                         <span class="card-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
                     </div>
                     <div class="card-content">
-                        <div class="card-value">13%</div>
-                        <div class="card-subtitle">Op schema</div>
+                        <div class="card-value" id="dashboard-average-progress">82%</div>
+                        <div class="card-subtitle" id="dashboard-average-progress-subtitle">3 actief</div>
                     </div>
                 </div>
             </section>
@@ -288,21 +264,29 @@
                     <p class="section-subtitle">Totaal gewerkte uren per teamlid</p>
                     <div class="team-members">
                         <div class="team-member blue">
-                            <span class="member-name">Lukas Vanderweyer</span>
-                            <span class="member-hours">32h</span>
+                            <span class="member-info">
+                                <span class="member-name">Lukas Vandenweyer</span>
+                                <span class="member-entries" id="lukas-entries">36 entries</span>
+                            </span>
+                            <span class="member-hours" id="lukas-hours">77,17u</span>
                         </div>
                         <div class="team-member green">
-                            <span class="member-name">Jonas De Meersman</span>
-                            <span class="member-hours">26h</span>
+                            <span class="member-info">
+                                <span class="member-name">Jonas De Meersman</span>
+                                <span class="member-entries" id="jonas-entries">31 entries</span>
+                            </span>
+                            <span class="member-hours" id="jonas-hours">64,67u</span>
                         </div>
                     </div>
                     <div class="team-total">
                         <span class="total-label">Totaal Team</span>
-                        <span class="total-hours">58h</span>
+                        <span class="total-hours" id="team-total-hours">141,84u</span>
                     </div>
                 </div>
             </section>
         </main>
     </div>
+    <script src="./Scripts/portfolio-data.js"></script>
+    <script src="./Scripts/portfolio-pages.js"></script>
 </body>
 </html>

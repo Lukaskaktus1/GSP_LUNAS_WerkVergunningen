@@ -404,6 +404,20 @@ body {
   color: #000;
 }
 
+.entry-action-btn {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.empty-state {
+  background: white;
+  border-radius: 10px;
+  color: #555;
+  padding: 20px;
+  text-align: center;
+}
+
 .person{
     display: flex;
     justify-content: space-around;
@@ -492,16 +506,42 @@ body {
 .entry-modal-content {
     background: #fff;
     padding: 2rem;
-    width: 400px;
+    width: min(440px, calc(100vw - 32px));
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
+.entry-modal-content input,
+.entry-modal-content select,
+.entry-modal-content textarea {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 9px 10px;
+}
+
+.entry-modal-content textarea {
+    resize: vertical;
+}
+
 .modal-buttons {
     display: flex;
     justify-content: space-between;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 10px 14px;
+}
+
+#saveEntryBtn {
+    background: #007bff;
+    color: white;
 }
 
 

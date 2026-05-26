@@ -100,7 +100,7 @@
                     <h2>Voortgang van mijn project</h2>
                     <p>Overzicht van alle fases en status van het GSP-project</p>
                 </div>
-                <button class="primary-btn" type="button">+ Nieuwe Fase</button>
+                <button class="primary-btn" type="button">+ Logboek Entry</button>
             </div>
 
             <!-- voortgangssectie -->
@@ -158,18 +158,20 @@
             <section class="summary-grid">
                 <div class="summary-card">
                     <p class="summary-title">Voltooide Fases</p>
-                    <p class="summary-value done">2</p>
+                    <p class="summary-value done" id="progress-done-count">3</p>
                 </div>
                 <div class="summary-card">
                     <p class="summary-title">In Uitvoering</p>
-                    <p class="summary-value inprogress">1</p>
+                    <p class="summary-value inprogress" id="progress-active-count">3</p>
                 </div>
                 <div class="summary-card">
                     <p class="summary-title">Nog Niet Gestart</p>
-                    <p class="summary-value not">0</p>
+                    <p class="summary-value not" id="progress-not-count">0</p>
                 </div>
             </section>
         </div>
     </div>
+    <script src="./Scripts/portfolio-data.js"></script>
+    <script src="./Scripts/portfolio-pages.js"></script>
 </body>
 </html>
