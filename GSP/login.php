@@ -25,12 +25,17 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
 try {
     $pdo = getDbConnection();
 
-    $statement = $pdo->prepare(
-        'SELECT id, email, rol, wachtwoord_hash, actief
-         FROM users
-         WHERE email = :email
-         LIMIT 1'
-    );
+    $selectColumns = ['id', 'email', 'rol', 'wachtwoord_hash', 'actief'];
+    foreach (['voornaam', 'naam', 'telefoon'] as $column) {
+        if (databaseColumnExists($pdo, 'users', $column)) {
+            $selectColumns[] = $column;
+        }
+    }
+
+    $statement = $pdo->prepare(sprintf(
+        'SELECT %s FROM users WHERE email = :email LIMIT 1',
+        implode(', ', $selectColumns)
+    ));
     $statement->execute(['email' => mb_strtolower($email)]);
     $user = $statement->fetch();
 
@@ -49,6 +54,9 @@ try {
     $_SESSION['user_id'] = (int) $user['id'];
     $_SESSION['email'] = (string) $user['email'];
     $_SESSION['rol'] = (string) $user['rol'];
+    $_SESSION['voornaam'] = (string) ($user['voornaam'] ?? '');
+    $_SESSION['naam'] = (string) ($user['naam'] ?? '');
+    $_SESSION['telefoon'] = (string) ($user['telefoon'] ?? '');
 
     $historyStatement = $pdo->prepare(
         'INSERT INTO login_history (user_id, email, rol, ip_adres, user_agent)

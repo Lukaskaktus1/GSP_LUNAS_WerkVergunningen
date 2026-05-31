@@ -1,38 +1,18 @@
-// Functie om automatisch een 7-cijferig nummer te genereren en op te slaan
-function generateWerkvergunningNummer() {
-    let nummer = localStorage.getItem('werkvergunning_last_number');
-    if (!nummer) {
-        nummer = '0000001';
-    } else {
-        // Verhoog nummer met 1 en zorg voor 7 cijfers
-        nummer = String(parseInt(nummer, 10) + 1).padStart(7, '0');
-    }
-    localStorage.setItem('werkvergunning_last_number', nummer);
-    return nummer;
-}
-
-// Functie om werkvergunning nummer te initialiseren of laden
+// Het echte werkvergunningnummer wordt bij het indienen uit de database-teller gehaald.
 function initWerkvergunningNummer() {
     const nummerInput = document.getElementById('werkvergunning_nummer');
     if (!nummerInput) return;
-    
-    // Kijk of er al een nummer in sessionStorage staat (voor huidige sessie)
-    let huidigNummer = sessionStorage.getItem('werkvergunning_nummer');
-    
-    // Als er geen nummer is, genereer een nieuw nummer (alleen bij eerste pagina load)
-    if (!huidigNummer) {
-        huidigNummer = generateWerkvergunningNummer();
-        sessionStorage.setItem('werkvergunning_nummer', huidigNummer);
-    }
-    
-    // Vul het input veld
-    nummerInput.value = huidigNummer;
+
+    nummerInput.value = 'Automatisch bij indienen';
     nummerInput.readOnly = true;
 }
 
 // Functie om te navigeren naar volgende pagina na opslaan
 function navigateToNext(url) {
     try {
+        if (!validateCurrentPage()) {
+            return;
+        }
         saveCurrentVak();
         window.location.href = url;
     } catch (error) {
@@ -41,21 +21,79 @@ function navigateToNext(url) {
     }
 }
 
+function validateCurrentPage() {
+    const card = document.querySelector('.form-card');
+    if (!card) return true;
+
+    const firmaGroup = document.getElementById('firma_naam_group');
+    card.querySelectorAll('input, select, textarea').forEach(function (field) {
+        if (field.dataset.optional === 'true') return;
+        if (field.disabled || field.readOnly || field.type === 'hidden') return;
+        if (['button', 'submit', 'checkbox', 'radio'].includes(field.type)) return;
+        if (field.closest('[hidden]')) return;
+
+        field.required = true;
+    });
+
+    const invalidFields = Array.from(card.querySelectorAll('input, select, textarea')).filter(function (field) {
+        if (field.disabled || field.readOnly || field.type === 'hidden') return false;
+        if (field.closest('[hidden]')) return false;
+        if (firmaGroup && firmaGroup.hidden && field.closest('#firma_naam_group')) return false;
+
+        return typeof field.checkValidity === 'function' && !field.checkValidity();
+    });
+
+    card.querySelectorAll('input[type="radio"][required]').forEach(function (radio) {
+        if (radio.closest('[hidden]')) return;
+        const groupName = radio.name;
+        const escapedName = window.CSS && typeof CSS.escape === 'function'
+            ? CSS.escape(groupName)
+            : groupName.replace(/"/g, '\\"');
+        const checked = card.querySelector('input[type="radio"][name="' + escapedName + '"]:checked');
+        if (!checked && !invalidFields.includes(radio)) {
+            invalidFields.push(radio);
+        }
+    });
+
+    let message = document.getElementById('page_validation_message');
+    if (!message) {
+        message = document.createElement('p');
+        message.id = 'page_validation_message';
+        message.className = 'validation-message';
+        const navigation = document.querySelector('.navigation-buttons');
+        if (navigation) {
+            navigation.parentNode.insertBefore(message, navigation);
+        }
+    }
+
+    if (invalidFields.length > 0) {
+        message.textContent = 'Vul eerst alle verplichte velden op deze pagina in.';
+        invalidFields[0].reportValidity();
+        invalidFields[0].focus();
+        return false;
+    }
+
+    message.textContent = '';
+    return true;
+}
+
 function saveCurrentVak() {
 
     /* =========================
        VAK I
        ========================= */
-    const vak1Fields = ['vak1_naam','vak1_tel','vak1_afdeling','vak1_werkbeschrijving'];
+    const vak1Fields = ['vak1_naam','vak1_tel','vak1_afdeling','firma_naam','vak1_werkbeschrijving'];
     vak1Fields.forEach(id => { const el = document.getElementById(id); if(el) sessionStorage.setItem(id, el.value); });
     // Exzone uit vak1 (radio buttons)
     const exzone = document.querySelector('input[name="vak1_exzone"]:checked');
     if(exzone) sessionStorage.setItem('vak1_exzone', exzone.value);
+    const schoolAanvraag = document.querySelector('input[name="aanvrager_is_school"]:checked');
+    if(schoolAanvraag) sessionStorage.setItem('aanvrager_is_school', schoolAanvraag.value);
     
     /* =========================
        VAK II
        ========================= */
-    const vak2Fields = ['vak2_naam','vak2_firma','vak2_datumwerken','vak2_medewerkers'];
+    const vak2Fields = ['vak2_naam','vak2_firma','vak2_datumwerken','werktijd_van','werktijd_tot','vermoedelijke_duur','geldig_tot','werkzaamheden','vak2_medewerkers'];
     vak2Fields.forEach(id => { 
         const el = document.getElementById(id); 
         if(el) sessionStorage.setItem(id, el.value); 
@@ -63,6 +101,10 @@ function saveCurrentVak() {
     // vak2_veiligheidstest (radio)
     const veiligheid = document.querySelector('input[name="vak2_veiligheidstest"]:checked');
     if(veiligheid) sessionStorage.setItem('vak2_veiligheidstest', veiligheid.value);
+    const vca = document.querySelector('input[name="vca"]:checked');
+    if(vca) sessionStorage.setItem('vca', vca.value);
+    saveDynamicRows('medewerkers_table', 'medewerkers');
+    saveDynamicRows('voertuigen_table', 'voertuigen_attesten');
     
     // Activiteiten lists
     saveCheckedValues('vak2_act_koud', 'input[data-storage-group="vak2_act_koud"]');
@@ -143,12 +185,6 @@ function saveCurrentVak() {
         sessionStorage.setItem('vak7_tabel', JSON.stringify(data));
     }
 
-    // Sla werkvergunning nummer op als het bestaat
-    const nummerInput = document.getElementById('werkvergunning_nummer');
-    if (nummerInput && nummerInput.value) {
-        sessionStorage.setItem('werkvergunning_nummer', nummerInput.value);
-    }
-
     // LOTO behoort niet meer tot de actieve flow.
     sessionStorage.setItem('loto_required', 'false');
 
@@ -204,6 +240,186 @@ function assignStorageGroup(selector, storageGroup) {
     });
 }
 
+function collectDynamicRows(tableId) {
+    const table = document.getElementById(tableId);
+    if (!table) return [];
+
+    return Array.from(table.querySelectorAll('[data-row]')).map(function (row) {
+        const item = {};
+        row.querySelectorAll('[data-field]').forEach(function (field) {
+            item[field.dataset.field] = field.value.trim();
+        });
+        return item;
+    }).filter(function (item) {
+        return Object.values(item).some(function (value) {
+            return value !== '';
+        });
+    });
+}
+
+function saveDynamicRows(tableId, storageKey) {
+    const rows = collectDynamicRows(tableId);
+    sessionStorage.setItem(storageKey, JSON.stringify(rows));
+
+    if (storageKey === 'medewerkers') {
+        const hidden = document.getElementById('vak2_medewerkers');
+        if (hidden) {
+            hidden.value = rows.map(function (row) {
+                return [row.voornaam, row.naam].filter(Boolean).join(' ');
+            }).filter(Boolean).join(', ');
+            sessionStorage.setItem('vak2_medewerkers', hidden.value);
+        }
+    }
+}
+
+function createDynamicRow(table, values) {
+    const template = table.querySelector('[data-row]');
+    if (!template) return null;
+
+    const row = template.cloneNode(true);
+    row.querySelectorAll('[data-field]').forEach(function (field) {
+        field.value = values && values[field.dataset.field] ? values[field.dataset.field] : '';
+    });
+
+    return row;
+}
+
+function normalizeDynamicTable(tableId, storageKey) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+
+    let storedRows = [];
+    try {
+        storedRows = JSON.parse(sessionStorage.getItem(storageKey) || '[]');
+    } catch (error) {
+        storedRows = [];
+    }
+
+    if (!Array.isArray(storedRows) || storedRows.length === 0) {
+        storedRows = [{}];
+    }
+
+    const first = table.querySelector('[data-row]');
+    if (!first) return;
+    table.innerHTML = '';
+
+    storedRows.forEach(function (rowValues) {
+        const row = createDynamicRow({ querySelector: function () { return first; } }, rowValues);
+        if (row) table.appendChild(row);
+    });
+}
+
+function attachDynamicRowHandlers() {
+    document.querySelectorAll('[data-add-row]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const table = document.getElementById(button.dataset.addRow);
+            if (!table) return;
+
+            const row = createDynamicRow(table, {});
+            if (row) table.appendChild(row);
+        });
+    });
+
+    document.addEventListener('click', function (event) {
+        const removeButton = event.target.closest('.remove-row');
+        if (!removeButton) return;
+
+        const table = removeButton.closest('.dynamic-table');
+        const rows = table ? table.querySelectorAll('[data-row]') : [];
+        if (rows.length <= 1) {
+            removeButton.closest('[data-row]').querySelectorAll('[data-field]').forEach(function (field) {
+                field.value = '';
+            });
+            return;
+        }
+
+        removeButton.closest('[data-row]').remove();
+    });
+}
+
+function updateFirmaVisibility() {
+    const group = document.getElementById('firma_naam_group');
+    const firmaInput = document.getElementById('firma_naam');
+    if (!group || !firmaInput) return;
+
+    const selected = document.querySelector('input[name="aanvrager_is_school"]:checked');
+    const isExternal = selected && selected.value === 'nee';
+    group.hidden = !isExternal;
+    firmaInput.required = Boolean(isExternal);
+    if (!isExternal) {
+        firmaInput.value = '';
+    }
+}
+
+function attachSchoolToggle() {
+    document.querySelectorAll('input[name="aanvrager_is_school"]').forEach(function (radio) {
+        radio.addEventListener('change', updateFirmaVisibility);
+    });
+    updateFirmaVisibility();
+}
+
+function initVakProgressBar() {
+    const card = document.querySelector('.form-card');
+    if (!card || document.querySelector('.vak-progress-bar')) return;
+
+    const pages = [
+        ['werkvergunning_vak1.php', 'Vak I'],
+        ['werkvergunning_vak2.php', 'Vak II'],
+        ['werkvergunning_vak2_activiteiten.php', 'Activiteiten'],
+        ['werkvergunning_vak2_chemicalien.php', 'Chemie'],
+        ['werkvergunning_vak3.php', 'Vak III'],
+        ['werkvergunning_vak4.php', 'Vak IV'],
+        ['werkvergunning_vak5.php', 'Vak V'],
+        ['werkvergunning_vak6.php', 'Vak VI'],
+        ['werkvergunning_vak7.php', 'Indienen']
+    ];
+
+    const current = window.location.pathname.split('/').pop();
+    sessionStorage.setItem('visited_' + current, 'true');
+
+    const bar = document.createElement('nav');
+    bar.className = 'vak-progress-bar';
+    bar.setAttribute('aria-label', "Ingevulde pagina's");
+
+    pages.forEach(function (page) {
+        const link = document.createElement('a');
+        link.href = page[0];
+        link.textContent = page[1];
+
+        if (page[0] === current) {
+            link.classList.add('is-current');
+        } else if (sessionStorage.getItem('visited_' + page[0]) === 'true') {
+            link.classList.add('is-complete');
+        }
+
+        link.addEventListener('click', function () {
+            saveCurrentVak();
+        });
+
+        bar.appendChild(link);
+    });
+
+    card.insertAdjacentElement('afterend', bar);
+}
+
+function clearAanvraagDraftData() {
+    const prefixes = ['vak', 'visited_', 'aanvrager_', 'firma_naam', 'medewerkers', 'voertuigen_attesten', 'werktijd_', 'vermoedelijke_duur', 'geldig_tot', 'werkzaamheden', 'vca'];
+    const keysToRemove = [];
+
+    for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (!key) continue;
+
+        if (prefixes.some(function (prefix) { return key.indexOf(prefix) === 0; })) {
+            keysToRemove.push(key);
+        }
+    }
+
+    keysToRemove.forEach(function (key) {
+        sessionStorage.removeItem(key);
+    });
+}
+
 function initStorageGroupsForPage() {
     // Vak 2 activiteiten en stoffen
     assignStorageGroup('input[type="checkbox"][id^="koud_"]', 'vak2_act_koud');
@@ -229,6 +445,7 @@ function loadCurrentVakData() {
     lotoForm.querySelectorAll('input, select, textarea').forEach(el=>{
         const key = el.id || el.name;
         if (!key) return;
+        if (el.dataset.preserveValue === 'true') return;
 
         const stored = sessionStorage.getItem(key);
         if (stored !== null) {
@@ -255,6 +472,8 @@ function loadCurrentVakData() {
     restoreCheckedValues('vak5_vergunningen', 'input[type="checkbox"][id^="verg_"]');
     restoreCheckedValues('vak5_toelatingen', 'input[type="checkbox"][id^="toel_"]');
     restoreCheckedValues('vak5_preventie', 'input[data-storage-group="vak5_preventie"]');
+    normalizeDynamicTable('medewerkers_table', 'medewerkers');
+    normalizeDynamicTable('voertuigen_table', 'voertuigen_attesten');
 
     // Canvas handtekeningen
     lotoForm.querySelectorAll('canvas').forEach(canvas=>{
@@ -279,13 +498,22 @@ function loadCurrentVakData() {
 
 function attachNavigationAutoSave() {
     document.querySelectorAll('.navigation-buttons .nav-button').forEach(function (button) {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function (event) {
+            const label = button.textContent.trim().toLowerCase();
+            const shouldValidate = label.includes('volgende') || label.includes('indienen');
+
+            if (shouldValidate && !validateCurrentPage()) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                return;
+            }
+
             if (button.type === 'submit') {
                 return;
             }
 
             saveCurrentVak();
-        });
+        }, true);
     });
 }
 
@@ -294,5 +522,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initStorageGroupsForPage();
     loadCurrentVakData();
     initWerkvergunningNummer();
+    attachDynamicRowHandlers();
+    attachSchoolToggle();
+    initVakProgressBar();
     attachNavigationAutoSave();
 });

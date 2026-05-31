@@ -75,6 +75,18 @@ function selectedIds(array $lists, string $key): array
     return array_values(array_unique($ids));
 }
 
+function listValues(array $lists, string $key): array
+{
+    $raw = $lists[$key] ?? [];
+
+    if (is_string($raw)) {
+        $decoded = json_decode($raw, true);
+        $raw = is_array($decoded) ? $decoded : [];
+    }
+
+    return is_array($raw) ? $raw : [];
+}
+
 function existingReferenceIds(PDO $pdo, string $table, array $ids): array
 {
     $allowedTables = [
@@ -140,9 +152,34 @@ try {
 
     $werkbeschrijving = fieldValue($fields, 'vak1_werkbeschrijving');
 
-    if ($werkbeschrijving === null) {
+    $requiredFieldLabels = [
+        'vak1_afdeling' => 'Afdeling',
+        'aanvrager_is_school' => 'School of externe firma',
+        'vak1_exzone' => 'EX-zone',
+        'vak1_werkbeschrijving' => 'Werkbeschrijving',
+        'vak2_naam' => 'Verantwoordelijke uitvoerder',
+        'vak2_firma' => 'Firma / klas / dienst',
+        'vak2_datumwerken' => 'Datum werken',
+        'werktijd_van' => 'Werktijd van',
+        'werktijd_tot' => 'Werktijd tot',
+        'vermoedelijke_duur' => 'Vermoedelijke duur',
+        'geldig_tot' => 'Geldig tot',
+        'werkzaamheden' => 'Werkzaamheden',
+        'vak2_veiligheidstest' => 'Veiligheidstest',
+        'vca' => 'VCA',
+    ];
+
+    foreach ($requiredFieldLabels as $key => $label) {
+        if (fieldValue($fields, $key) === null) {
+            $pdo->rollBack();
+            setFlashMessage('error', $label . ' is verplicht.');
+            redirect('../PHP/werkvergunning_vak1.php');
+        }
+    }
+
+    if (fieldValue($fields, 'aanvrager_is_school') === 'nee' && fieldValue($fields, 'firma_naam') === null) {
         $pdo->rollBack();
-        setFlashMessage('error', 'Werkbeschrijving is verplicht.');
+        setFlashMessage('error', 'Firma is verplicht voor externe aanvragen.');
         redirect('../PHP/werkvergunning_vak1.php');
     }
 
@@ -202,12 +239,10 @@ try {
 
         'werkbeschrijving' => $werkbeschrijving,
 
-        // Voorlopige mapping naar hoofdtabel werkvergunning
-        // Later kunnen activiteiten/machines/preventie apart naar koppeltabellen.
-        'werkzaamheden' => fieldValue($fields, 'vak2_naam'),
+        'werkzaamheden' => fieldValue($fields, 'werkzaamheden') ?? fieldValue($fields, 'vak2_naam'),
         'aandachtspunten_vak3' => fieldValue($fields, 'vak3_aandachtspunten'),
         'andere_werkzaamheden' => fieldValue($fields, 'vak4_aandachtspunten'),
-        'naam_afdelingsverantwoordelijke' => fieldValue($fields, 'vak4_naam'),
+        'naam_afdelingsverantwoordelijke' => fieldValue($fields, 'vak4_naam') ?? fieldValue($fields, 'vak1_naam'),
 
         'afdeling_tekst' =>
             fieldValue($fields, 'vak1_afdeling')
@@ -215,17 +250,15 @@ try {
 
         'datum_werken' => fieldValue($fields, 'vak2_datumwerken'),
 
-        // Deze velden worden voorlopig nog niet duidelijk uit de flow gehaald.
-        'werktijd_van' => null,
-        'werktijd_tot' => null,
-        'vermoedelijke_duur' => null,
+        'werktijd_van' => fieldValue($fields, 'werktijd_van'),
+        'werktijd_tot' => fieldValue($fields, 'werktijd_tot'),
+        'vermoedelijke_duur' => fieldValue($fields, 'vermoedelijke_duur'),
 
         'ex_zone' => boolFromText(fieldValue($fields, 'vak1_exzone')),
         'veiligheidstest_status' => fieldValue($fields, 'vak2_veiligheidstest') ?: 'NVT',
 
-        // VCA wordt later eventueel uitgebreider gekoppeld.
-        'vca_verplicht' => 0,
-        'vca_geldig_tot' => null,
+        'vca_verplicht' => boolFromText(fieldValue($fields, 'vca')),
+        'vca_geldig_tot' => fieldValue($fields, 'geldig_tot'),
 
         // LOTO behoort niet meer tot het pakket.
         'loto_verplicht' => 0,
@@ -238,6 +271,82 @@ try {
 
     if ($vergunningId <= 0) {
         throw new RuntimeException('Vergunning-ID kon niet worden bepaald.');
+    }
+
+    $optionalUpdateValues = [
+        'aanvrager_voornaam' => (string) ($_SESSION['voornaam'] ?? ''),
+        'aanvrager_naam' => (string) ($_SESSION['naam'] ?? ''),
+        'aanvrager_telefoon' => (string) ($_SESSION['telefoon'] ?? ''),
+        'aanvrager_is_school' => boolFromText(fieldValue($fields, 'aanvrager_is_school')),
+        'firma_naam' => fieldValue($fields, 'firma_naam'),
+    ];
+
+    $updateParts = [];
+    $updateParams = ['id' => $vergunningId];
+
+    foreach ($optionalUpdateValues as $column => $value) {
+        if (databaseColumnExists($pdo, 'werkvergunning', $column)) {
+            $updateParts[] = "{$column} = :{$column}";
+            $updateParams[$column] = $value;
+        }
+    }
+
+    if ($updateParts !== []) {
+        $updateStmt = $pdo->prepare('UPDATE werkvergunning SET ' . implode(', ', $updateParts) . ' WHERE id = :id');
+        $updateStmt->execute($updateParams);
+    }
+
+    if (databaseTableExists($pdo, 'vergunning_medewerker')) {
+        $medewerkerStmt = $pdo->prepare('
+            INSERT INTO vergunning_medewerker (vergunning_id, voornaam, naam, telefoon)
+            VALUES (:vergunning_id, :voornaam, :naam, :telefoon)
+        ');
+
+        foreach (listValues($lists, 'medewerkers') as $medewerker) {
+            if (!is_array($medewerker)) {
+                continue;
+            }
+
+            $voornaam = trim((string) ($medewerker['voornaam'] ?? ''));
+            $naam = trim((string) ($medewerker['naam'] ?? ''));
+
+            if ($voornaam === '' && $naam === '') {
+                continue;
+            }
+
+            $medewerkerStmt->execute([
+                'vergunning_id' => $vergunningId,
+                'voornaam' => $voornaam,
+                'naam' => $naam,
+                'telefoon' => trim((string) ($medewerker['telefoon'] ?? '')),
+            ]);
+        }
+    }
+
+    if (databaseTableExists($pdo, 'vergunning_voertuig_attest')) {
+        $voertuigStmt = $pdo->prepare('
+            INSERT INTO vergunning_voertuig_attest (vergunning_id, nummerplaat, attest_geldig_tot)
+            VALUES (:vergunning_id, :nummerplaat, :attest_geldig_tot)
+        ');
+
+        foreach (listValues($lists, 'voertuigen_attesten') as $voertuig) {
+            if (!is_array($voertuig)) {
+                continue;
+            }
+
+            $nummerplaat = trim((string) ($voertuig['nummerplaat'] ?? ''));
+            $attestGeldigTot = trim((string) ($voertuig['attest_geldig_tot'] ?? ''));
+
+            if ($nummerplaat === '' && $attestGeldigTot === '') {
+                continue;
+            }
+
+            $voertuigStmt->execute([
+                'vergunning_id' => $vergunningId,
+                'nummerplaat' => $nummerplaat,
+                'attest_geldig_tot' => $attestGeldigTot === '' ? null : $attestGeldigTot,
+            ]);
+        }
     }
 
     $koudeIds = existingReferenceIds(

@@ -3,378 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uren Tracking – Werkvergunningen Portaal GTI Beveren</title>
+    <title>Uren Tracking - Werkvergunningen Portaal GTI Beveren</title>
     <meta name="description" content="Bijhouden van gewerkte uren en activiteiten. Transparante urenregistratie voor werkvergunningen en schoolprojecten.">
     <meta name="keywords" content="uren tracking, werkvergunningen uren, GTI Beveren uren registratie">
     <meta name="author" content="Lukas Vandenweyer, Jonas De Meersman">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://adbvandenweyer2205.be/Uren_Tracking.html">
     <link rel="icon" href="./afbeeldingen/LogoADB_1.png" type="image/x-icon">
-    
-    <!-- Open Graph / Social Media -->
+
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://adbvandenweyer2205.be/Uren_Tracking.html">
-    <meta property="og:title" content="Uren Tracking – Werkvergunningen Portaal GTI Beveren">
+    <meta property="og:title" content="Uren Tracking - Werkvergunningen Portaal GTI Beveren">
     <meta property="og:description" content="Bijhouden van gewerkte uren en activiteiten. Transparante urenregistratie voor werkvergunningen.">
     <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
-    
+
     <link rel="stylesheet" href="./CSS/Uren_Tracking.css">
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
 </head>
-<script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
 <body>
-    <header class="header-bar">
+    <header class="header-bar glass-panel">
         <div class="header-left">
             <h1 class="gradient-text">GSP 6ADB 2025-2026</h1>
         </div>
         <div class="header-right">
-            <div class="search-container">
-                
-                <input type="text" placeholder="Zoek projecten..." class="search-input">
+            <label class="search-container" for="globalSearch">
+                <input type="search" id="globalSearch" placeholder="Zoek in uren..." class="search-input">
                 <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-            </div>
-            <div class="notification-icon">
+            </label>
+            <div class="notification-icon" aria-label="Meldingen">
                 <i class="fa-solid fa-bell"></i>
                 <span class="notification-dot"></span>
             </div>
-            <div class="add-icon"><i class="fa-solid fa-plus"></i></div>
+            <div class="add-icon" aria-label="Nieuwe entry">
+                <i class="fa-solid fa-plus"></i>
+            </div>
         </div>
     </header>
 
-    <div class="main-container">
-        <nav class="sidebar">
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link">
-                        <span class="nav-icon">⚏</span>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Projecten.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
-                        <span class="nav-text">Projecten</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Logboek.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-book"></i></span>
-                        <span class="nav-text">Logboek</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="TijdLijn.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
-                        <span class="nav-text">Tijdlijn</span>
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a href="Uren_Tracking.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-regular fa-clock"></i></span>
-                        <span class="nav-text">Uren Tracking</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Voortgang.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
-                        <span class="nav-text">Voortgang</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Documentatie.html" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-pen-nib"></i></span>
-                        <span class="nav-text">Documentatie</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/GSP/index.php" class="nav-link">
-                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
-                        <span class="nav-text">GSP</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <nav class="sidebar glass-panel" aria-label="Hoofdnavigatie">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="index.html" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="Projecten.html" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-folder"></i></span>
+                    <span class="nav-text">Projecten</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="Logboek.html" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-book"></i></span>
+                    <span class="nav-text">Logboek</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="TijdLijn.html" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <span class="nav-text">Tijdlijn</span>
+                </a>
+            </li>
+            <li class="nav-item active">
+                <a href="Uren_Tracking.html" class="nav-link">
+                    <span class="nav-icon"><i class="fa-regular fa-clock"></i></span>
+                    <span class="nav-text">Uren Tracking</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="Voortgang.html" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                    <span class="nav-text">Voortgang</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="Documentatie.html" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-pen-nib"></i></span>
+                    <span class="nav-text">Documentatie</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/GSP/index.php" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span class="nav-text">GSP</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-        <section class="titel-section">
-            <h2>Uren Tracking</h2>
-            <p>Overzicht van gewerkte uren en project voortgang <span class="no_brakes">( Oktober - November 2025 )</span></p>
-        </section>
-
-             <section class="content-section">
-            <div class="card">
-                <h3>Totaal uren</h3>
-                <p class="hours">58h</p>
-                <p class="content">Laatste maand</p>
-                <i class="fa-regular fa-clock"></i>
-            </div>
-            <div class="card">
-                <h3>Uren Lukas</h3>
-                <p class="hours">32h</p>
-                <p class="content">Lukas Vandenweyer</p>
-                <i class="fa-solid fa-arrow-trend-up blue"></i>
-            </div>
-            <div class="card">
-                <h3>Uren Jonas</h3>
-                <p class="hours">26h</p>
-                <p class="content">Jonas De Meersman</p>
-                <i class="fa-solid fa-arrow-trend-up green"></i>
-            </div>
-            <div class="card">
-                <h3>Projecten</h3>
-                <p class="aantal">5</p>
-                <p class="content">Actieve projecten</p>
-                <i class="fa-solid fa-chart-simple"></i>
-            </div>
-            <div class="card">
-                <h3>Team</h3>
-                <p class="aantal">2</p>
-                <p class="content">Teamleden actief</p>
-                <i class="fa-solid fa-user"></i>
+    <main class="main-container">
+        <section class="hero-grid">
+            <div class="hero-panel glass-panel">
+                <p class="eyebrow">Werkvergunningen portaal</p>
+                <h2>Uren Tracking</h2>
+                <p class="hero-copy">
+                    Volg per teamlid, project en week waar de tijd naartoe gaat. De cijfers hieronder worden automatisch berekend uit de urenlijst.
+                </p>
+                <div class="hero-actions" role="tablist" aria-label="Uren tracking weergaves">
+                    <button class="tab-button active" type="button" data-tab="entries">Entries</button>
+                    <button class="tab-button" type="button" data-tab="weekly">Wekelijks</button>
+                    <button class="tab-button" type="button" data-tab="projects">Projecten</button>
+                </div>
             </div>
         </section>
 
-        <section class="entries-section">
-            <div class="entries-buttons">
-                <button class="uren">Uren Entries</button>
-                <button class="overzicht">Wekelijks Overzicht</button>
-                <button class="projecten">Per Project</button>
-            </div>
+        <section class="kpi-grid" id="statsGrid" aria-label="Samenvatting uren"></section>
+
+        <section class="workspace-grid">
+            <section class="tracker-panel glass-panel">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">Registratie</p>
+                        <h3 id="viewTitle">Uren entries</h3>
+                    </div>
+                    <p id="resultCount" class="result-count"></p>
+                </div>
+
+                <div class="filter-bar">
+                    <label for="entrySearch">
+                        <span>Zoeken</span>
+                        <input type="search" id="entrySearch" placeholder="Titel, project, plaats...">
+                    </label>
+                    <label for="memberFilter">
+                        <span>Teamlid</span>
+                        <select id="memberFilter">
+                            <option value="all">Iedereen</option>
+                        </select>
+                    </label>
+                    <label for="typeFilter">
+                        <span>Type</span>
+                        <select id="typeFilter">
+                            <option value="all">Alles</option>
+                            <option value="Declarabel">Declarabel</option>
+                            <option value="Intern">Intern</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div id="tabContent" class="tab-content" aria-live="polite"></div>
+            </section>
+
+            <aside class="side-panel glass-panel" id="sidePanel" aria-label="Team verdeling"></aside>
         </section>
-
-
-
-        <section class="content-section">
-            <div class="entries-list">
-                <div class="entry-green">
-                    <div class="entry-left">
-                        <div class="entry-titel">
-                            <span class="entry-details">
-                                <h3>Planning Start</h3>
-                                <p class="soort_entry_intern">Intern</p>
-                                <p class="naam-green">Lukas Vandenweyer</p>
-                            </span>
-                        </div>
-                        <div class="entry-info">
-                            <p>Start opstelling planning met tijdlijntool. Individuele voorbereiding, klassikale evaluatie en visuele planning.</p>
-                        </div>
-                        <div class="entry-time">
-                            <span class="entry-details">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <p>2 sep 2025</p>
-                                <p>School - APP</p>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="entry-right">
-                        <p class="entry-right-green">1.67h</p>
-                    </div>
-                </div>
-
-                <div class="entry-green">
-                    <div class="entry-left">
-                        <div class="entry-titel">
-                            <span class="entry-details">
-                                <h3>Planning Verderwerken</h3>
-                                <p class="soort_entry_intern">Intern</p>
-                                <p class="naam-green">Lukas Vandenweyer</p>
-                            </span>
-                        </div>
-                        <div class="entry-info">
-                            <p>Verderwerken aan planning. Toevoegen deadlines, vakantieperiodes, taken en subtaken.</p>
-                        </div>
-                        <div class="entry-time">
-                            <span class="entry-details">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <p>9 sep 2025</p>
-                                <p>School - PROD</p>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="entry-right">
-                        <p class="entry-right-green">1.67h</p>
-                    </div>
-                </div>
-
-                <div class="entry-green">
-                    <div class="entry-left">
-                        <div class="entry-titel">
-                            <span class="entry-details">
-                                <h3>Tijdlijn Aanpassen</h3>
-                                <p class="soort_entry_intern">Intern</p>
-                                <p class="naam-green">Lukas Vandenweyer</p>
-                            </span>
-                        </div>
-                        <div class="entry-info">
-                            <p>Site bijwerken en tijdlijn aanpassen.</p>
-                        </div>
-                        <div class="entry-time">
-                            <span class="entry-details">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <p>30 sep 2025</p>
-                                <p>School - PROD</p>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="entry-right">
-                        <p class="entry-right-green">1.67h</p>
-                    </div>
-                </div>
-
-                <div class="entry-green">
-                    <div class="entry-left">
-                        <div class="entry-titel">
-                            <span class="entry-details">
-                                <h3>Website</h3>
-                                <p class="soort_entry_declarabel">Declarabel</p>
-                                <p class="naam-green">Lukas Vandenweyer</p>
-                            </span>
-                        </div>
-                        <div class="entry-info">
-                            <p>Websiteontwikkeling in HTML/CSS.</p>
-                        </div>
-                        <div class="entry-time">
-                            <span class="entry-details">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <p>1 okt 2025</p>
-                                <p>Thuis - HTML/CSS</p>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="entry-right">
-                        <p class="entry-right-green">2.00h</p>
-                    </div>
-                </div>
-
-                <div class="entry-green">
-                    <div class="entry-left">
-                        <div class="entry-titel">
-                            <span class="entry-details">
-                                <h3>Website</h3>
-                                <p class="soort_entry_declarabel">Declarabel</p>
-                                <p class="naam-green">Lukas Vandenweyer</p>
-                            </span>
-                        </div>
-                        <div class="entry-info">
-                            <p>Websiteontwikkeling in HTML/CSS.</p>
-                        </div>
-                        <div class="entry-time">
-                            <span class="entry-details">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <p>2 okt 2025</p>
-                                <p>Thuis - HTML/CSS</p>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="entry-right">
-                        <p class="entry-right-green">2.00h</p>
-                    </div>
-                </div>
-
-                <div class="entry-green">
-                    <div class="entry-left">
-                        <div class="entry-titel">
-                            <span class="entry-details">
-                                <h3>Website</h3>
-                                <p class="soort_entry_declarabel">Declarabel</p>
-                                <p class="naam-green">Lukas Vandenweyer</p>
-                            </span>
-                        </div>
-                        <div class="entry-info">
-                            <p>Websiteontwikkeling in HTML/CSS.</p>
-                        </div>
-                        <div class="entry-time">
-                            <span class="entry-details">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <p>4 okt 2025</p>
-                                <p>Thuis - HTML/CSS</p>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="entry-right">
-                        <p class="entry-right-green">3.00h</p>
-                    </div>
-                </div>
-
-                <div class="entry-green">
-                    <div class="entry-left">
-                        <div class="entry-titel">
-                            <span class="entry-details">
-                                <h3>Website</h3>
-                                <p class="soort_entry_declarabel">Declarabel</p>
-                                <p class="naam-green">Lukas Vandenweyer</p>
-                            </span>
-                        </div>
-                        <div class="entry-info">
-                            <p>Websiteontwikkeling in HTML/CSS.</p>
-                        </div>
-                        <div class="entry-time">
-                            <span class="entry-details">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <p>5 okt 2025</p>
-                                <p>Thuis - HTML/CSS</p>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="entry-right">
-                        <p class="entry-right-green">4.00h</p>
-                    </div>
-                </div>
-
-                <div class="entry-green">
-                    <div class="entry-left">
-                        <div class="entry-titel">
-                            <span class="entry-details">
-                                <h3>Project Definitie</h3>
-                                <p class="soort_entry_intern">Intern</p>
-                                <p class="naam-green">Lukas Vandenweyer</p>
-                            </span>
-                        </div>
-                        <div class="entry-info">
-                            <p>Project definitie opstellen.</p>
-                        </div>
-                        <div class="entry-time">
-                            <span class="entry-details">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <p>23 okt 2025</p>
-                                <p>Thuis - Project Definitie</p>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="entry-right">
-                        <p class="entry-right-green">1.75h</p>
-                    </div>
-                </div>
-
-                <div class="entry-green">
-                    <div class="entry-left">
-                        <div class="entry-titel">
-                            <span class="entry-details">
-                                <h3>Website</h3>
-                                <p class="soort_entry_declarabel">Declarabel</p>
-                                <p class="naam-green">Lukas Vandenweyer</p>
-                            </span>
-                        </div>
-                        <div class="entry-info">
-                            <p>Websiteontwikkeling in HTML/CSS.</p>
-                        </div>
-                        <div class="entry-time">
-                            <span class="entry-details">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <p>1 nov 2025</p>
-                                <p>Thuis - HTML/CSS</p>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="entry-right">
-                        <p class="entry-right-green">4.00h</p>
-                    </div>
-                </div>
-
-            </div>
-
-        </section>
-    </div>
+    </main>
 
     <script src="./Scripts/portfolio-data.js"></script>
     <script src="./Scripts/portfolio-pages.js"></script>
-    </body>
+    <script src="./Scripts/UrenTellen.js"></script>
+</body>
 </html>

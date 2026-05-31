@@ -6,7 +6,9 @@
 }
 
 body {
-    background-color: #EBF2FF;
+    background:
+        linear-gradient(135deg, rgba(12, 39, 74, 0.84), rgba(27, 88, 137, 0.62)),
+        var(--gsp-bg-image, url('../IMAGES/logo-beveren.jpg')) center / cover fixed;
     color: #333;
     line-height: 1.6;
     min-height: 100vh;
@@ -14,6 +16,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: clamp(10px, 3vw, 20px);
+    overflow-x: hidden;
 }
 
 header {
@@ -49,11 +52,13 @@ header {
 }
 
 .login-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.82);
     border-radius: 12px;
     padding: clamp(20px, 5vw, 40px);
     width: 100%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(20px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -62,7 +67,7 @@ header {
 .icon-container {
     width: clamp(60px, 15vw, 80px);
     height: clamp(60px, 15vw, 80px);
-    background-color: #d4e4fa;
+    background-color: rgba(212, 228, 250, 0.78);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -116,7 +121,7 @@ header {
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: clamp(13px, 3vw, 14px);
-    background-color: #f5f5f5;
+    background-color: rgba(255, 255, 255, 0.78);
     color: #333;
 }
 
@@ -234,11 +239,13 @@ header {
 }
 
 .logo-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.82);
     border-radius: 12px;
     padding: 20px;
     width: 100%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(20px);
     display: flex;
     justify-content: center;
     align-items: center;

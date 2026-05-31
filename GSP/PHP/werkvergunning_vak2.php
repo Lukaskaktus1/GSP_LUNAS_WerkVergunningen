@@ -53,41 +53,60 @@ $overzichtPagina = match ($role) {
         <div class="form-card">
             <div class="form-title">
                 <span>WERKVERGUNNING</span>
-                <span class="form-title-number">Nr. <input type="text" id="werkvergunning_nummer"></span>
+                <span class="form-title-number">Nr. <input type="text" id="werkvergunning_nummer" value="Automatisch bij indienen" readonly></span>
             </div>
 
             <!-- Vak II -->
             <div class="form-section">
-                <h2 class="section-title">Vak II. UITVOERDER/LEERLING:</h2>
+                <h2 class="section-title">Vak II. Uitvoering, planning en medewerkers</h2>
+                <p class="form-subtitle">Vul eerst de verantwoordelijke uitvoerder in. Extra medewerkers en voertuigen kunt u hieronder apart toevoegen.</p>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="vak2_naam">Naam:</label>
-                        <input type="text" id="vak2_naam" name="vak2_naam">
+                        <label for="vak2_naam">Verantwoordelijke uitvoerder:</label>
+                        <input type="text" id="vak2_naam" name="vak2_naam" required>
                     </div>
                     <div class="form-group">
-                        <label for="vak2_firma">Firma:</label>
-                        <input type="text" id="vak2_firma" name="vak2_firma">
+                        <label for="vak2_firma">Firma / klas / dienst:</label>
+                        <input type="text" id="vak2_firma" name="vak2_firma" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="vak2_datumwerken">Datum werken:</label>
-                        <input type="date" id="vak2_datumwerken" name="vak2_datumwerken">
+                        <input type="date" id="vak2_datumwerken" name="vak2_datumwerken" required>
                     </div>
                     <div class="form-group">
-                        <label>werktijd van</label>
-                        <input type="time" id="werktijd_van" name="werktijd_van">
+                        <label for="werktijd_van">Werktijd van:</label>
+                        <input type="time" id="werktijd_van" name="werktijd_van" required>
                     </div>
                     <div class="form-group">
-                        <label>tot</label>
-                        <input type="time" id="werktijd_tot" name="werktijd_tot">
+                        <label for="werktijd_tot">Werktijd tot:</label>
+                        <input type="time" id="werktijd_tot" name="werktijd_tot" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="vak2_medewerkers">Namen medewerkers:</label>
-                    <input type="text" id="vak2_medewerkers" name="vak2_medewerkers">
+                    <label>Medewerkers</label>
+                    <div class="dynamic-table" id="medewerkers_table" data-storage-key="medewerkers">
+                        <div class="dynamic-row" data-row>
+                            <div class="form-group">
+                                <label>Voornaam</label>
+                                <input type="text" data-field="voornaam" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Naam</label>
+                                <input type="text" data-field="naam" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Telefoon</label>
+                                <input type="tel" data-field="telefoon">
+                            </div>
+                            <button class="remove-row" type="button" aria-label="Medewerker verwijderen">-</button>
+                        </div>
+                    </div>
+                    <button class="add-row-btn" type="button" data-add-row="medewerkers_table">+ Medewerker toevoegen</button>
+                    <input type="hidden" id="vak2_medewerkers" name="vak2_medewerkers">
                 </div>
 
                 <div class="form-row">
@@ -96,11 +115,11 @@ $overzichtPagina = match ($role) {
                         <label>Veiligheidstest:</label>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="radio" id="vak2_veiligheidstest_ok" name="vak2_veiligheidstest" value="ok">
+                                <input type="radio" id="vak2_veiligheidstest_ok" name="vak2_veiligheidstest" value="ok" required>
                                 <label for="vak2_veiligheidstest_ok">OK</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="radio" id="vak2_veiligheidstest_nok" name="vak2_veiligheidstest" value="nok">
+                                <input type="radio" id="vak2_veiligheidstest_nok" name="vak2_veiligheidstest" value="nok" required>
                                 <label for="vak2_veiligheidstest_nok">NOK</label>
                             </div>
                         </div>
@@ -109,11 +128,11 @@ $overzichtPagina = match ($role) {
                         <label>VCA-certificaten: Ja/Nee. Indien ja, kopiëren en bewaren (*)</label>
                         <div class="checkbox-group">
                             <div class="checkbox-item">
-                                <input type="radio" id="vca_ja" name="vca" value="ja">
+                                <input type="radio" id="vca_ja" name="vca" value="ja" required>
                                 <label for="vca_ja">Ja</label>
                             </div>
                             <div class="checkbox-item">
-                                <input type="radio" id="vca_nee" name="vca" value="nee">
+                                <input type="radio" id="vca_nee" name="vca" value="nee" required>
                                 <label for="vca_nee">Nee</label>
                             </div>
                         </div>
@@ -122,19 +141,35 @@ $overzichtPagina = match ($role) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="vermoedelijke_duur">Vermoedelijke duur:</label>
-                        <input type="text" id="vermoedelijke_duur" name="vermoedelijke_duur" placeholder="bijv. 2 uur">
+                        <input type="text" id="vermoedelijke_duur" name="vermoedelijke_duur" placeholder="bijv. 2 uur" required>
                     </div>
                     <div class="form-group">
                         <label for="geldig_tot">Geldig tot:</label>
-                        <input type="date" id="geldig_tot" name="geldig_tot">
+                        <input type="date" id="geldig_tot" name="geldig_tot" required>
                     </div>
-                    <!--- Lege kolom voor 3-kolommen layout --->
-                    <div class="form-group"></div>
-                    <!--- Einde Lege kolom voor 3-kolommen layout --->
                     <div class="form-group">
                         <label for="werkzaamheden">Werkzaamheden:</label>
-                        <input type="text" id="werkzaamheden" name="werkzaamheden" placeholder="bijv. montage, afbouw, etc.">
+                        <input type="text" id="werkzaamheden" name="werkzaamheden" placeholder="bijv. montage, afbouw, etc." required>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Voertuigen met attest</label>
+                    <p class="field-note">Voeg per voertuig of machine de nummerplaat en attestdatum toe.</p>
+                    <div class="dynamic-table" id="voertuigen_table" data-storage-key="voertuigen_attesten">
+                        <div class="dynamic-row" data-row>
+                            <div class="form-group">
+                                <label>Nummerplaat</label>
+                                <input type="text" data-field="nummerplaat" data-optional="true">
+                            </div>
+                            <div class="form-group">
+                                <label>Attest geldig tot</label>
+                                <input type="date" data-field="attest_geldig_tot" data-optional="true">
+                            </div>
+                            <button class="remove-row" type="button" aria-label="Voertuig verwijderen">-</button>
+                        </div>
+                    </div>
+                    <button class="add-row-btn" type="button" data-add-row="voertuigen_table">+ Voertuig toevoegen</button>
                 </div>
             </div>
 

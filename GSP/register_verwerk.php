@@ -10,10 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $email = strtolower(trim((string) ($_POST['email'] ?? '')));
+$voornaam = trim((string) ($_POST['voornaam'] ?? ''));
+$naam = trim((string) ($_POST['naam'] ?? ''));
+$telefoon = trim((string) ($_POST['telefoon'] ?? ''));
 $password = (string) ($_POST['password'] ?? '');
 $passwordConfirm = (string) ($_POST['password_confirm'] ?? '');
 
-if ($email === '' || $password === '' || $passwordConfirm === '') {
+if ($voornaam === '' || $naam === '' || $telefoon === '' || $email === '' || $password === '' || $passwordConfirm === '') {
     setFlashMessage('error', 'Vul alle velden in.');
     redirect('register.php');
 }
@@ -23,8 +26,8 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
     redirect('register.php');
 }
 
-if (strlen($password) < 8) {
-    setFlashMessage('error', 'Het wachtwoord moet minstens 8 tekens lang zijn.');
+if (!passwordMeetsPolicy($password)) {
+    setFlashMessage('error', passwordPolicyMessage());
     redirect('register.php');
 }
 
@@ -54,19 +57,46 @@ try {
 
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-    $insertStmt = $pdo->prepare("
-        INSERT INTO users (email, wachtwoord_hash, rol, actief)
-        VALUES (:email, :wachtwoord_hash, :rol, :actief)
-    ");
-
-    $insertStmt->execute([
+    $insertColumns = ['email', 'wachtwoord_hash', 'rol', 'actief'];
+    $insertValues = [
         'email' => $email,
         'wachtwoord_hash' => $passwordHash,
         'rol' => 'leerling',
         'actief' => 1,
-    ]);
+    ];
 
-    setFlashMessage('success', 'Account succesvol aangemaakt. U kunt nu inloggen.');
+    $optionalValues = [
+        'voornaam' => $voornaam,
+        'naam' => $naam,
+        'telefoon' => $telefoon,
+        'bevestiging_token' => bin2hex(random_bytes(32)),
+    ];
+
+    foreach ($optionalValues as $column => $value) {
+        if (databaseColumnExists($pdo, 'users', $column)) {
+            $insertColumns[] = $column;
+            $insertValues[$column] = $value;
+        }
+    }
+
+    $placeholders = array_map(static fn (string $column): string => ':' . $column, $insertColumns);
+
+    $insertStmt = $pdo->prepare(sprintf(
+        'INSERT INTO users (%s) VALUES (%s)',
+        implode(', ', $insertColumns),
+        implode(', ', $placeholders)
+    ));
+
+    $insertStmt->execute($insertValues);
+
+    $message = "Hallo {$voornaam},\n\n"
+        . "Je account voor het Werkvergunning Portaal is aangemaakt.\n"
+        . "Je kan nu inloggen met dit e-mailadres: {$email}\n\n"
+        . "Met vriendelijke groeten,\nGTI Beveren";
+
+    sendPortalMail($email, 'Bevestiging account Werkvergunning Portaal', $message);
+
+    setFlashMessage('success', 'Account succesvol aangemaakt. Er is een bevestigingsmail verstuurd en u kunt nu inloggen.');
     redirect('index.php');
 
 } catch (Throwable $exception) {

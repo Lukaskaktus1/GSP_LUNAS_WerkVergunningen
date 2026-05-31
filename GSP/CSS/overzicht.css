@@ -486,3 +486,114 @@ body {
         font-size: clamp(20px, 3.5vw, 24px);
     }
 }
+
+/* Glass layout voor overzichts- en detailpagina's */
+body {
+    background:
+        linear-gradient(135deg, rgba(12, 39, 74, 0.84), rgba(27, 88, 137, 0.62)),
+        var(--gsp-bg-image, url('../IMAGES/logo-beveren.jpg')) center / cover fixed;
+    overflow-x: hidden;
+}
+
+.header,
+.action-card,
+.applications-container {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
+    backdrop-filter: blur(20px);
+}
+
+.header-icon {
+    display: none !important;
+}
+
+.role-badge,
+.readonly-box {
+    background-color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.user-menu {
+    position: relative;
+}
+
+.user-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.64);
+    color: #111827;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 9px 14px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+}
+
+.user-menu-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    z-index: 20;
+    min-width: 220px;
+    display: none;
+    flex-direction: column;
+    padding: 8px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.2);
+    backdrop-filter: blur(16px);
+}
+
+.user-menu.open .user-menu-panel {
+    display: flex;
+}
+
+.user-menu-panel a {
+    color: #1f2937;
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.user-menu-panel a:hover {
+    background: rgba(22, 120, 250, 0.12);
+}
+
+.user-menu-panel a.danger {
+    color: #b42318;
+}
+
+.approval-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 18px;
+}
+
+.approval-panel form {
+    display: inline-flex;
+}
+
+.approval-btn {
+    border: 0;
+    border-radius: 999px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 800;
+    padding: 12px 18px;
+}
+
+.approval-btn.approve {
+    background: #15803d;
+}
+
+.approval-btn.reject {
+    background: #b42318;
+}

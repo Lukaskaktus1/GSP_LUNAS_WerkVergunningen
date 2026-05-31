@@ -218,6 +218,8 @@ $overzichtPagina = match ($role) {
                     if (aanvraag_data_input) {
                         aanvraag_data_input.value = JSON.stringify(aanvraagData);
                     }
+
+                    clearAanvraagDraftData();
                     
                     // Submit het formulier
                     form.submit();

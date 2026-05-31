@@ -14,6 +14,9 @@ $overzichtPagina = match ($role) {
     'admin' => '../pages/overzicht_admin.php',
     default => '../pages/overzicht_leerling.php',
 };
+
+$aanvragerNaam = currentUserDisplayName();
+$aanvragerTel = (string) ($_SESSION['telefoon'] ?? '');
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -62,7 +65,7 @@ $overzichtPagina = match ($role) {
             <div class="form-title">
                 <span>WERKVERGUNNING</span>
                 <span class="form-title-number">
-                    Nr. <input type="text" id="werkvergunning_nummer" name="werkvergunning_nummer">
+                    Nr. <input type="text" id="werkvergunning_nummer" name="werkvergunning_nummer" value="Automatisch bij indienen" readonly>
                 </span>
             </div>
 
@@ -72,19 +75,38 @@ $overzichtPagina = match ($role) {
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="vak1_naam">Naam:</label>
-                        <input type="text" id="vak1_naam" name="vak1_naam">
+                        <label for="vak1_naam">Aanvrager:</label>
+                        <input type="text" id="vak1_naam" name="vak1_naam" value="<?= e($aanvragerNaam) ?>" readonly data-preserve-value="true">
                     </div>
 
                     <div class="form-group">
                         <label for="vak1_tel">Tel:</label>
-                        <input type="tel" id="vak1_tel" name="vak1_tel">
+                        <input type="tel" id="vak1_tel" name="vak1_tel" value="<?= e($aanvragerTel) ?>" readonly data-preserve-value="true">
                     </div>
 
                     <div class="form-group">
                         <label for="vak1_afdeling">Afdeling:</label>
-                        <input type="text" id="vak1_afdeling" name="vak1_afdeling">
+                        <input type="text" id="vak1_afdeling" name="vak1_afdeling" required>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Komt de aanvraag vanuit de school?</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="radio" id="aanvrager_school_ja" name="aanvrager_is_school" value="ja" required>
+                            <label for="aanvrager_school_ja">Ja, van de school</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="radio" id="aanvrager_school_nee" name="aanvrager_is_school" value="nee" required>
+                            <label for="aanvrager_school_nee">Nee, externe firma</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="firma_naam_group" hidden>
+                    <label for="firma_naam">Firma</label>
+                    <input type="text" id="firma_naam" name="firma_naam" placeholder="Naam van de firma">
                 </div>
 
                 <h3 class="subsection-title">I.2. EXPLOSIEVE ATMOSFEER (Ex-Zone):</h3>
@@ -93,11 +115,11 @@ $overzichtPagina = match ($role) {
                     <label>Werkzaamheden in explosieve atmosfeer (gas/stof):</label>
                     <div class="checkbox-group">
                         <div class="checkbox-item">
-                            <input type="radio" id="vak1_exzone_ja" name="vak1_exzone" value="ja">
+                            <input type="radio" id="vak1_exzone_ja" name="vak1_exzone" value="ja" required>
                             <label for="vak1_exzone_ja">Ja</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="radio" id="vak1_exzone_neen" name="vak1_exzone" value="neen">
+                            <input type="radio" id="vak1_exzone_neen" name="vak1_exzone" value="neen" required>
                             <label for="vak1_exzone_neen">Neen</label>
                         </div>
                     </div>
@@ -110,7 +132,7 @@ $overzichtPagina = match ($role) {
                 </p>
 
                 <div class="form-group">
-                    <textarea id="vak1_werkbeschrijving" name="vak1_werkbeschrijving" rows="8" placeholder="Beschrijf hier de werkzaamheden..."></textarea>
+                    <textarea id="vak1_werkbeschrijving" name="vak1_werkbeschrijving" rows="8" placeholder="Beschrijf hier de werkzaamheden..." required></textarea>
                 </div>
             <div class="navigation-buttons">
                 <button class="nav-button prev" type="button" onclick="window.location.href='<?= e($overzichtPagina) ?>'">
