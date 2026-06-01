@@ -28,9 +28,8 @@
         menu.className = 'user-menu';
         menu.innerHTML = [
             '<button class="user-menu-toggle" type="button" aria-expanded="false">',
-            '  <i class="fas fa-user-circle" aria-hidden="true"></i>',
-            '  <span>Account</span>',
-            '  <i class="fas fa-chevron-down" aria-hidden="true"></i>',
+            '  <span class="user-menu-icon" aria-hidden="true">☰</span>',
+            '  <span>Menu</span>',
             '</button>',
             '<div class="user-menu-panel" role="menu">',
             '  <a href="/GSP/pages/profiel.php" role="menuitem">Gegevens aanpassen</a>',
