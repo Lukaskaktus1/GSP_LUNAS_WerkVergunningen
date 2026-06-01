@@ -3,24 +3,35 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/bootstrap.php';
+require_once __DIR__ . '/../includes/werkvergunning_flow.php';
 
 if (!isset($_SESSION['user_id'])) {
     setFlashMessage('error', 'Log eerst in om verder te gaan.');
     redirect('../index.php');
 }
 
+if (isset($_SESSION['user_id'])) {
+    try {
+        require_once __DIR__ . '/../config/db.php';
+        refreshSessionProfileFromDatabase(getDbConnection(), (int) $_SESSION['user_id']);
+    } catch (Throwable $exception) {
+        error_log('Session profile refresh skipped: ' . $exception->getMessage());
+    }
+}
+
 if (!defined('GSP_USER_MENU_LOADER')) {
     define('GSP_USER_MENU_LOADER', true);
 
     ob_start(static function (string $html): string {
-        if (stripos($html, 'GSP/JS/user-menu.js') !== false || stripos($html, 'JS/user-menu.js') !== false) {
+        if (stripos($html, 'user-menu.js') !== false) {
             return $html;
         }
 
-        $css = '<link rel="stylesheet" href="/GSP/CSS/user-menu.css">';
-        $script = '<script src="/GSP/JS/user-menu.js"></script>';
+        $assetPrefix = gspRelativeAssetPrefix();
+        $css = '<link rel="stylesheet" href="' . $assetPrefix . '/CSS/user-menu.css">';
+        $script = '<script src="' . $assetPrefix . '/JS/user-menu.js"></script>';
 
-        if (stripos($html, '</head>') !== false && stripos($html, 'GSP/CSS/user-menu.css') === false) {
+        if (stripos($html, '</head>') !== false && stripos($html, 'user-menu.css') === false) {
             $html = preg_replace('/<\/head>/i', "    {$css}\n</head>", $html, 1) ?? $html;
         }
 

@@ -154,16 +154,14 @@ try {
 
     $requiredFieldLabels = [
         'vak1_afdeling' => 'Afdeling',
-        'aanvrager_is_school' => 'School of externe firma',
         'vak1_exzone' => 'EX-zone',
         'vak1_werkbeschrijving' => 'Werkbeschrijving',
-        'vak2_naam' => 'Verantwoordelijke uitvoerder',
-        'vak2_firma' => 'Firma / klas / dienst',
+        'uitvoerder_voornaam' => 'Voornaam uitvoerder',
+        'uitvoerder_naam' => 'Naam uitvoerder',
         'vak2_datumwerken' => 'Datum werken',
         'werktijd_van' => 'Werktijd van',
         'werktijd_tot' => 'Werktijd tot',
         'vermoedelijke_duur' => 'Vermoedelijke duur',
-        'geldig_tot' => 'Geldig tot',
         'werkzaamheden' => 'Werkzaamheden',
         'vak2_veiligheidstest' => 'Veiligheidstest',
         'vca' => 'VCA',
@@ -177,10 +175,26 @@ try {
         }
     }
 
-    if (fieldValue($fields, 'aanvrager_is_school') === 'nee' && fieldValue($fields, 'firma_naam') === null) {
+    $vak2Doel = fieldValue($fields, 'vak2_doel');
+    $isSchool = $vak2Doel === 'school'
+        || fieldValue($fields, 'aanvrager_is_school') === 'ja';
+
+    if ($vak2Doel === null && fieldValue($fields, 'aanvrager_is_school') === null) {
         $pdo->rollBack();
-        setFlashMessage('error', 'Firma is verplicht voor externe aanvragen.');
-        redirect('../PHP/werkvergunning_vak1.php');
+        setFlashMessage('error', 'Kies wie de werken uitvoert.');
+        redirect('../PHP/werkvergunning_vak2.php');
+    }
+
+    if (!$isSchool && fieldValue($fields, 'vak2_firma') === null && fieldValue($fields, 'firma_naam') === null) {
+        $pdo->rollBack();
+        setFlashMessage('error', 'Firma is verplicht wanneer een externe firma de werken uitvoert.');
+        redirect('../PHP/werkvergunning_vak2.php');
+    }
+
+    if (fieldValue($fields, 'vca') === 'ja' && fieldValue($fields, 'geldig_tot') === null) {
+        $pdo->rollBack();
+        setFlashMessage('error', 'Geldig tot is verplicht wanneer VCA vereist is.');
+        redirect('../PHP/werkvergunning_vak2.php');
     }
 
     $stmt = $pdo->prepare("
@@ -239,10 +253,19 @@ try {
 
         'werkbeschrijving' => $werkbeschrijving,
 
-        'werkzaamheden' => fieldValue($fields, 'werkzaamheden') ?? fieldValue($fields, 'vak2_naam'),
+        'werkzaamheden' => fieldValue($fields, 'werkzaamheden'),
         'aandachtspunten_vak3' => fieldValue($fields, 'vak3_aandachtspunten'),
-        'andere_werkzaamheden' => fieldValue($fields, 'vak4_aandachtspunten'),
-        'naam_afdelingsverantwoordelijke' => fieldValue($fields, 'vak4_naam') ?? fieldValue($fields, 'vak1_naam'),
+        'andere_werkzaamheden' => (function () use ($fields): ?string {
+            if (fieldValue($fields, 'afd_geen') === '1') {
+                return null;
+            }
+
+            return fieldValue($fields, 'vak4_aandachtspunten');
+        })(),
+        'naam_afdelingsverantwoordelijke' => trim(implode(' ', array_filter([
+            fieldValue($fields, 'vak4_voornaam') ?? '',
+            fieldValue($fields, 'vak4_naam') ?? '',
+        ]))) ?: null,
 
         'afdeling_tekst' =>
             fieldValue($fields, 'vak1_afdeling')
@@ -273,12 +296,25 @@ try {
         throw new RuntimeException('Vergunning-ID kon niet worden bepaald.');
     }
 
+    $aanvragerVoornaam = fieldValue($fields, 'aanvrager_voornaam') ?? (string) ($_SESSION['voornaam'] ?? '');
+    $aanvragerNaam = fieldValue($fields, 'aanvrager_naam') ?? (string) ($_SESSION['naam'] ?? '');
+    $firmaNaam = $isSchool
+        ? 'GTI Beveren'
+        : (fieldValue($fields, 'vak2_firma') ?? fieldValue($fields, 'firma_naam'));
+
     $optionalUpdateValues = [
-        'aanvrager_voornaam' => (string) ($_SESSION['voornaam'] ?? ''),
-        'aanvrager_naam' => (string) ($_SESSION['naam'] ?? ''),
-        'aanvrager_telefoon' => (string) ($_SESSION['telefoon'] ?? ''),
-        'aanvrager_is_school' => boolFromText(fieldValue($fields, 'aanvrager_is_school')),
-        'firma_naam' => fieldValue($fields, 'firma_naam'),
+        'aanvrager_voornaam' => $aanvragerVoornaam,
+        'aanvrager_naam' => $aanvragerNaam,
+        'aanvrager_telefoon' => fieldValue($fields, 'vak1_tel') ?? (string) ($_SESSION['telefoon'] ?? ''),
+        'aanvrager_is_school' => $isSchool ? 1 : 0,
+        'firma_naam' => $firmaNaam,
+        'uitvoerder_voornaam' => fieldValue($fields, 'uitvoerder_voornaam'),
+        'uitvoerder_naam' => fieldValue($fields, 'uitvoerder_naam'),
+        'vak2_doel' => $vak2Doel ?? ($isSchool ? 'school' : 'externe'),
+        'vak2_klas' => null,
+        'vak4_voornaam' => fieldValue($fields, 'vak4_voornaam'),
+        'vak4_naam' => fieldValue($fields, 'vak4_naam'),
+        'vak4_geen_andere_werk' => fieldValue($fields, 'afd_geen') === '1' ? 1 : 0,
     ];
 
     $updateParts = [];
@@ -297,10 +333,46 @@ try {
     }
 
     if (databaseTableExists($pdo, 'vergunning_medewerker')) {
-        $medewerkerStmt = $pdo->prepare('
-            INSERT INTO vergunning_medewerker (vergunning_id, voornaam, naam, telefoon)
-            VALUES (:vergunning_id, :voornaam, :naam, :telefoon)
-        ');
+        $gebruikKoppelTabel = databaseColumnExists($pdo, 'vergunning_medewerker', 'medewerker_id')
+            && databaseTableExists($pdo, 'medewerker');
+
+        $medewerkerZoekStmt = null;
+        $medewerkerMaakStmt = null;
+        $medewerkerKoppelStmt = null;
+        $medewerkerVrijStmt = null;
+
+        if ($gebruikKoppelTabel) {
+            $medewerkerZoekStmt = $pdo->prepare('
+                SELECT id
+                FROM medewerker
+                WHERE voornaam = :voornaam
+                  AND achternaam = :achternaam
+                LIMIT 1
+            ');
+            $medewerkerMaakStmt = $pdo->prepare('
+                INSERT INTO medewerker (voornaam, achternaam)
+                VALUES (:voornaam, :achternaam)
+            ');
+            $medewerkerKoppelStmt = $pdo->prepare('
+                INSERT INTO vergunning_medewerker (vergunning_id, medewerker_id)
+                VALUES (:vergunning_id, :medewerker_id)
+            ');
+        } elseif (
+            databaseColumnExists($pdo, 'vergunning_medewerker', 'voornaam')
+            && databaseColumnExists($pdo, 'vergunning_medewerker', 'naam')
+        ) {
+            $kolommen = ['vergunning_id', 'voornaam', 'naam'];
+            $waarden = [':vergunning_id', ':voornaam', ':naam'];
+
+            if (databaseColumnExists($pdo, 'vergunning_medewerker', 'telefoon')) {
+                $kolommen[] = 'telefoon';
+                $waarden[] = ':telefoon';
+            }
+
+            $medewerkerVrijStmt = $pdo->prepare(
+                'INSERT INTO vergunning_medewerker (' . implode(', ', $kolommen) . ') VALUES (' . implode(', ', $waarden) . ')'
+            );
+        }
 
         foreach (listValues($lists, 'medewerkers') as $medewerker) {
             if (!is_array($medewerker)) {
@@ -314,12 +386,40 @@ try {
                 continue;
             }
 
-            $medewerkerStmt->execute([
-                'vergunning_id' => $vergunningId,
-                'voornaam' => $voornaam,
-                'naam' => $naam,
-                'telefoon' => trim((string) ($medewerker['telefoon'] ?? '')),
-            ]);
+            if ($gebruikKoppelTabel && $medewerkerZoekStmt && $medewerkerMaakStmt && $medewerkerKoppelStmt) {
+                $medewerkerZoekStmt->execute([
+                    'voornaam' => $voornaam,
+                    'achternaam' => $naam,
+                ]);
+                $medewerkerId = (int) $medewerkerZoekStmt->fetchColumn();
+
+                if ($medewerkerId <= 0) {
+                    $medewerkerMaakStmt->execute([
+                        'voornaam' => $voornaam,
+                        'achternaam' => $naam,
+                    ]);
+                    $medewerkerId = (int) $pdo->lastInsertId();
+                }
+
+                if ($medewerkerId > 0) {
+                    $medewerkerKoppelStmt->execute([
+                        'vergunning_id' => $vergunningId,
+                        'medewerker_id' => $medewerkerId,
+                    ]);
+                }
+            } elseif ($medewerkerVrijStmt) {
+                $params = [
+                    'vergunning_id' => $vergunningId,
+                    'voornaam' => $voornaam,
+                    'naam' => $naam,
+                ];
+
+                if (databaseColumnExists($pdo, 'vergunning_medewerker', 'telefoon')) {
+                    $params['telefoon'] = trim((string) ($medewerker['telefoon'] ?? ''));
+                }
+
+                $medewerkerVrijStmt->execute($params);
+            }
         }
     }
 

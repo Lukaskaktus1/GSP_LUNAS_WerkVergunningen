@@ -32,33 +32,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $pdo = getDbConnection();
-        $stmt = $pdo->prepare('
-            SELECT id
-            FROM users
-            WHERE reset_token = :token
-              AND reset_expires_at >= NOW()
-              AND actief = 1
-            LIMIT 1
-        ');
-        $stmt->execute(['token' => $token]);
-        $user = $stmt->fetch();
+        $userId = findUserIdByPasswordResetToken($pdo, $token);
 
-        if (!is_array($user)) {
+        if ($userId === null || $userId <= 0) {
             setFlashMessage('error', 'Deze herstel-link is ongeldig of vervallen.');
             redirect('index.php');
         }
 
-        $update = $pdo->prepare('
-            UPDATE users
-            SET wachtwoord_hash = :password_hash,
-                reset_token = NULL,
-                reset_expires_at = NULL
-            WHERE id = :id
-        ');
-        $update->execute([
-            'password_hash' => password_hash($password, PASSWORD_DEFAULT),
-            'id' => (int) $user['id'],
-        ]);
+        $activeCheck = $pdo->prepare('SELECT id FROM users WHERE id = :id AND actief = 1 LIMIT 1');
+        $activeCheck->execute(['id' => $userId]);
+
+        if (!$activeCheck->fetch()) {
+            setFlashMessage('error', 'Deze herstel-link is ongeldig of vervallen.');
+            redirect('index.php');
+        }
+
+        completePasswordReset(
+            $pdo,
+            $userId,
+            $token,
+            password_hash($password, PASSWORD_DEFAULT)
+        );
 
         setFlashMessage('success', 'Wachtwoord aangepast. U kunt nu inloggen.');
         redirect('index.php');

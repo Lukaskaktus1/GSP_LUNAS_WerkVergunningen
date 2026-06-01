@@ -27,6 +27,16 @@ try {
 
     $profileSelect = '';
     $profileJoin = '';
+    $usersFallbackSelect = '';
+    $usersFallbackColumns = optionalTableColumns($pdo, 'users', ['voornaam', 'naam', 'telefoon']);
+
+    if ($usersFallbackColumns !== []) {
+        $fallbackParts = [];
+        foreach ($usersFallbackColumns as $column) {
+            $fallbackParts[] = "u.{$column} AS users_{$column}";
+        }
+        $usersFallbackSelect = ', ' . implode(', ', $fallbackParts);
+    }
 
     if (databaseTableExists($pdo, 'user_profiel') && databaseColumnExists($pdo, 'user_profiel', 'user_id')) {
         $lastNameColumn = databaseColumnExists($pdo, 'user_profiel', 'achternaam') ? 'achternaam' : 'naam';
@@ -35,13 +45,13 @@ try {
             && databaseColumnExists($pdo, 'user_profiel', $lastNameColumn)
             && databaseColumnExists($pdo, 'user_profiel', 'telefoon')
         ) {
-            $profileSelect = ", p.voornaam AS voornaam, p.{$lastNameColumn} AS naam, p.telefoon AS telefoon";
+            $profileSelect = ", p.voornaam AS profiel_voornaam, p.{$lastNameColumn} AS profiel_naam, p.telefoon AS profiel_telefoon";
             $profileJoin = ' LEFT JOIN user_profiel p ON p.user_id = u.id';
         }
     }
 
     $statement = $pdo->prepare("
-        SELECT u.id, u.email, u.rol, u.wachtwoord_hash, u.actief{$profileSelect}
+        SELECT u.id, u.email, u.rol, u.wachtwoord_hash, u.actief{$profileSelect}{$usersFallbackSelect}
         FROM users u
         {$profileJoin}
         WHERE u.email = :email
@@ -49,6 +59,18 @@ try {
     ");
     $statement->execute(['email' => mb_strtolower($email)]);
     $user = $statement->fetch();
+
+    if (is_array($user)) {
+        $user['voornaam'] = (string) (($user['profiel_voornaam'] ?? '') !== ''
+            ? $user['profiel_voornaam']
+            : ($user['users_voornaam'] ?? ''));
+        $user['naam'] = (string) (($user['profiel_naam'] ?? '') !== ''
+            ? $user['profiel_naam']
+            : ($user['users_naam'] ?? ''));
+        $user['telefoon'] = (string) (($user['profiel_telefoon'] ?? '') !== ''
+            ? $user['profiel_telefoon']
+            : ($user['users_telefoon'] ?? ''));
+    }
 
     $isValidUser = is_array($user)
         && (int) ($user['actief'] ?? 0) === 1

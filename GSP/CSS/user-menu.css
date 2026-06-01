@@ -1,6 +1,19 @@
+.header {
+    position: relative;
+    isolation: isolate;
+    z-index: 10000;
+    overflow: visible;
+}
+
+.header-right {
+    position: relative;
+    z-index: 10001;
+    overflow: visible;
+}
+
 .user-menu {
     position: relative;
-    z-index: 120;
+    z-index: 10002;
 }
 
 .user-menu-toggle {
@@ -36,6 +49,7 @@
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
+    z-index: 10003;
     min-width: 230px;
     padding: 8px;
     border: 1px solid rgba(255, 255, 255, 0.62);
@@ -82,12 +96,25 @@
 }
 
 @media (max-width: 720px) {
-    .user-menu-toggle span:not(.user-menu-icon) {
-        display: none;
+    .header {
+        z-index: 10000;
+    }
+
+    .header-right {
+        z-index: 10001;
+    }
+
+    .user-menu {
+        z-index: 10002;
     }
 
     .user-menu-panel {
         right: 0;
         min-width: min(78vw, 250px);
+        z-index: 10003;
+    }
+
+    .user-menu-toggle span:not(.user-menu-icon) {
+        display: none;
     }
 }

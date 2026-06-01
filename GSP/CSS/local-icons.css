@@ -1,52 +1,15 @@
-.fa,
-.fas,
-.far,
-.fab,
-.fa-solid,
-.fa-regular,
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+
 .material-symbols-outlined {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.15em;
+    width: auto;
     min-width: 1.15em;
     font-family: Arial, Helvetica, sans-serif;
     font-style: normal;
     font-weight: 800;
     line-height: 1;
-    text-rendering: auto;
-}
-
-.fa::before,
-.fas::before,
-.far::before,
-.fab::before,
-.fa-solid::before,
-.fa-regular::before {
-    content: "*";
-}
-
-.fa-file-lines::before,
-.fa-file-alt::before { content: "▧"; }
-.fa-sign-out-alt::before { content: "↪"; }
-.fa-arrow-left::before { content: "←"; }
-.fa-user::before { content: "●"; }
-.fa-user-shield::before { content: "◆"; }
-.fa-users::before,
-.fa-users-cog::before { content: "◎"; }
-.fa-check-circle::before,
-.fa-clipboard-check::before { content: "✓"; }
-.fa-envelope::before { content: "@"; }
-.fa-folder-open::before { content: "▤"; }
-.fa-plus::before { content: "+"; }
-.fa-vial::before { content: "◇"; }
-.fa-lock::before { content: "■"; }
-.fa-key::before { content: "⌐"; }
-.fa-exclamation-triangle::before { content: "!"; }
-
-.material-symbols-outlined {
-    width: auto;
-    min-width: 1.15em;
     font-size: 0;
 }
 

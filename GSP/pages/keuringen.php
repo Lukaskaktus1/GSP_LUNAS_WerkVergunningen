@@ -18,6 +18,7 @@ $stmt = $pdo->prepare("
 
 $stmt->execute();
 $aanvragen = $stmt->fetchAll();
+$flash = getFlashMessage();
 
 function statusLabelKeuring(string $status): string
 {
@@ -62,7 +63,7 @@ function terugNaarOverzicht(): string
                 Welkom,
                 <span class="role-badge">
                     <i class="fas fa-user"></i>
-                    <?= e(getCurrentUserRoleLabel()) ?>
+                    <?= e(currentUserDisplayName()) ?>
                 </span>
             </p>
         </div>
@@ -90,6 +91,7 @@ function terugNaarOverzicht(): string
         <h2 class="section-title">Openstaande aanvragen</h2>
 
         <div class="applications-container">
+            <?= flashDialogMarkup($flash) ?>
             <?php if (empty($aanvragen)): ?>
                 <div class="empty-state">
                     <div class="empty-state-icon">

@@ -10,12 +10,7 @@
 }
 
 body {
-    background:
-        radial-gradient(circle at 14% 8%, rgba(37, 99, 235, 0.22), transparent 28rem),
-        radial-gradient(circle at 88% 10%, rgba(22, 163, 74, 0.15), transparent 24rem),
-        linear-gradient(135deg, rgba(238, 246, 255, 0.9), rgba(248, 251, 255, 0.78), rgba(236, 253, 245, 0.86)),
-        url('../IMAGES/backgrounds/woodshop-glass-3.png') center / cover fixed;
-    background-attachment: fixed;
+    background: #eef6ff;
     color: #333;
     line-height: 1.6;
     min-height: 100vh;
@@ -34,6 +29,28 @@ body {
     margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 15px;
+    position: relative;
+    z-index: 500;
+    overflow: visible;
+}
+
+.header-right {
+    overflow: visible;
+}
+
+.form-card,
+.main-container {
+    position: relative;
+    z-index: 1;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled,
+.is-disabled-group {
+    opacity: 0.55;
+    background: #e5e7eb !important;
+    cursor: not-allowed;
 }
 
 .header-left {
@@ -745,13 +762,7 @@ body {
 }
 
 body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(2px);
+    content: none;
 }
 
 /* Glass layout en gedeelde formulierverbeteringen */

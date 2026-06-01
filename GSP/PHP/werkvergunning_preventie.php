@@ -33,15 +33,16 @@ $overzichtPagina = match ($role) {
     <meta property="og:title" content="Werkvergunning Preventie – GTI Beveren">
     <meta property="og:description" content="Preventie werkvergunning - Vul deze werkvergunning in voor preventiemaatregelen en risicobeperkingen.">
     <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
-</head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Werkvergunning - Preventiemaatregelen</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/werkvergunning_preventie.css">
     <link rel="stylesheet" href="../CSS/local-icons.css">
 </head>
-<body data-user-role="<?= e($role) ?>">
+<body
+    data-user-role="<?= e($role) ?>"
+    data-profile-name="<?= e(currentUserDisplayName()) ?>"
+    data-profile-tel="<?= e((string) ($_SESSION['telefoon'] ?? '')) ?>"
+    data-profile-email="<?= e((string) ($_SESSION['email'] ?? '')) ?>"
+>
     <!-- Header -->
     <header class="header">
         <div class="header-left">
@@ -50,7 +51,7 @@ $overzichtPagina = match ($role) {
             </div>
             <div class="header-title">
                 <h1>Werkvergunning Portaal</h1>
-                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <?= e(getCurrentUserRoleLabel()) ?></span></p>
+                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <?= e(currentUserDisplayName()) ?></span></p>
             </div>
         </div>
         <div class="header-center">
@@ -363,13 +364,17 @@ $overzichtPagina = match ($role) {
 
             <!-- Navigation Buttons -->
             <div class="navigation-buttons">
-                <button class="nav-button prev" onclick="navigateToNext('werkvergunning_vak5.php')">Vorige</button>
-                <button class="nav-button button next" onclick="navigateToNext('werkvergunning_vak6.php')">Volgende</button>
+                <button class="nav-button prev" type="button" onclick="navigateToNext('werkvergunning_vak5.php')">Vorige</button>
+                <form id="aanvraagOpslaanForm" action="../pages/aanvraag_opslaan.php" method="POST" style="margin: 0; flex: 1;">
+                    <input type="hidden" name="aanvraag_data" id="aanvraag_data">
+                    <button type="submit" class="nav-button next">Werkvergunning indienen</button>
+                </form>
             </div>
         </div>
     </main>
 <script src="../JS/ui-feedback.js"></script>
     <script src="../JS/saveCurrentVak.js"></script>
+    <script src="../JS/ja-nee-toggle.js"></script>
     <script>
         // Handtekening Canvas functionaliteit
         function initSignatureCanvas(canvasId, hiddenInputId) {

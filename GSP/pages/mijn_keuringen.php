@@ -12,29 +12,22 @@ $pdo = getDbConnection();
 $stmt = $pdo->prepare("
     SELECT id, vergunning_nummer, eigenaar_email, eigenaar_rol, werkbeschrijving, datum_werken, status, updated_at
     FROM werkvergunning
-    WHERE status IN ('goedgekeurd', 'afgekeurd')
+    WHERE status IN ('goedgekeurd', 'afgekeurd', 'in_uitvoering', 'afgerond')
     ORDER BY updated_at DESC
 ");
 
 $stmt->execute();
 $aanvragen = $stmt->fetchAll();
+$flash = getFlashMessage();
 
 function statusClassKeuringHistoriek(string $status): string
 {
-    return match ($status) {
-        'goedgekeurd' => 'status-goedgekeurd',
-        'afgekeurd' => 'status-afgekeurd',
-        default => 'status-onbekend',
-    };
+    return vergunningStatusClass($status);
 }
 
 function statusLabelKeuringHistoriek(string $status): string
 {
-    return match ($status) {
-        'goedgekeurd' => 'Goedgekeurd',
-        'afgekeurd' => 'Afgekeurd',
-        default => 'Onbekend',
-    };
+    return vergunningStatusLabel($status);
 }
 
 function terugNaarOverzichtKeuringen(): string
@@ -71,7 +64,7 @@ function terugNaarOverzichtKeuringen(): string
                 Welkom,
                 <span class="role-badge">
                     <i class="fas fa-user"></i>
-                    <?= e(getCurrentUserRoleLabel()) ?>
+                    <?= e(currentUserDisplayName()) ?>
                 </span>
             </p>
         </div>
@@ -104,6 +97,7 @@ function terugNaarOverzichtKeuringen(): string
         <h2 class="section-title">Gekeurde aanvragen</h2>
 
         <div class="applications-container">
+            <?= flashDialogMarkup($flash) ?>
             <?php if (empty($aanvragen)): ?>
                 <div class="empty-state">
                     <div class="empty-state-icon">

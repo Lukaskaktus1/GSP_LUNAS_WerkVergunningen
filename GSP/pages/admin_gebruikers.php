@@ -49,7 +49,7 @@ $allowedRoles = [
                 Welkom,
                 <span class="role-badge">
                     <i class="fas fa-user-shield"></i>
-                    <?= e(getCurrentUserRoleLabel()) ?>
+                    <?= e(currentUserDisplayName()) ?>
                 </span>
             </p>
         </div>

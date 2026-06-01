@@ -22,6 +22,19 @@ function appendTestParam(url) {
     return url.includes('test=1') ? url : url + separator + 'test=1';
 }
 
+function inlineInputStorageKey(el) {
+    if (!el || (el.id || el.name)) {
+        return el ? (el.id || el.name) : '';
+    }
+
+    const checkbox = el.closest('.checkbox-item')?.querySelector('input[type="checkbox"][id]');
+    if (!checkbox) {
+        return '';
+    }
+
+    return checkbox.id + '_tekst';
+}
+
 // Functie om te navigeren naar volgende pagina na opslaan
 function navigateToNext(url) {
     try {
@@ -43,6 +56,9 @@ function validateCurrentPage() {
     if (!card) return true;
 
     const firmaGroup = document.getElementById('firma_naam_group');
+    const vak2SchoolGroup = document.getElementById('vak2_school_group') || document.getElementById('vak2_klas_group');
+    const vak2FirmaGroup = document.getElementById('vak2_firma_group');
+    const vak4Group = document.getElementById('vak4_aandachtspunten_group');
     card.querySelectorAll('input, select, textarea').forEach(function (field) {
         if (field.dataset.optional === 'true') return;
         if (field.disabled || field.readOnly || field.type === 'hidden') return;
@@ -56,6 +72,9 @@ function validateCurrentPage() {
         if (field.disabled || field.readOnly || field.type === 'hidden') return false;
         if (field.closest('[hidden]')) return false;
         if (firmaGroup && firmaGroup.hidden && field.closest('#firma_naam_group')) return false;
+        if (vak2SchoolGroup && vak2SchoolGroup.hidden && (field.closest('#vak2_school_group') || field.closest('#vak2_klas_group'))) return false;
+        if (vak2FirmaGroup && vak2FirmaGroup.hidden && field.closest('#vak2_firma_group')) return false;
+        if (vak4Group && (vak4Group.classList.contains('is-disabled-group') || document.getElementById('afd_geen')?.checked) && field.closest('#vak4_aandachtspunten_group')) return false;
 
         return typeof field.checkValidity === 'function' && !field.checkValidity();
     });
@@ -102,32 +121,109 @@ function validateCurrentPage() {
     return true;
 }
 
-function saveCurrentVak() {
+function saveFieldValue(el) {
+    if (!el || el.disabled) return;
+    const key = inlineInputStorageKey(el);
+    if (!key || el.type === 'file') return;
 
-    /* =========================
-       VAK I
-       ========================= */
-    const vak1Fields = ['vak1_naam','vak1_tel','vak1_afdeling','firma_naam','vak1_werkbeschrijving'];
-    vak1Fields.forEach(id => { const el = document.getElementById(id); if(el) sessionStorage.setItem(id, el.value); });
-    // Exzone uit vak1 (radio buttons)
-    const exzone = document.querySelector('input[name="vak1_exzone"]:checked');
-    if(exzone) sessionStorage.setItem('vak1_exzone', exzone.value);
-    const schoolAanvraag = document.querySelector('input[name="aanvrager_is_school"]:checked');
-    if(schoolAanvraag) sessionStorage.setItem('aanvrager_is_school', schoolAanvraag.value);
-    
-    /* =========================
-       VAK II
-       ========================= */
-    const vak2Fields = ['vak2_naam','vak2_firma','vak2_datumwerken','werktijd_van','werktijd_tot','vermoedelijke_duur','geldig_tot','werkzaamheden','vak2_medewerkers'];
-    vak2Fields.forEach(id => { 
-        const el = document.getElementById(id); 
-        if(el) sessionStorage.setItem(id, el.value); 
+    if (el.type === 'checkbox') {
+        if (el.id === 'afd_geen') {
+            sessionStorage.setItem('afd_geen', el.checked ? '1' : '');
+            return;
+        }
+        sessionStorage.setItem(key, el.checked ? (el.value || '1') : '');
+        return;
+    }
+
+    if (el.type === 'radio') {
+        if (el.checked) sessionStorage.setItem(key, el.value);
+        return;
+    }
+
+    sessionStorage.setItem(key, el.value);
+}
+
+function saveAllVisibleFields() {
+    const card = document.querySelector('.form-card');
+    if (!card) return;
+
+    card.querySelectorAll('input, select, textarea').forEach(function (el) {
+        if (el.type === 'radio' && !el.checked) return;
+        saveFieldValue(el);
     });
-    // vak2_veiligheidstest (radio)
-    const veiligheid = document.querySelector('input[name="vak2_veiligheidstest"]:checked');
-    if(veiligheid) sessionStorage.setItem('vak2_veiligheidstest', veiligheid.value);
-    const vca = document.querySelector('input[name="vca"]:checked');
-    if(vca) sessionStorage.setItem('vca', vca.value);
+}
+
+function attachInlineInputIds() {
+    document.querySelectorAll('.checkbox-item input[type="text"], .checkbox-item input[type="date"]').forEach(function (field) {
+        if (field.id || field.name) return;
+
+        const checkbox = field.closest('.checkbox-item')?.querySelector('input[type="checkbox"][id]');
+        if (!checkbox) return;
+
+        const key = checkbox.id + '_tekst';
+        field.id = key;
+        field.name = key;
+        field.dataset.optional = 'true';
+    });
+}
+
+function attachOtherTextAutoCheck() {
+    document.querySelectorAll('.checkbox-item').forEach(function (item) {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        const inlineFields = item.querySelectorAll('input[type="text"], input[type="date"], textarea');
+
+        if (!checkbox || inlineFields.length === 0) {
+            return;
+        }
+
+        inlineFields.forEach(function (field) {
+            field.addEventListener('input', function () {
+                if (field.value.trim() === '') {
+                    saveFieldValue(field);
+                    return;
+                }
+
+                checkbox.checked = true;
+                checkbox.disabled = false;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                saveFieldValue(checkbox);
+                saveFieldValue(field);
+            });
+
+            field.addEventListener('change', function () {
+                if (field.value.trim() !== '') {
+                    checkbox.checked = true;
+                    checkbox.disabled = false;
+                    checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+
+                saveFieldValue(checkbox);
+                saveFieldValue(field);
+            });
+        });
+    });
+}
+
+function saveCurrentVak() {
+    saveAllVisibleFields();
+
+    const vak2Doel = document.querySelector('input[name="vak2_doel"]:checked');
+    if (vak2Doel) {
+        sessionStorage.setItem('vak2_doel', vak2Doel.value);
+        sessionStorage.setItem('aanvrager_is_school', vak2Doel.value === 'school' ? 'ja' : 'nee');
+        if (vak2Doel.value === 'school') {
+            sessionStorage.setItem('vak2_school_uitvoerder', 'GTI Beveren');
+            sessionStorage.setItem('firma_naam', 'GTI Beveren');
+            const schoolInput = document.getElementById('vak2_school_uitvoerder');
+            if (schoolInput) schoolInput.value = 'GTI Beveren';
+        } else {
+            const firmaInput = document.getElementById('vak2_firma');
+            if (firmaInput && firmaInput.value.trim() !== '') {
+                sessionStorage.setItem('firma_naam', firmaInput.value.trim());
+            }
+        }
+    }
+
     saveDynamicRows('medewerkers_table', 'medewerkers');
     saveDynamicRows('voertuigen_table', 'voertuigen_attesten');
     
@@ -149,11 +245,11 @@ function saveCurrentVak() {
     /* =========================
        VAK IV
        ========================= */
-    const vak4Fields = ['vak4_naam','vak4_afdeling','vak4_aandachtspunten'];
-    vak4Fields.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) sessionStorage.setItem(id, el.value);
-    });
+    const afdGeen = document.getElementById('afd_geen');
+    if (afdGeen && afdGeen.checked) {
+        sessionStorage.setItem('afd_geen', '1');
+        sessionStorage.removeItem('vak4_aandachtspunten');
+    }
 
     /* =========================
        VAK V - Vergunningen, Toelatingen, Preventie
@@ -321,16 +417,21 @@ function normalizeDynamicTable(tableId, storageKey) {
     }
 
     if (!Array.isArray(storedRows) || storedRows.length === 0) {
-        storedRows = [{}];
+        return;
     }
 
-    const first = table.querySelector('[data-row]');
-    if (!first) return;
+    const template = table.querySelector('[data-row]');
+    if (!template) return;
+
     table.innerHTML = '';
 
     storedRows.forEach(function (rowValues) {
-        const row = createDynamicRow({ querySelector: function () { return first; } }, rowValues);
-        if (row) table.appendChild(row);
+        const row = template.cloneNode(true);
+        row.querySelectorAll('[data-field]').forEach(function (field) {
+            field.value = rowValues && rowValues[field.dataset.field] ? rowValues[field.dataset.field] : '';
+            field.disabled = false;
+        });
+        table.appendChild(row);
     });
 }
 
@@ -362,25 +463,8 @@ function attachDynamicRowHandlers() {
     });
 }
 
-function updateFirmaVisibility() {
-    const group = document.getElementById('firma_naam_group');
-    const firmaInput = document.getElementById('firma_naam');
-    if (!group || !firmaInput) return;
-
-    const selected = document.querySelector('input[name="aanvrager_is_school"]:checked');
-    const isExternal = selected && selected.value === 'nee';
-    group.hidden = !isExternal;
-    firmaInput.required = Boolean(isExternal);
-    if (!isExternal) {
-        firmaInput.value = '';
-    }
-}
-
 function attachSchoolToggle() {
-    document.querySelectorAll('input[name="aanvrager_is_school"]').forEach(function (radio) {
-        radio.addEventListener('change', updateFirmaVisibility);
-    });
-    updateFirmaVisibility();
+    /* Vak I gebruikt geen school/firma meer; keuze staat in Vak II. */
 }
 
 function attachExclusiveCheckPairs() {
@@ -421,8 +505,7 @@ function initVakProgressBar() {
         ['werkvergunning_vak3.php', 'Vak III'],
         ['werkvergunning_vak4.php', 'Vak IV'],
         ['werkvergunning_vak5.php', 'Vak V'],
-        ['werkvergunning_vak6.php', 'Vak VI'],
-        ['werkvergunning_vak7.php', 'Indienen']
+        ['werkvergunning_preventie.php', 'Preventie']
     ];
 
     const current = window.location.pathname.split('/').pop();
@@ -465,10 +548,18 @@ function ensureAanvraagSession() {
     const params = new URLSearchParams(window.location.search);
     const startsAdminTest = params.get('test') === '1' && currentUserRole() === 'admin';
 
+    const editTestId = params.get('edit_test');
+
     if (params.get('new') === '1') {
         clearAanvraagDraftData();
         sessionStorage.setItem('aanvraag_session_id', String(Date.now()));
         sessionStorage.setItem('admin_test_aanvraag', startsAdminTest ? 'true' : 'false');
+        sessionStorage.removeItem('admin_test_edit_id');
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+    }
+
+    if (editTestId && restoreTestDraftFromLocalStorage(editTestId)) {
         window.history.replaceState({}, document.title, window.location.pathname);
         return;
     }
@@ -506,7 +597,7 @@ function initAdminTestModeUi() {
 }
 
 function clearAanvraagDraftData() {
-    const prefixes = ['vak', 'visited_', 'aanvrager_', 'firma_naam', 'medewerkers', 'voertuigen_attesten', 'werktijd_', 'vermoedelijke_duur', 'geldig_tot', 'werkzaamheden', 'vca', 'admin_test_aanvraag'];
+    const prefixes = ['vak', 'visited_', 'aanvrager_', 'uitvoerder_', 'firma', 'medewerkers', 'voertuigen_attesten', 'werktijd_', 'vermoedelijke_duur', 'geldig_tot', 'werkzaamheden', 'vca', 'afd_', 'admin_test'];
     const keysToRemove = [];
 
     for (let i = 0; i < sessionStorage.length; i++) {
@@ -540,13 +631,220 @@ function initStorageGroupsForPage() {
 /* =========================
    Form data laden vanuit SessionStorage
    ========================= */
+function seedProfileDefaults() {
+    if (sessionStorage.getItem('gsp_profile_seeded') === 'true') {
+        return;
+    }
+
+    const body = document.body;
+    if (!body) {
+        return;
+    }
+
+    const voornaam = body.dataset.profileVoornaam || '';
+    const achternaam = body.dataset.profileAchternaam || '';
+    const telefoon = body.dataset.profileTel || '';
+    const email = body.dataset.profileEmail || '';
+
+    if (voornaam && !sessionStorage.getItem('aanvrager_voornaam')) {
+        sessionStorage.setItem('aanvrager_voornaam', voornaam);
+    }
+    if (achternaam && !sessionStorage.getItem('aanvrager_naam')) {
+        sessionStorage.setItem('aanvrager_naam', achternaam);
+    }
+    if (voornaam && !sessionStorage.getItem('uitvoerder_voornaam')) {
+        sessionStorage.setItem('uitvoerder_voornaam', voornaam);
+    }
+    if (achternaam && !sessionStorage.getItem('uitvoerder_naam')) {
+        sessionStorage.setItem('uitvoerder_naam', achternaam);
+    }
+    if (telefoon && !sessionStorage.getItem('vak1_tel')) {
+        sessionStorage.setItem('vak1_tel', telefoon);
+    }
+    if (email && !sessionStorage.getItem('aanvrager_email')) {
+        sessionStorage.setItem('aanvrager_email', email);
+    }
+
+    sessionStorage.setItem('gsp_profile_seeded', 'true');
+}
+
+function restoreTestDraftFromLocalStorage(testId) {
+    let list = [];
+    try {
+        list = JSON.parse(localStorage.getItem('gsp_admin_test_aanvragen') || '[]');
+    } catch (error) {
+        list = [];
+    }
+
+    const test = list.find(function (item) {
+        return item && item.id === testId;
+    });
+
+    if (!test || !test.data) {
+        return false;
+    }
+
+    clearAanvraagDraftData();
+    sessionStorage.setItem('admin_test_aanvraag', 'true');
+    sessionStorage.setItem('admin_test_edit_id', testId);
+    sessionStorage.setItem('aanvraag_session_id', String(Date.now()));
+
+    const data = test.data;
+    if (data.fields) {
+        Object.keys(data.fields).forEach(function (key) {
+            sessionStorage.setItem(key, String(data.fields[key] ?? ''));
+        });
+    }
+
+    if (data.lists) {
+        Object.keys(data.lists).forEach(function (key) {
+            const value = data.lists[key];
+            sessionStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+        });
+    }
+
+    return true;
+}
+
+function saveAdminTestAanvraag(data) {
+    const storageKey = 'gsp_admin_test_aanvragen';
+    let list = [];
+
+    try {
+        list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    } catch (error) {
+        list = [];
+    }
+
+    if (!Array.isArray(list)) {
+        list = [];
+    }
+
+    const editId = sessionStorage.getItem('admin_test_edit_id');
+    const body = document.body;
+    const entry = {
+        id: editId || ('TEST-' + Date.now()),
+        createdAt: editId ? (list.find(function (item) { return item.id === editId; }) || {}).createdAt || new Date().toISOString() : new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        aanvrager: [data.fields?.aanvrager_voornaam, data.fields?.aanvrager_naam].filter(Boolean).join(' ') || (body?.dataset?.profileVoornaam + ' ' + body?.dataset?.profileAchternaam).trim(),
+        email: data.fields?.aanvrager_email || body?.dataset?.profileEmail || '',
+        data: data
+    };
+
+    if (editId) {
+        list = list.map(function (item) {
+            return item.id === editId ? entry : item;
+        });
+    } else {
+        list.unshift(entry);
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(list.slice(0, 25)));
+    sessionStorage.setItem('admin_test_edit_id', entry.id);
+}
+
+function collectAllAanvraagData() {
+    const fields = {};
+    const lists = {
+        vak2_act_koud: sessionStorage.getItem('vak2_act_koud') || '[]',
+        vak2_act_warm: sessionStorage.getItem('vak2_act_warm') || '[]',
+        vak2_vervoer: sessionStorage.getItem('vak2_vervoer') || '[]',
+        vak2_stoffen: sessionStorage.getItem('vak2_stoffen') || '[]',
+        vak2_chemicalien: sessionStorage.getItem('vak2_chemicalien') || '[]',
+        vak5_vergunningen: sessionStorage.getItem('vak5_vergunningen') || '[]',
+        vak5_toelatingen: sessionStorage.getItem('vak5_toelatingen') || '[]',
+        vak5_preventie: sessionStorage.getItem('vak5_preventie') || '[]'
+    };
+    const tables = {};
+    const signatures = {};
+
+    for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        const value = sessionStorage.getItem(key);
+
+        if (!key || value === null) {
+            continue;
+        }
+
+        if (key === 'werkvergunning_nummer' || key === 'admin_test_aanvraag' || key === 'admin_test_edit_id' || key === 'aanvraag_session_id' || key === 'gsp_profile_seeded') {
+            continue;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(lists, key)) {
+            continue;
+        }
+
+        if (key.includes('_tabel')) {
+            tables[key] = value;
+        } else if (key.includes('handtekening') || key.includes('signature')) {
+            signatures[key] = value;
+        } else if (value.startsWith('[') || value.startsWith('{')) {
+            try {
+                lists[key] = JSON.parse(value);
+            } catch (error) {
+                fields[key] = value;
+            }
+        } else {
+            fields[key] = value;
+        }
+    }
+
+    return { fields: fields, lists: lists, tables: tables, signatures: signatures };
+}
+
+function bindAanvraagSubmitForm(formId) {
+    const form = document.getElementById(formId);
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        if (!validateCurrentPage()) {
+            return;
+        }
+
+        saveCurrentVak();
+
+        const hiddenInput = form.querySelector('input[name="aanvraag_data"]');
+        if (hiddenInput) {
+            hiddenInput.value = JSON.stringify(collectAllAanvraagData());
+        }
+
+        if (typeof isAdminTestMode === 'function' && isAdminTestMode()) {
+            saveAdminTestAanvraag(collectAllAanvraagData());
+            clearAanvraagDraftData();
+            sessionStorage.removeItem('admin_test_edit_id');
+
+            if (typeof window.showAppPopup === 'function') {
+                window.showAppPopup({
+                    type: 'success',
+                    title: 'Testaanvraag bewaard',
+                    message: 'De testaanvraag werd lokaal bewaard en niet naar de database gestuurd.',
+                    solution: 'U vindt de test terug op het admin-overzicht.'
+                }).then(function () {
+                    window.location.href = '../pages/overzicht_admin.php';
+                });
+            } else {
+                window.location.href = '../pages/overzicht_admin.php';
+            }
+            return;
+        }
+
+        clearAanvraagDraftData();
+        sessionStorage.removeItem('admin_test_edit_id');
+        form.submit();
+    });
+}
+
 function loadCurrentVakData() {
     const lotoForm = document.querySelector('.form-card');
     if(!lotoForm) return;
 
     // Input / select / textarea
     lotoForm.querySelectorAll('input, select, textarea').forEach(el=>{
-        const key = el.id || el.name;
+        const key = inlineInputStorageKey(el);
         if (!key) return;
         if (el.dataset.preserveValue === 'true') return;
 
@@ -563,6 +861,11 @@ function loadCurrentVakData() {
             } else {
                 el.value = stored;
             }
+
+            const parentCheckbox = el.closest('.checkbox-item')?.querySelector('input[type="checkbox"]');
+            if (parentCheckbox && el.value.trim() !== '') {
+                parentCheckbox.checked = true;
+            }
         }
     });
 
@@ -577,6 +880,21 @@ function loadCurrentVakData() {
     restoreCheckedValues('vak5_preventie', 'input[data-storage-group="vak5_preventie"]');
     normalizeDynamicTable('medewerkers_table', 'medewerkers');
     normalizeDynamicTable('voertuigen_table', 'voertuigen_attesten');
+
+    const afdGeen = document.getElementById('afd_geen');
+    if (afdGeen) {
+        afdGeen.checked = sessionStorage.getItem('afd_geen') === '1';
+        afdGeen.dispatchEvent(new Event('change'));
+    }
+
+    const vak2Doel = sessionStorage.getItem('vak2_doel');
+    if (vak2Doel) {
+        const radio = document.querySelector('input[name="vak2_doel"][value="' + vak2Doel + '"]');
+        if (radio) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change'));
+        }
+    }
 
     // Canvas handtekeningen
     lotoForm.querySelectorAll('canvas').forEach(canvas=>{
@@ -623,13 +941,17 @@ function attachNavigationAutoSave() {
 // Call deze functie bij page load
 document.addEventListener('DOMContentLoaded', function() {
     ensureAanvraagSession();
+    seedProfileDefaults();
+    attachInlineInputIds();
     initStorageGroupsForPage();
     loadCurrentVakData();
     initWerkvergunningNummer();
     attachDynamicRowHandlers();
     attachSchoolToggle();
     attachExclusiveCheckPairs();
+    attachOtherTextAutoCheck();
     initVakProgressBar();
     initAdminTestModeUi();
     attachNavigationAutoSave();
+    bindAanvraagSubmitForm('aanvraagOpslaanForm');
 });
