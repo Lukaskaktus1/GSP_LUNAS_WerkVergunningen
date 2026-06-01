@@ -25,17 +25,28 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
 try {
     $pdo = getDbConnection();
 
-    $selectColumns = ['id', 'email', 'rol', 'wachtwoord_hash', 'actief'];
-    foreach (['voornaam', 'naam', 'telefoon'] as $column) {
-        if (databaseColumnExists($pdo, 'users', $column)) {
-            $selectColumns[] = $column;
+    $profileSelect = '';
+    $profileJoin = '';
+
+    if (databaseTableExists($pdo, 'user_profiel') && databaseColumnExists($pdo, 'user_profiel', 'user_id')) {
+        $lastNameColumn = databaseColumnExists($pdo, 'user_profiel', 'achternaam') ? 'achternaam' : 'naam';
+        if (
+            databaseColumnExists($pdo, 'user_profiel', 'voornaam')
+            && databaseColumnExists($pdo, 'user_profiel', $lastNameColumn)
+            && databaseColumnExists($pdo, 'user_profiel', 'telefoon')
+        ) {
+            $profileSelect = ", p.voornaam AS voornaam, p.{$lastNameColumn} AS naam, p.telefoon AS telefoon";
+            $profileJoin = ' LEFT JOIN user_profiel p ON p.user_id = u.id';
         }
     }
 
-    $statement = $pdo->prepare(sprintf(
-        'SELECT %s FROM users WHERE email = :email LIMIT 1',
-        implode(', ', $selectColumns)
-    ));
+    $statement = $pdo->prepare("
+        SELECT u.id, u.email, u.rol, u.wachtwoord_hash, u.actief{$profileSelect}
+        FROM users u
+        {$profileJoin}
+        WHERE u.email = :email
+        LIMIT 1
+    ");
     $statement->execute(['email' => mb_strtolower($email)]);
     $user = $statement->fetch();
 

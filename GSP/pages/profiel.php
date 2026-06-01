@@ -7,7 +7,15 @@ require_once __DIR__ . '/../config/db.php';
 
 $pdo = getDbConnection();
 $userId = (int) ($_SESSION['user_id'] ?? 0);
-$profileColumns = optionalTableColumns($pdo, 'users', ['voornaam', 'naam', 'telefoon']);
+$usesProfileTable = databaseTableExists($pdo, 'user_profiel') && databaseColumnExists($pdo, 'user_profiel', 'user_id');
+$lastNameColumn = 'naam';
+
+if ($usesProfileTable) {
+    $lastNameColumn = databaseColumnExists($pdo, 'user_profiel', 'achternaam') ? 'achternaam' : 'naam';
+    $profileColumns = optionalTableColumns($pdo, 'user_profiel', ['voornaam', $lastNameColumn, 'telefoon']);
+} else {
+    $profileColumns = optionalTableColumns($pdo, 'users', ['voornaam', 'naam', 'telefoon']);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = (string) ($_POST['action'] ?? 'update');
@@ -34,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $values = [
         'voornaam' => trim((string) ($_POST['voornaam'] ?? '')),
-        'naam' => trim((string) ($_POST['naam'] ?? '')),
+        $lastNameColumn => trim((string) ($_POST['achternaam'] ?? $_POST['naam'] ?? '')),
         'telefoon' => trim((string) ($_POST['telefoon'] ?? '')),
     ];
 
@@ -45,27 +53,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $setParts = [];
-    $params = ['id' => $userId];
+    if ($usesProfileTable) {
+        $profileExistsStmt = $pdo->prepare('SELECT user_id FROM user_profiel WHERE user_id = :user_id LIMIT 1');
+        $profileExistsStmt->execute(['user_id' => $userId]);
 
-    foreach ($profileColumns as $column) {
-        $setParts[] = "{$column} = :{$column}";
-        $params[$column] = $values[$column];
+        if ($profileExistsStmt->fetch()) {
+            $setParts = [];
+            $params = ['user_id' => $userId];
+
+            foreach ($profileColumns as $column) {
+                $setParts[] = "{$column} = :{$column}";
+                $params[$column] = $values[$column];
+            }
+
+            $stmt = $pdo->prepare('UPDATE user_profiel SET ' . implode(', ', $setParts) . ' WHERE user_id = :user_id');
+            $stmt->execute($params);
+        } else {
+            $columns = array_merge(['user_id'], $profileColumns);
+            $placeholders = array_map(static fn (string $column): string => ':' . $column, $columns);
+            $params = ['user_id' => $userId];
+
+            foreach ($profileColumns as $column) {
+                $params[$column] = $values[$column];
+            }
+
+            $stmt = $pdo->prepare(sprintf(
+                'INSERT INTO user_profiel (%s) VALUES (%s)',
+                implode(', ', $columns),
+                implode(', ', $placeholders)
+            ));
+            $stmt->execute($params);
+        }
+    } else {
+        $setParts = [];
+        $params = ['id' => $userId];
+
+        foreach ($profileColumns as $column) {
+            $setParts[] = "{$column} = :{$column}";
+            $params[$column] = $values[$column];
+        }
+
+        $stmt = $pdo->prepare('UPDATE users SET ' . implode(', ', $setParts) . ' WHERE id = :id');
+        $stmt->execute($params);
     }
 
-    $stmt = $pdo->prepare('UPDATE users SET ' . implode(', ', $setParts) . ' WHERE id = :id');
-    $stmt->execute($params);
-
     $_SESSION['voornaam'] = $values['voornaam'];
-    $_SESSION['naam'] = $values['naam'];
+    $_SESSION['naam'] = $values[$lastNameColumn];
     $_SESSION['telefoon'] = $values['telefoon'];
 
     setFlashMessage('success', 'Uw gegevens zijn aangepast.');
     redirect('profiel.php');
 }
 
-$selectColumns = array_merge(['id', 'email'], $profileColumns);
-$stmt = $pdo->prepare(sprintf('SELECT %s FROM users WHERE id = :id LIMIT 1', implode(', ', $selectColumns)));
+if ($usesProfileTable && $profileColumns !== []) {
+    $stmt = $pdo->prepare("
+        SELECT u.id, u.email, p.voornaam AS voornaam, p.{$lastNameColumn} AS naam, p.telefoon AS telefoon
+        FROM users u
+        LEFT JOIN user_profiel p ON p.user_id = u.id
+        WHERE u.id = :id
+        LIMIT 1
+    ");
+} else {
+    $selectColumns = array_merge(['id', 'email'], $profileColumns);
+    $stmt = $pdo->prepare(sprintf('SELECT %s FROM users WHERE id = :id LIMIT 1', implode(', ', $selectColumns)));
+}
 $stmt->execute(['id' => $userId]);
 $user = $stmt->fetch();
 

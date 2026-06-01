@@ -27,15 +27,14 @@
         var menu = document.createElement('div');
         menu.className = 'user-menu';
         menu.innerHTML = [
-            '<button class="user-menu-toggle" type="button" aria-expanded="false">',
-            '  <i class="fas fa-user-circle" aria-hidden="true"></i>',
-            '  <span>Account</span>',
-            '  <i class="fas fa-chevron-down" aria-hidden="true"></i>',
+            '<button class="user-menu-toggle" type="button" aria-expanded="false" aria-label="Accountmenu openen">',
+            '  <i class="fas fa-bars" aria-hidden="true"></i>',
+            '  <span>Menu</span>',
             '</button>',
             '<div class="user-menu-panel" role="menu">',
             '  <a href="/GSP/pages/profiel.php" role="menuitem">Gegevens aanpassen</a>',
-            '  <a href="/GSP/logout.php" role="menuitem">Uitloggen</a>',
             '  <a class="danger" href="/GSP/pages/profiel.php#account-verwijderen" role="menuitem">Account verwijderen</a>',
+            '  <a href="/GSP/logout.php" role="menuitem">Uitloggen</a>',
             '</div>'
         ].join('');
 

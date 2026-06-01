@@ -11,12 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $email = strtolower(trim((string) ($_POST['email'] ?? '')));
 $voornaam = trim((string) ($_POST['voornaam'] ?? ''));
-$naam = trim((string) ($_POST['naam'] ?? ''));
+$achternaam = trim((string) ($_POST['achternaam'] ?? $_POST['naam'] ?? ''));
 $telefoon = trim((string) ($_POST['telefoon'] ?? ''));
 $password = (string) ($_POST['password'] ?? '');
 $passwordConfirm = (string) ($_POST['password_confirm'] ?? '');
 
-if ($voornaam === '' || $naam === '' || $telefoon === '' || $email === '' || $password === '' || $passwordConfirm === '') {
+if ($voornaam === '' || $achternaam === '' || $telefoon === '' || $email === '' || $password === '' || $passwordConfirm === '') {
     setFlashMessage('error', 'Vul alle velden in.');
     redirect('register.php');
 }
@@ -55,39 +55,64 @@ try {
         redirect('register.php');
     }
 
-    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+    if (!databaseTableExists($pdo, 'user_profiel')) {
+        setFlashMessage('error', 'De profielgegevens-tabel ontbreekt nog in de database.');
+        redirect('register.php');
+    }
 
-    $insertColumns = ['email', 'wachtwoord_hash', 'rol', 'actief'];
-    $insertValues = [
-        'email' => $email,
-        'wachtwoord_hash' => $passwordHash,
-        'rol' => 'leerling',
-        'actief' => 1,
-    ];
+    $lastNameColumn = databaseColumnExists($pdo, 'user_profiel', 'achternaam') ? 'achternaam' : 'naam';
+    $requiredProfileColumns = ['user_id', 'voornaam', $lastNameColumn, 'telefoon'];
 
-    $optionalValues = [
-        'voornaam' => $voornaam,
-        'naam' => $naam,
-        'telefoon' => $telefoon,
-        'bevestiging_token' => bin2hex(random_bytes(32)),
-    ];
-
-    foreach ($optionalValues as $column => $value) {
-        if (databaseColumnExists($pdo, 'users', $column)) {
-            $insertColumns[] = $column;
-            $insertValues[$column] = $value;
+    foreach ($requiredProfileColumns as $column) {
+        if (!databaseColumnExists($pdo, 'user_profiel', $column)) {
+            setFlashMessage('error', 'De profielgegevens-tabel heeft niet alle nodige velden.');
+            redirect('register.php');
         }
     }
 
-    $placeholders = array_map(static fn (string $column): string => ':' . $column, $insertColumns);
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-    $insertStmt = $pdo->prepare(sprintf(
-        'INSERT INTO users (%s) VALUES (%s)',
-        implode(', ', $insertColumns),
-        implode(', ', $placeholders)
-    ));
+    $pdo->beginTransaction();
 
-    $insertStmt->execute($insertValues);
+    try {
+        $insertUserStmt = $pdo->prepare('
+            INSERT INTO users (email, wachtwoord_hash, rol, actief)
+            VALUES (:email, :wachtwoord_hash, :rol, :actief)
+        ');
+
+        $insertUserStmt->execute([
+            'email' => $email,
+            'wachtwoord_hash' => $passwordHash,
+            'rol' => 'leerling',
+            'actief' => 1,
+        ]);
+
+        $userId = (int) $pdo->lastInsertId();
+
+        $profileColumns = ['user_id', 'voornaam', $lastNameColumn, 'telefoon'];
+        $profilePlaceholders = array_map(static fn (string $column): string => ':' . $column, $profileColumns);
+
+        $insertProfileStmt = $pdo->prepare(sprintf(
+            'INSERT INTO user_profiel (%s) VALUES (%s)',
+            implode(', ', $profileColumns),
+            implode(', ', $profilePlaceholders)
+        ));
+
+        $insertProfileStmt->execute([
+            'user_id' => $userId,
+            'voornaam' => $voornaam,
+            $lastNameColumn => $achternaam,
+            'telefoon' => $telefoon,
+        ]);
+
+        $pdo->commit();
+    } catch (Throwable $transactionException) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+
+        throw $transactionException;
+    }
 
     $message = "Hallo {$voornaam},\n\n"
         . "Je account voor het Werkvergunning Portaal is aangemaakt.\n"
@@ -101,6 +126,11 @@ try {
 
 } catch (Throwable $exception) {
     error_log('Register failed: ' . $exception->getMessage());
+    if ($exception instanceof PDOException && $exception->getCode() === '23000') {
+        setFlashMessage('error', 'Er bestaat al een account met dit e-mailadres.');
+        redirect('register.php');
+    }
+
     setFlashMessage('error', 'Account aanmaken is momenteel niet beschikbaar.');
     redirect('register.php');
 }
