@@ -64,6 +64,7 @@ $flash = getFlashMessage();
     <title>Wachtwoord vergeten - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/wachtwoord_vergeten.css">
+    <link rel="stylesheet" href="CSS/local-icons.css">
 </head>
 <body>
     <div class="login-container">
@@ -89,8 +90,6 @@ $flash = getFlashMessage();
             </p>
         </div>
     </div>
-
-    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
-    <script src="JS/ui-feedback.js"></script>
+<script src="JS/ui-feedback.js"></script>
 </body>
 </html>

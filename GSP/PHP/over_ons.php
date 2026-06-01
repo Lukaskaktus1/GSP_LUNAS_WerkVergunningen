@@ -23,7 +23,7 @@ $overzichtPagina = match ($role) {
     <title>Over ons - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/over_ons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../CSS/local-icons.css">
 </head>
 <body>
     <header class="header">
@@ -61,8 +61,6 @@ $overzichtPagina = match ($role) {
             <p>Deze pagina bevat voorlopig dummy-informatie en kan later worden gevuld met echte inhoud over de school/organisatie en de veiligheidsdienst.</p>
         </div>
     </main>
-
-    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
-    <script src="../JS/ui-feedback.js"></script>
+<script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

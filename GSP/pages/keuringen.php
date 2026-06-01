@@ -48,7 +48,7 @@ function terugNaarOverzicht(): string
     <title>Keuringen - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css">
     <link rel="stylesheet" href="../CSS/keuringen.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../CSS/local-icons.css">
 </head>
 <body>
 <header class="header">
@@ -161,8 +161,6 @@ function terugNaarOverzicht(): string
         </div>
     </section>
 </main>
-
-<script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
-    <script src="../JS/ui-feedback.js"></script>
+<script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

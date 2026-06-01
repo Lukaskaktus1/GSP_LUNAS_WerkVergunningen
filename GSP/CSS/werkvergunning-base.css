@@ -315,26 +315,44 @@ body {
     gap: 20px;
     margin-top: 40px;
     padding-top: 20px;
-    border-top: 2px solid #e5e7eb;
+    border-top: 1px solid rgba(148, 163, 184, 0.24);
+    flex-wrap: wrap;
+}
+
+.navigation-buttons > .nav-button,
+.navigation-buttons form {
+    flex: 1 1 220px;
+}
+
+.navigation-buttons form {
+    display: flex;
+    margin: 0 !important;
+}
+
+.navigation-buttons form .nav-button {
+    width: 100%;
 }
 
 .nav-button {
-    padding: 12px 30px;
-    border: none;
-    border-radius: 12px;
+    min-height: 46px;
+    padding: 12px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 14px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 800;
     cursor: pointer;
-    transition: background-color 0.3s;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .nav-button.prev {
-    background: rgba(15, 23, 42, 0.84);
+    background: rgba(15, 23, 42, 0.78);
     color: white;
 }
 
 .nav-button.prev:hover {
-    background-color: #111827;
+    background: rgba(15, 23, 42, 0.92);
+    transform: translateY(-1px);
 }
 
 .nav-button.next {
@@ -343,7 +361,8 @@ body {
 }
 
 .nav-button.next:hover {
-    background-color: #111827;
+    background: linear-gradient(135deg, #1d4ed8, #0e7490);
+    transform: translateY(-1px);
 }
 
 /* Info Boxes - Gedeeld */
@@ -736,24 +755,13 @@ body::before {
 }
 
 /* Glass layout en gedeelde formulierverbeteringen */
-body {
-    background:
-        linear-gradient(135deg, rgba(12, 39, 74, 0.84), rgba(27, 88, 137, 0.62)),
-        var(--gsp-bg-image, url('../IMAGES/logo-beveren.jpg')) center / cover fixed;
-    overflow-x: hidden;
-}
-
 .header,
 .form-card,
 .vak-progress-bar {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.76);
     border: 1px solid rgba(255, 255, 255, 0.58);
     box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
     backdrop-filter: blur(20px);
-}
-
-.header-icon {
-    display: none !important;
 }
 
 .role-badge,
@@ -763,69 +771,20 @@ body {
 .form-group input[type="date"],
 .form-group input[type="time"],
 .form-group textarea,
-.form-group select {
-    background-color: rgba(255, 255, 255, 0.86);
+.form-group select,
+.form-table,
+.table-input-full,
+.signature-container,
+.signature-table-cell {
+    background-color: rgba(255, 255, 255, 0.78);
+    border-color: rgba(148, 163, 184, 0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .form-group input[readonly] {
     background-color: rgba(241, 245, 249, 0.86);
     color: #475569;
-}
-
-.user-menu {
-    position: relative;
-}
-
-.user-menu-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.55);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.64);
-    color: #111827;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 9px 14px;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
-}
-
-.user-menu-panel {
-    position: absolute;
-    right: 0;
-    top: calc(100% + 10px);
-    z-index: 20;
-    min-width: 220px;
-    display: none;
-    flex-direction: column;
-    padding: 8px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.65);
-    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.2);
-    backdrop-filter: blur(16px);
-}
-
-.user-menu.open .user-menu-panel {
-    display: flex;
-}
-
-.user-menu-panel a {
-    color: #1f2937;
-    padding: 10px 12px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.user-menu-panel a:hover {
-    background: rgba(22, 120, 250, 0.12);
-}
-
-.user-menu-panel a.danger {
-    color: #b42318;
 }
 
 .dynamic-table {
@@ -842,6 +801,11 @@ body {
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.58);
     border: 1px solid rgba(209, 213, 219, 0.8);
+}
+
+.form-table th,
+.form-table td {
+    background-color: rgba(255, 255, 255, 0.48);
 }
 
 .dynamic-row .remove-row {
@@ -881,35 +845,54 @@ body {
 .vak-progress-bar {
     position: sticky;
     bottom: 14px;
-    z-index: 10;
+    z-index: 30;
     max-width: 1200px;
     margin: 18px auto 0;
-    padding: 10px;
+    padding: 12px;
     display: flex;
     gap: 8px;
     overflow-x: auto;
     border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.72);
 }
 
 .vak-progress-bar a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex: 0 0 auto;
-    padding: 9px 12px;
+    min-height: 40px;
+    padding: 9px 14px;
+    border: 1px solid rgba(148, 163, 184, 0.24);
     border-radius: 999px;
     color: #334155;
-    background: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.84);
     text-decoration: none;
     font-size: 13px;
     font-weight: 800;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
 .vak-progress-bar a.is-current {
-    background: #1678fa;
+    border-color: rgba(37, 99, 235, 0.35);
+    background: linear-gradient(135deg, #2563eb, #0891b2);
     color: #fff;
 }
 
 .vak-progress-bar a.is-complete {
     color: #14532d;
     background: rgba(220, 252, 231, 0.9);
+}
+
+.admin-test-mode .vak-progress-bar {
+    border-color: rgba(8, 145, 178, 0.38);
+    background: rgba(236, 253, 245, 0.78);
+}
+
+.admin-test-mode .vak-progress-bar a:not(.is-current) {
+    color: #0f766e;
+    background: rgba(240, 253, 250, 0.9);
 }
 
 @media (max-width: 768px) {

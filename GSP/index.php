@@ -39,7 +39,8 @@ $flash = getFlashMessage();
         
         <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/login.css">
-    </head>
+        <link rel="stylesheet" href="CSS/local-icons.css">
+</head>
     <body>
         <div class="login-container">
             <div class="login-card">
@@ -79,8 +80,6 @@ $flash = getFlashMessage();
                 <img src="IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="beveren-logo">
             </div>
         </div>
-
-        <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
-        <script src="JS/ui-feedback.js"></script>
+<script src="JS/ui-feedback.js"></script>
 </body>
 </html>

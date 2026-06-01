@@ -6,17 +6,17 @@
 
 .password-criteria {
     display: grid;
-    gap: 6px;
-    margin: 8px 0 0;
+    gap: 4px;
+    margin: 6px 0 0;
     padding: 0;
     list-style: none;
-    font-size: 0.9rem;
+    font-size: 0.78rem;
 }
 
 .password-criteria li {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     color: #b42318;
     font-weight: 700;
 }
@@ -25,12 +25,12 @@
     content: "!";
     display: grid;
     place-items: center;
-    width: 18px;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     border-radius: 999px;
     color: #ffffff;
     background: #dc2626;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
 }
 
 .password-criteria li.is-valid {

@@ -23,7 +23,7 @@ $overzichtPagina = match ($role) {
     <title>Account - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/account.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../CSS/local-icons.css">
 </head>
 <body>
     <header class="header">
@@ -88,12 +88,20 @@ $overzichtPagina = match ($role) {
             </div>
         </div>
     </main>
-
-    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+<script src="../JS/ui-feedback.js"></script>
     <script>
         function saveDummySettings() {
-            alert('Demo: instellingen worden niet echt opgeslagen.');
+            if (typeof window.showAppPopup === 'function') {
+                window.showAppPopup({
+                    type: 'info',
+                    title: 'Demo-instelling',
+                    message: 'Deze instellingen worden niet echt opgeslagen.',
+                    solution: 'Dit onderdeel is alleen bedoeld om de bediening te tonen.'
+                });
+                return;
+            }
+
+            console.info('Demo: instellingen worden niet echt opgeslagen.');
         }
     </script>
-    <script src="../JS/ui-feedback.js"></script>
 </body></html>

@@ -1,0 +1,58 @@
+.fa,
+.fas,
+.far,
+.fab,
+.fa-solid,
+.fa-regular {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15em;
+    min-width: 1.15em;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 1;
+    text-rendering: auto;
+}
+
+.fa::before,
+.fas::before,
+.far::before,
+.fab::before,
+.fa-solid::before,
+.fa-regular::before {
+    content: "*";
+}
+
+.fa-magnifying-glass::before,
+.fa-search::before { content: "⌕"; }
+.fa-bell::before { content: "!"; }
+.fa-plus::before { content: "+"; }
+.fa-folder::before { content: "▣"; }
+.fa-folder-open::before { content: "▤"; }
+.fa-book::before { content: "▥"; }
+.fa-clock::before { content: "◷"; }
+.fa-calendar::before,
+.fa-calendar-day::before,
+.fa-calendar-days::before,
+.fa-calendar-check::before { content: "□"; }
+.fa-gear::before { content: "⚙"; }
+.fa-pen-nib::before,
+.fa-pen-to-square::before { content: "✎"; }
+.fa-trash::before { content: "×"; }
+.fa-arrow-trend-up::before,
+.fa-chart-line::before { content: "↗"; }
+.fa-bars-progress::before,
+.fa-list-check::before { content: "☑"; }
+.fa-file::before,
+.fa-file-alt::before,
+.fa-file-archive::before,
+.fa-file-excel::before { content: "▧"; }
+.fa-download::before { content: "↓"; }
+.fa-database::before,
+.fa-server::before { content: "▦"; }
+.fa-desktop::before { content: "▭"; }
+.fa-ellipsis-vertical::before { content: "⋮"; }
+.fa-users::before { content: "◎"; }
+.fa-pen-ruler::before { content: "⌁"; }
+.fa-gauge-high::before { content: "◴"; }

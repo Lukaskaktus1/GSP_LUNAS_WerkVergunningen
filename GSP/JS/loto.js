@@ -4,6 +4,27 @@
 let auditTrail = [];
 let signatureCanvases = {};
 
+function showLotoPopup(type, title, message, solution) {
+    if (typeof window.showAppPopup === 'function') {
+        return window.showAppPopup({
+            type: type,
+            title: title,
+            message: message,
+            solution: solution || 'Controleer dit onderdeel en probeer daarna opnieuw.'
+        });
+    }
+
+    const fallback = document.createElement('div');
+    fallback.className = 'success-message';
+    fallback.textContent = message;
+    document.body.prepend(fallback);
+    setTimeout(function () {
+        fallback.remove();
+    }, 5000);
+
+    return Promise.resolve();
+}
+
 // Initialisatie wanneer de pagina geladen is
 document.addEventListener('DOMContentLoaded', function() {
     initializeLOTO();
@@ -93,7 +114,7 @@ function updateEnergiebronnenDetails() {
         
         detailDiv.innerHTML = `
             <h4>
-                <span class="material-symbols-outlined">bolt</span>
+                <span class="material-symbols-outlined" data-local-icon="!"></span>
                 ${energieLabels[energie] || energie}
             </h4>
             <div class="form-row">
@@ -124,7 +145,7 @@ function updateEnergiebronnenDetails() {
                 <div class="checkbox-item">
                     <input type="checkbox" id="spanningsloos_${energie}" name="spanningsloos_${energie}" required>
                     <label for="spanningsloos_${energie}">
-                        <span class="material-symbols-outlined">check_circle</span>
+                        <span class="material-symbols-outlined" data-local-icon="✓"></span>
                         Controle op spanningsloosheid uitgevoerd
                     </label>
                 </div>
@@ -174,7 +195,7 @@ function updateSlotRegistratie() {
             
             slotDiv.innerHTML = `
                 <h4>
-                    <span class="material-symbols-outlined">lock</span>
+                    <span class="material-symbols-outlined" data-local-icon="■"></span>
                     Slot ${i}
                 </h4>
                 <div class="form-row">
@@ -232,7 +253,7 @@ function addUitvoerder() {
             </div>
         </div>
         <button type="button" class="remove-person-btn" onclick="removeUitvoerder(this)">
-            <span class="material-symbols-outlined">delete</span>
+            <span class="material-symbols-outlined" data-local-icon="×"></span>
             Verwijderen
         </button>
     `;
@@ -248,7 +269,12 @@ function removeUitvoerder(button) {
         personItem.remove();
         addAuditTrail('Uitvoerder verwijderd', 'Uitvoerder verwijderd uit lijst');
     } else {
-        alert('Er moet minimaal één uitvoerder aanwezig zijn.');
+        showLotoPopup(
+            'error',
+            'Uitvoerder verplicht',
+            'Er moet minimaal een uitvoerder aanwezig zijn.',
+            'Laat minstens een uitvoerder in de lijst staan.'
+        );
     }
 }
 
@@ -267,7 +293,7 @@ function handleFotoUpload(event) {
                 fotoDiv.innerHTML = `
                     <img src="${e.target.result}" alt="LOTO Foto">
                     <button type="button" class="remove-foto" onclick="removeFoto(this)">
-                        <span class="material-symbols-outlined">close</span>
+                        <span class="material-symbols-outlined" data-local-icon="×"></span>
                     </button>
                 `;
                 previewContainer.appendChild(fotoDiv);
@@ -444,7 +470,7 @@ function validateField(event) {
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'error-message';
                 errorMsg.innerHTML = `
-                    <span class="material-symbols-outlined">error</span>
+                    <span class="material-symbols-outlined" data-local-icon="!"></span>
                     Dit veld is verplicht
                 `;
                 formGroup.appendChild(errorMsg);
@@ -480,7 +506,12 @@ function validateLOTOForm() {
         
         if (!allChecked) {
             isValid = false;
-            alert('Alle checklist items moeten worden aangevinkt voordat u kunt verzenden.');
+            showLotoPopup(
+                'error',
+                'Checklist niet volledig',
+                'Alle checklist items moeten worden aangevinkt voordat u kunt verzenden.',
+                'Controleer de volledige checklist en vink elk noodzakelijk punt af.'
+            );
         }
     }
     
@@ -502,13 +533,23 @@ function validateLOTOForm() {
                 
                 if (!isSigned) {
                     isValid = false;
-                    alert(`Handtekening voor ${signatureLabels[id] || id.replace('signature_', '')} is verplicht.`);
+                    showLotoPopup(
+                        'error',
+                        'Handtekening ontbreekt',
+                        `Handtekening voor ${signatureLabels[id] || id.replace('signature_', '')} is verplicht.`,
+                        'Plaats de ontbrekende handtekening en probeer opnieuw.'
+                    );
                     break;
                 }
             } catch (e) {
                 console.error('Fout bij controleren handtekening:', e);
                 isValid = false;
-                alert(`Fout bij controleren handtekening voor ${signatureLabels[id] || id.replace('signature_', '')}.`);
+                showLotoPopup(
+                    'error',
+                    'Handtekening niet leesbaar',
+                    `Fout bij controleren handtekening voor ${signatureLabels[id] || id.replace('signature_', '')}.`,
+                    'Wis de handtekening, plaats ze opnieuw en probeer daarna opnieuw.'
+                );
                 break;
             }
         }
@@ -518,7 +559,12 @@ function validateLOTOForm() {
     const selectedEnergies = document.querySelectorAll('#loto_form_container input[name="energiebronnen"]:checked');
     if (selectedEnergies.length === 0 && formContainer && formContainer.style.display !== 'none') {
         isValid = false;
-        alert('Selecteer minimaal één energiebron.');
+        showLotoPopup(
+            'error',
+            'Energiebron verplicht',
+            'Selecteer minimaal een energiebron.',
+            'Kies de energiebron die veiliggesteld moet worden.'
+        );
     }
     
     return isValid;
@@ -594,7 +640,12 @@ function saveLOTO() {
     
     // Validatie alleen als volledig ingevuld
     if (!validateLOTOForm()) {
-        alert('Controleer de formuliervelden voordat u opslaat.');
+        showLotoPopup(
+            'error',
+            'Formulier niet volledig',
+            'Controleer de formuliervelden voordat u opslaat.',
+            'Vul de ontbrekende of foutieve velden aan en probeer opnieuw.'
+        );
         return;
     }
     
@@ -630,7 +681,12 @@ function submitLOTO() {
     
     // Validatie alleen als volledig ingevuld
     if (!validateLOTOForm()) {
-        alert('Controleer de formuliervelden voordat u verdergaat.');
+        showLotoPopup(
+            'error',
+            'Formulier niet volledig',
+            'Controleer de formuliervelden voordat u verdergaat.',
+            'Vul de ontbrekende of foutieve velden aan en probeer opnieuw.'
+        );
         return;
     }
     
@@ -780,12 +836,21 @@ function loadSavedData() {
 }
 
 function showSuccessMessage(message) {
+    if (typeof window.showAppPopup === 'function') {
+        window.showAppPopup({
+            type: 'success',
+            title: 'Opgeslagen',
+            message: message,
+            solution: 'U kunt verdergaan met de volgende stap.'
+        });
+    }
+
     const formCard = document.querySelector('.form-card');
     if (formCard) {
         const successDiv = document.createElement('div');
         successDiv.className = 'success-message';
         successDiv.innerHTML = `
-            <span class="material-symbols-outlined">check_circle</span>
+            <span class="material-symbols-outlined" data-local-icon="✓"></span>
             <span>${message}</span>
         `;
         formCard.insertBefore(successDiv, formCard.firstChild);

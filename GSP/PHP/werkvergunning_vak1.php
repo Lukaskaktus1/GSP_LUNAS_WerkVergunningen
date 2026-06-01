@@ -26,7 +26,7 @@ $aanvragerTel = (string) ($_SESSION['telefoon'] ?? '');
     <title>Werkvergunning - Vak I</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/werkvergunning_vak1.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../CSS/local-icons.css">
 </head>
 <body data-user-role="<?= e($role) ?>">
     <!-- Header -->
@@ -145,9 +145,7 @@ $aanvragerTel = (string) ($_SESSION['telefoon'] ?? '');
             </div>
         </div>
     </main>
-
-    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
-    <script src="../JS/ui-feedback.js"></script>
+<script src="../JS/ui-feedback.js"></script>
     <script src="../JS/saveCurrentVak.js"></script>
     </body>
 </html>

@@ -38,7 +38,7 @@
 
             const icon = document.createElement('div');
             icon.className = 'app-popup-icon';
-            icon.textContent = settings.type === 'success' ? '✓' : settings.type === 'error' ? '!' : '?';
+            icon.textContent = settings.type === 'success' ? 'OK' : settings.type === 'error' ? '!' : '?';
 
             const title = document.createElement('h2');
             title.textContent = settings.title;
@@ -92,6 +92,22 @@
             solution: 'Controleer de gegevens op deze pagina en probeer daarna opnieuw.'
         });
     };
+
+    document.addEventListener('invalid', function (event) {
+        const field = event.target;
+        if (!(field instanceof HTMLElement)) return;
+
+        const escapedId = field.id ? field.id.replace(/"/g, '\\"') : '';
+        const label = escapedId ? document.querySelector('label[for="' + escapedId + '"]') : null;
+        const fieldName = label ? label.textContent.trim() : 'een verplicht veld';
+
+        showAppPopup({
+            type: 'error',
+            title: 'Niet alles is ingevuld',
+            message: 'Controleer ' + fieldName + '.',
+            solution: field.validationMessage || 'Vul dit veld correct in en probeer opnieuw.'
+        });
+    }, true);
 
     document.addEventListener('submit', function (event) {
         const form = event.target;

@@ -23,7 +23,7 @@ $overzichtPagina = match ($role) {
     <title>Contact - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/php_contact.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../CSS/local-icons.css">
 </head>
 <body>
     <header class="header">
@@ -76,13 +76,21 @@ $overzichtPagina = match ($role) {
             </div>
         </div>
     </main>
-
-    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+<script src="../JS/ui-feedback.js"></script>
     <script>
         function fakeSend() {
-            alert('Het bericht is succesvol verzonden! We nemen zo snel mogelijk contact met u op.');
+            if (typeof window.showAppPopup === 'function') {
+                window.showAppPopup({
+                    type: 'success',
+                    title: 'Bericht verzonden',
+                    message: 'Het bericht is succesvol verzonden.',
+                    solution: 'We nemen zo snel mogelijk contact met u op.'
+                });
+                return;
+            }
+
+            console.info('Het bericht is succesvol verzonden. We nemen zo snel mogelijk contact met u op.');
         }
     </script>
-    <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

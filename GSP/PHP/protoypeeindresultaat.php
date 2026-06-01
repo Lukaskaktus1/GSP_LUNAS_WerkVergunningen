@@ -203,9 +203,6 @@ $overzichtPagina = match ($role) {
     </div>
 
 </main>
-
-<script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 

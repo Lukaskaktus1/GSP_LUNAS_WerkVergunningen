@@ -23,8 +23,7 @@ $overzichtPagina = match ($role) {
     <title>Werkvergunning - Vak VI</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/werkvergunning_vak6.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../CSS/local-icons.css">
 </head>
 <body data-user-role="<?= e($role) ?>">
     <!-- Header -->
@@ -168,7 +167,7 @@ $overzichtPagina = match ($role) {
                         </div>
                     </div>
                     <div id="loto_status_indicator" class="loto-status-indicator" style="display: none;">
-                        <span class="material-symbols-outlined">info</span>
+                        <span class="material-symbols-outlined" data-local-icon="i"></span>
                         <span id="loto_status_text"></span>
                     </div>
                     <i class="fas fa-exclamation-triangle warning-icon"></i>
@@ -187,9 +186,7 @@ $overzichtPagina = match ($role) {
             </div>
         </div>
     </main>
-
-    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
-    <script src="../JS/ui-feedback.js"></script>
+<script src="../JS/ui-feedback.js"></script>
     <script src="../JS/saveCurrentVak.js"></script>
     <script>
         // Synchroniseer LOTO status met LOTOTO check
