@@ -22,6 +22,7 @@ $overzichtPagina = match ($role) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accounts overzicht - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/accounts_overview.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -146,5 +147,6 @@ $overzichtPagina = match ($role) {
             renderHistory();
         });
     </script>
+    <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

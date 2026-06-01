@@ -41,7 +41,7 @@ $overzichtPagina = match ($role) {
     <link rel="stylesheet" href="../CSS/werkvergunning_loto.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body data-user-role="<?= e($role) ?>">
     <!-- Header -->
     <header class="header">
         <div class="header-left">
@@ -514,6 +514,7 @@ $overzichtPagina = match ($role) {
     </main>
 
     <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/ui-feedback.js"></script>
     <script src="../JS/saveCurrentVak.js"></script>
     <script>
 
@@ -645,5 +646,5 @@ $overzichtPagina = match ($role) {
             }
         }
     </script>
-</body>
+    </body>
 </html>

@@ -1,0 +1,6 @@
+/* Eigen stylesheet voor accountoverzicht. */
+
+.form-card {
+    max-width: 1100px;
+    margin-inline: auto;
+}

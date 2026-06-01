@@ -1,0 +1,5 @@
+/* Eigen stylesheet voor directeur overzicht. */
+
+.action-card.highlighted .action-card-icon {
+    background: linear-gradient(135deg, #2563eb, #16a34a);
+}

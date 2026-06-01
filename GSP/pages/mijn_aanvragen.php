@@ -55,74 +55,8 @@ function statusLabel(string $status): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mijn aanvragen - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css">
+    <link rel="stylesheet" href="../CSS/mijn_aanvragen.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        .status-badge {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .status-goedgekeurd {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-afgekeurd {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .status-wachtend {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-concept {
-            background: #e5e7eb;
-            color: #374151;
-        }
-
-        .aanvragen-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .aanvragen-table th,
-        .aanvragen-table td {
-            padding: 12px;
-            text-align: left;
-            border-top: 1px solid #ddd;
-            vertical-align: middle;
-        }
-
-        .table-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .small-btn {
-            border: none;
-            border-radius: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .open-btn {
-            background: #e0f2fe;
-            color: #075985;
-        }
-
-        .delete-btn {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-    </style>
 </head>
 <body>
 <header class="header">
@@ -173,11 +107,7 @@ function statusLabel(string $status): string
     <section class="applications-section">
         <h2 class="section-title">Uw aanvragen</h2>
 
-        <?php if ($flash !== null): ?>
-            <p style="margin-bottom:16px; color:<?= ($flash['type'] ?? '') === 'success' ? '#067647' : '#b42318' ?>;">
-                <?= e((string) ($flash['message'] ?? '')) ?>
-            </p>
-        <?php endif; ?>
+        <?= flashDialogMarkup($flash) ?>
 
         <div class="applications-container">
             <?php if (empty($aanvragen)): ?>
@@ -187,7 +117,7 @@ function statusLabel(string $status): string
                     </div>
                     <div class="empty-state-text">Nog geen aanvragen ingediend</div>
 
-                    <button class="empty-state-button" onclick="window.location.href='../PHP/werkvergunning_vak1.php'">
+                    <button class="empty-state-button" onclick="window.location.href='../PHP/werkvergunning_vak1.php?new=1'">
                         Start uw eerste aanvraag
                     </button>
                 </div>
@@ -230,7 +160,7 @@ function statusLabel(string $status): string
                                         </button>
 
                                         <?php if ($magVerwijderen): ?>
-                                            <form action="aanvraag_verwijderen.php" method="POST" onsubmit="return confirm('Weet u zeker dat u deze aanvraag wilt verwijderen?');">
+                                            <form action="aanvraag_verwijderen.php" method="POST" data-confirm-title="Aanvraag verwijderen" data-confirm-message="Weet u zeker dat u deze aanvraag wilt verwijderen?" data-confirm-solution="Verwijder alleen aanvragen die niet meer nodig zijn. Goedgekeurde of gesloten aanvragen blijven beschermd.">
                                                 <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
                                                 <button type="submit" class="small-btn delete-btn">
                                                     Verwijderen
@@ -250,5 +180,6 @@ function statusLabel(string $status): string
 </main>
 
 <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

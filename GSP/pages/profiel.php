@@ -83,6 +83,7 @@ $flash = getFlashMessage();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mijn gegevens - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/profiel.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -108,10 +109,7 @@ $flash = getFlashMessage();
 <main class="main-container">
     <div class="form-card">
         <h2 class="section-title">Gegevens aanpassen</h2>
-
-        <?php if ($flash !== null): ?>
-            <p class="validation-message"><?= e((string) ($flash['message'] ?? '')) ?></p>
-        <?php endif; ?>
+                <?= flashDialogMarkup($flash) ?>
 
         <form method="POST" action="profiel.php">
             <input type="hidden" name="action" value="update">
@@ -157,5 +155,6 @@ $flash = getFlashMessage();
 </main>
 
 <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

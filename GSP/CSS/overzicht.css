@@ -1,3 +1,5 @@
+@import url("./gsp-feedback.css");
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +8,12 @@
 }
 
 body {
-    background-color: #f5f7fa;
+    background:
+        radial-gradient(circle at 16% 8%, rgba(37, 99, 235, 0.2), transparent 28rem),
+        radial-gradient(circle at 86% 12%, rgba(22, 163, 74, 0.16), transparent 24rem),
+        linear-gradient(135deg, rgba(238, 246, 255, 0.9), rgba(248, 251, 255, 0.76), rgba(236, 253, 245, 0.86)),
+        url('../IMAGES/backgrounds/woodshop-glass-2.png') center / cover fixed;
+    background-attachment: fixed;
     color: #333;
     line-height: 1.6;
     min-height: 100vh;
@@ -14,12 +21,14 @@ body {
 
 /* Header Styles */
 .header {
-    background-color: white;
+    background: rgba(255, 255, 255, 0.78);
     padding: clamp(12px, 3vw, 20px) clamp(15px, 4vw, 40px);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+    backdrop-filter: blur(18px);
     flex-wrap: wrap;
     gap: clamp(10px, 2vw, 15px);
 }
@@ -150,14 +159,16 @@ body {
 }
 
 .action-card {
-    background: white;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    border-radius: 18px;
     padding: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(18px);
     transition: transform 0.3s, box-shadow 0.3s;
     cursor: pointer;
 }
@@ -168,8 +179,8 @@ body {
 }
 
 .action-card.highlighted {
-    background-color: #e0f2fe;
-    border: 2px solid #1678fa;
+    background: linear-gradient(145deg, rgba(224, 242, 254, 0.9), rgba(236, 253, 245, 0.86));
+    border: 2px solid rgba(37, 99, 235, 0.48);
 }
 
 .action-card-icon {
@@ -183,7 +194,7 @@ body {
 }
 
 .action-card.highlighted .action-card-icon {
-    background-color: #1678fa;
+    background: linear-gradient(135deg, #2563eb, #0891b2);
 }
 
 .action-card:not(.highlighted) .action-card-icon {
@@ -218,10 +229,12 @@ body {
 }
 
 .applications-container {
-    background: white;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    border-radius: 18px;
     padding: clamp(20px, 4vw, 40px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(18px);
     min-height: 400px;
 }
 
@@ -257,7 +270,7 @@ body {
 }
 
 .empty-state-button {
-    background-color: #1f2937;
+    background: linear-gradient(135deg, #2563eb, #0891b2);
     color: white;
     padding: clamp(10px, 2vw, 12px) clamp(16px, 3vw, 24px);
     border: none;
@@ -485,6 +498,16 @@ body {
     .action-card-icon i {
         font-size: clamp(20px, 3.5vw, 24px);
     }
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(2px);
 }
 
 /* Glass layout voor overzichts- en detailpagina's */

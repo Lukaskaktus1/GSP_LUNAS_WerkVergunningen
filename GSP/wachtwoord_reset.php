@@ -78,6 +78,7 @@ $flash = getFlashMessage();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nieuw wachtwoord - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/wachtwoord_reset.css">
 </head>
 <body>
     <div class="login-container">
@@ -87,17 +88,14 @@ $flash = getFlashMessage();
             </div>
             <h1>Nieuw wachtwoord</h1>
             <p class="subtitle"><?= e(passwordPolicyMessage()) ?></p>
-
-            <?php if ($flash !== null): ?>
-                <p style="margin-bottom:16px;color:#b42318;"><?= e((string) ($flash['message'] ?? '')) ?></p>
-            <?php endif; ?>
+                <?= flashDialogMarkup($flash) ?>
 
             <form class="login-form" method="POST" action="wachtwoord_reset.php">
                 <input type="hidden" name="token" value="<?= e($token) ?>">
 
                 <div class="form-group">
                     <label for="password">Nieuw wachtwoord</label>
-                    <input type="password" id="password" name="password" pattern="(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}" required>
+                    <input type="password" id="password" name="password" pattern="(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" required>
                 </div>
 
                 <div class="form-group">
@@ -111,5 +109,6 @@ $flash = getFlashMessage();
     </div>
 
     <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="JS/ui-feedback.js"></script>
 </body>
 </html>

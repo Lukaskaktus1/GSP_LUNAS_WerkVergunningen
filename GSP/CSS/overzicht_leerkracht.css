@@ -1,0 +1,5 @@
+/* Eigen stylesheet voor leerkracht overzicht. */
+
+.action-card.highlighted .action-card-icon {
+    background: linear-gradient(135deg, #0891b2, #2563eb);
+}

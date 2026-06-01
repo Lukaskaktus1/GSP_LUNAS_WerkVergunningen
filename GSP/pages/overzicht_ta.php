@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../auth/auth.php';
+require_once __DIR__ . '/../config/db.php';
 requireRole(['ta']);
+
+$reviewNotification = latestReviewNotification(getDbConnection());
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -12,6 +15,7 @@ requireRole(['ta']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Overzicht - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css">
+    <link rel="stylesheet" href="../CSS/overzicht_ta.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -31,11 +35,6 @@ requireRole(['ta']);
     </div>
 
     <div class="header-right">
-        <button class="logout-btn" onclick="window.location.href='/index.html'">
-            <i class="fas fa-home"></i>
-            <span>PortfolioPagina</span>
-        </button>
-
         <button class="logout-btn" onclick="window.location.href='keuringen.php'">
             <i class="fas fa-check-circle"></i>
             <span>Keuringen</span>
@@ -53,7 +52,7 @@ requireRole(['ta']);
         <h2 class="section-title">Snelle acties</h2>
 
         <div class="quick-actions">
-            <div class="action-card highlighted" onclick="window.location.href='../PHP/werkvergunning_vak1.php'">
+            <div class="action-card highlighted" onclick="window.location.href='../PHP/werkvergunning_vak1.php?new=1'">
                 <div class="action-card-icon">
                     <i class="fas fa-plus"></i>
                 </div>
@@ -84,15 +83,6 @@ requireRole(['ta']);
                 <div class="action-card-title">Mijn keuringen</div>
                 <div class="action-card-subtitle">Bekijk gekeurde aanvragen</div>
             </div>
-
-            <div class="action-card" onclick="window.location.href='/index.html'">
-                <div class="action-card-icon">
-                    <i class="fas fa-home"></i>
-                </div>
-                <div class="action-card-title">Portfolio</div>
-                <div class="action-card-subtitle">Terug naar portfolio</div>
-            </div>
-
             <div class="action-card" onclick="window.location.href='contact.php'">
                 <div class="action-card-icon">
                     <i class="fas fa-envelope"></i>
@@ -120,6 +110,8 @@ requireRole(['ta']);
     </section>
 </main>
 
+<?= reviewNotificationMarkup($reviewNotification) ?>
 <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+<script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

@@ -32,6 +32,68 @@ function getFlashMessage(): ?array
     return $flash;
 }
 
+function flashDialogMarkup(?array $flash): string
+{
+    if ($flash === null) {
+        return '';
+    }
+
+    $type = (string) ($flash['type'] ?? 'info');
+    $message = (string) ($flash['message'] ?? '');
+
+    if ($message === '') {
+        return '';
+    }
+
+    $title = match ($type) {
+        'success' => 'Gelukt',
+        'error' => 'Er is iets misgelopen',
+        default => 'Melding',
+    };
+
+    $solution = match ($type) {
+        'success' => 'U hoeft niets extra te doen. U kunt verder werken.',
+        'error' => 'Controleer de velden en probeer opnieuw. Blijft dit gebeuren, vraag hulp aan de beheerder.',
+        default => 'Lees de melding en ga daarna verder.',
+    };
+
+    return '<div hidden data-app-flash data-type="' . e($type) . '" data-title="' . e($title) . '" data-message="' . e($message) . '" data-solution="' . e($solution) . '"></div>';
+}
+
+function latestReviewNotification(PDO $pdo): ?array
+{
+    $stmt = $pdo->query("
+        SELECT id, vergunning_nummer, eigenaar_email, eigenaar_rol, werkbeschrijving, created_at
+        FROM werkvergunning
+        WHERE status IN ('ingediend', 'in_beoordeling')
+        ORDER BY created_at DESC
+        LIMIT 1
+    ");
+
+    $aanvraag = $stmt->fetch();
+
+    return is_array($aanvraag) ? $aanvraag : null;
+}
+
+function reviewNotificationMarkup(?array $aanvraag): string
+{
+    if ($aanvraag === null) {
+        return '';
+    }
+
+    $id = (string) ($aanvraag['id'] ?? '');
+
+    if ($id === '') {
+        return '';
+    }
+
+    $aanvrager = (string) ($aanvraag['eigenaar_email'] ?? 'Onbekende aanvrager');
+    $nummer = (string) ($aanvraag['vergunning_nummer'] ?? 'Nieuwe aanvraag');
+    $werk = trim((string) ($aanvraag['werkbeschrijving'] ?? ''));
+
+    return '<div hidden data-review-notification data-id="' . e($id) . '" data-aanvrager="' . e($aanvrager) . '" data-nummer="' . e($nummer) . '" data-werk="' . e($werk) . '" data-url="aanvraag_bekijken.php?id=' . e($id) . '"></div>';
+}
+
 function e(?string $value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
@@ -65,13 +127,13 @@ function currentUserDisplayName(): string
 function passwordMeetsPolicy(string $password): bool
 {
     return strlen($password) >= 8
-        && preg_match('/[A-Z]/', $password) === 1
+        && preg_match('/[0-9]/', $password) === 1
         && preg_match('/[^A-Za-z0-9]/', $password) === 1;
 }
 
 function passwordPolicyMessage(): string
 {
-    return 'Het wachtwoord moet minstens 8 tekens, 1 hoofdletter en 1 speciaal teken bevatten.';
+    return 'Het wachtwoord moet minstens 8 tekens, 1 cijfer en 1 speciaal teken bevatten.';
 }
 
 function databaseColumnExists(PDO $pdo, string $table, string $column): bool

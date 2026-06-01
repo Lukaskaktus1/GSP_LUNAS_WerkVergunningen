@@ -47,61 +47,8 @@ function terugNaarOverzicht(): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keuringen - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css">
+    <link rel="stylesheet" href="../CSS/keuringen.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        .keuringen-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .keuringen-table th,
-        .keuringen-table td {
-            padding: 12px;
-            text-align: left;
-            border-top: 1px solid #ddd;
-            vertical-align: middle;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .table-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .small-btn {
-            border: none;
-            border-radius: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .open-btn {
-            background: #e0f2fe;
-            color: #075985;
-        }
-
-        .approve-btn {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .reject-btn {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-    </style>
 </head>
 <body>
 <header class="header">
@@ -188,7 +135,7 @@ function terugNaarOverzicht(): string
                                                 Bekijken
                                             </button>
 
-                                            <form action="aanvraag_keuren.php" method="POST" onsubmit="return confirm('Weet u zeker dat u deze aanvraag wilt goedkeuren?');">
+                                            <form action="aanvraag_keuren.php" method="POST" data-confirm-title="Aanvraag goedkeuren" data-confirm-message="Weet u zeker dat u deze aanvraag wilt goedkeuren?" data-confirm-solution="Controleer eerst of de risico's en maatregelen volledig genoeg zijn. Na bevestigen wordt de aanvraag goedgekeurd.">
                                                 <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
                                                 <input type="hidden" name="actie" value="goedkeuren">
                                                 <button type="submit" class="small-btn approve-btn">
@@ -196,7 +143,7 @@ function terugNaarOverzicht(): string
                                                 </button>
                                             </form>
 
-                                            <form action="aanvraag_keuren.php" method="POST" onsubmit="return confirm('Weet u zeker dat u deze aanvraag wilt afkeuren?');">
+                                            <form action="aanvraag_keuren.php" method="POST" data-confirm-title="Aanvraag afkeuren" data-confirm-message="Weet u zeker dat u deze aanvraag wilt afkeuren?" data-confirm-solution="Gebruik dit alleen wanneer de aanvraag niet veilig of niet volledig genoeg is. De aanvrager ziet daarna dat de aanvraag afgekeurd is.">
                                                 <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
                                                 <input type="hidden" name="actie" value="afkeuren">
                                                 <button type="submit" class="small-btn reject-btn">
@@ -216,5 +163,6 @@ function terugNaarOverzicht(): string
 </main>
 
 <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

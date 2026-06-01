@@ -63,6 +63,7 @@ $flash = getFlashMessage();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wachtwoord vergeten - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/wachtwoord_vergeten.css">
 </head>
 <body>
     <div class="login-container">
@@ -72,10 +73,7 @@ $flash = getFlashMessage();
             </div>
             <h1>Wachtwoord vergeten</h1>
             <p class="subtitle">Vul je e-mailadres in. Je krijgt een link om je wachtwoord opnieuw in te stellen.</p>
-
-            <?php if ($flash !== null): ?>
-                <p style="margin-bottom:16px;color:#b42318;"><?= e((string) ($flash['message'] ?? '')) ?></p>
-            <?php endif; ?>
+                <?= flashDialogMarkup($flash) ?>
 
             <form class="login-form" method="POST" action="wachtwoord_vergeten.php">
                 <div class="form-group">
@@ -93,5 +91,6 @@ $flash = getFlashMessage();
     </div>
 
     <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="JS/ui-feedback.js"></script>
 </body>
 </html>

@@ -1,0 +1,97 @@
+.app-popup-root {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.app-popup-overlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background: rgba(15, 23, 42, 0.34);
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+}
+
+.app-popup {
+    width: min(520px, 100%);
+    border: 1px solid rgba(255, 255, 255, 0.68);
+    border-radius: 18px;
+    padding: clamp(22px, 5vw, 34px);
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(240, 249, 255, 0.82)),
+        rgba(255, 255, 255, 0.86);
+    box-shadow: 0 28px 80px rgba(15, 23, 42, 0.28);
+    color: #102033;
+    text-align: left;
+}
+
+.app-popup-icon {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    margin-bottom: 16px;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #2563eb, #0891b2);
+}
+
+.app-popup-success .app-popup-icon {
+    background: linear-gradient(135deg, #16a34a, #0891b2);
+}
+
+.app-popup-error .app-popup-icon {
+    background: linear-gradient(135deg, #dc2626, #f97316);
+}
+
+.app-popup h2 {
+    margin: 0 0 10px;
+    color: #102033;
+    font-size: clamp(20px, 4vw, 26px);
+    line-height: 1.2;
+}
+
+.app-popup-message,
+.app-popup-solution {
+    margin: 0;
+    color: #475569;
+    font-size: 15px;
+}
+
+.app-popup-solution {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.app-popup-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.app-popup-button {
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 12px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.7);
+    color: #102033;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.app-popup-button.primary {
+    border: 0;
+    color: #ffffff;
+    background: linear-gradient(135deg, #2563eb, #0891b2);
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.24);
+}

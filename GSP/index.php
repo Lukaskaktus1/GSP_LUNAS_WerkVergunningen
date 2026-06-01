@@ -38,6 +38,7 @@ $flash = getFlashMessage();
         <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
         
         <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/login.css">
     </head>
     <body>
         <div class="login-container">
@@ -47,10 +48,7 @@ $flash = getFlashMessage();
                 </div>
                 <h1>Werkvergunning Portaal</h1>
                 <p class="subtitle">Log in om uw werkvergunning aan te vragen</p>
-
-                <?php if ($flash !== null): ?>
-                    <p style="margin-bottom:16px;color:#b42318;"><?= e((string) ($flash['message'] ?? '')) ?></p>
-                <?php endif; ?>
+                <?= flashDialogMarkup($flash) ?>
 
                 <form class="login-form" action="login.php" method="POST">
                     <div class="form-group">
@@ -83,5 +81,6 @@ $flash = getFlashMessage();
         </div>
 
         <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
-    </body>
+        <script src="JS/ui-feedback.js"></script>
+</body>
 </html>

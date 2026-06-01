@@ -1,3 +1,5 @@
+@import url("./gsp-feedback.css");
+
 *{
     margin: 0;
     padding: 0;
@@ -7,8 +9,8 @@
 
 body {
     background:
-        linear-gradient(135deg, rgba(12, 39, 74, 0.84), rgba(27, 88, 137, 0.62)),
-        var(--gsp-bg-image, url('../IMAGES/logo-beveren.jpg')) center / cover fixed;
+        linear-gradient(135deg, rgba(238, 246, 255, 0.88), rgba(236, 253, 245, 0.78)),
+        url('../IMAGES/backgrounds/woodshop-glass-1.png') center / cover fixed;
     color: #333;
     line-height: 1.6;
     min-height: 100vh;
@@ -17,6 +19,18 @@ body {
     justify-content: center;
     padding: clamp(10px, 3vw, 20px);
     overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 12% 8%, rgba(37, 99, 235, 0.18), transparent 30rem),
+        linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.54));
+    backdrop-filter: blur(2px);
 }
 
 header {
@@ -53,7 +67,7 @@ header {
 
 .login-card {
     background: rgba(255, 255, 255, 0.82);
-    border-radius: 12px;
+    border-radius: 18px;
     padding: clamp(20px, 5vw, 40px);
     width: 100%;
     box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
@@ -181,7 +195,7 @@ header {
 .login-button {
     width: 100%;
     padding: clamp(12px, 2vw, 14px);
-    background-color: #000;
+    background: linear-gradient(135deg, #2563eb, #0891b2);
     color: white;
     border: none;
     border-radius: 8px;
@@ -193,7 +207,7 @@ header {
 }
 
 .login-button:hover {
-    background-color: #555;
+    background: linear-gradient(135deg, #1d4ed8, #0e7490);
 }
 
 .demo-info {
@@ -240,7 +254,7 @@ header {
 
 .logo-card {
     background: rgba(255, 255, 255, 0.82);
-    border-radius: 12px;
+    border-radius: 18px;
     padding: 20px;
     width: 100%;
     box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);

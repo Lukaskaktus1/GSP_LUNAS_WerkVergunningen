@@ -33,6 +33,7 @@ $allowedRoles = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gebruikersbeheer - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css">
+    <link rel="stylesheet" href="../CSS/admin_gebruikers.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -75,11 +76,7 @@ $allowedRoles = [
     <section class="applications-section">
         <h2 class="section-title">Gebruikers</h2>
 
-        <?php if ($flash !== null): ?>
-            <p style="margin-bottom:16px; color:<?= ($flash['type'] ?? '') === 'success' ? '#067647' : '#b42318' ?>;">
-                <?= e((string) ($flash['message'] ?? '')) ?>
-            </p>
-        <?php endif; ?>
+        <?= flashDialogMarkup($flash) ?>
 
         <div class="applications-container">
             <?php if (empty($users)): ?>
@@ -147,5 +144,6 @@ $allowedRoles = [
 </main>
 
 <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

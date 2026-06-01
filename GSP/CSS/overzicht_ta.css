@@ -1,0 +1,5 @@
+/* Eigen stylesheet voor TA overzicht. */
+
+.action-card.highlighted .action-card-icon {
+    background: linear-gradient(135deg, #0f766e, #2563eb);
+}

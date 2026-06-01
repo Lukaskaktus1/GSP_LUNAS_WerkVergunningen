@@ -1,0 +1,45 @@
+/* Eigen stylesheet voor admin overzicht. */
+
+.action-card.highlighted .action-card-icon {
+    background: linear-gradient(135deg, #4f46e5, #0891b2);
+}
+
+.test-action {
+    border-color: rgba(8, 145, 178, 0.42);
+}
+
+.test-action .action-card-icon {
+    background: linear-gradient(135deg, #0891b2, #22c55e) !important;
+}
+
+.test-aanvragen-intro {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    color: #0f3a6a;
+    background: rgba(224, 242, 254, 0.78);
+    font-weight: 700;
+}
+
+.admin-test-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-test-table th,
+.admin-test-table td {
+    padding: 12px;
+    text-align: left;
+    border-top: 1px solid rgba(148, 163, 184, 0.28);
+    vertical-align: middle;
+}
+
+.delete-btn {
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: #fee2e2;
+    color: #991b1b;
+    cursor: pointer;
+    font-weight: 700;
+}

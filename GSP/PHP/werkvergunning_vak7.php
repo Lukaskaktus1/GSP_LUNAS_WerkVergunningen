@@ -25,7 +25,7 @@ $overzichtPagina = match ($role) {
     <link rel="stylesheet" href="../CSS/werkvergunning_vak7.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body data-user-role="<?= e($role) ?>">
     <!-- Header -->
     <header class="header">
         <div class="header-left">
@@ -197,6 +197,7 @@ $overzichtPagina = match ($role) {
     </main>
 
     <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/ui-feedback.js"></script>
     <script src="../JS/saveCurrentVak.js"></script>
     <script>
         // Submit handler voor aanvraag opslaan
@@ -219,6 +220,27 @@ $overzichtPagina = match ($role) {
                         aanvraag_data_input.value = JSON.stringify(aanvraagData);
                     }
 
+                    if (typeof isAdminTestMode === 'function' && isAdminTestMode()) {
+                        saveAdminTestAanvraag(aanvraagData);
+                        clearAanvraagDraftData();
+                        sessionStorage.removeItem('admin_test_aanvraag');
+
+                        if (typeof window.showAppPopup === 'function') {
+                            window.showAppPopup({
+                                type: 'success',
+                                title: 'Testaanvraag bewaard',
+                                message: 'Deze testaanvraag is lokaal bewaard voor admincontrole en is niet naar de database gestuurd.',
+                                solution: 'U vindt de testaanvragen terug op het admin-overzicht.'
+                            }).then(function () {
+                                window.location.href = '../pages/overzicht_admin.php';
+                            });
+                        } else {
+                            window.location.href = '../pages/overzicht_admin.php';
+                        }
+
+                        return;
+                    }
+
                     clearAanvraagDraftData();
                     
                     // Submit het formulier
@@ -226,6 +248,31 @@ $overzichtPagina = match ($role) {
                 });
             }
         });
+
+        function saveAdminTestAanvraag(aanvraagData) {
+            const storageKey = 'gsp_admin_test_aanvragen';
+            let aanvragen = [];
+
+            try {
+                aanvragen = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            } catch (error) {
+                aanvragen = [];
+            }
+
+            if (!Array.isArray(aanvragen)) {
+                aanvragen = [];
+            }
+
+            aanvragen.unshift({
+                id: 'TEST-' + new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14),
+                createdAt: new Date().toISOString(),
+                aanvrager: <?= json_encode(currentUserDisplayName(), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+                email: <?= json_encode((string) ($_SESSION['email'] ?? ''), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+                data: aanvraagData
+            });
+
+            localStorage.setItem(storageKey, JSON.stringify(aanvragen.slice(0, 25)));
+        }
 
         // Sla Vak 7 formulierdata op naar sessionStorage
         function saveVak7Data() {
@@ -304,7 +351,7 @@ $overzichtPagina = match ($role) {
                 if (!key) continue;
                 
                 // Skip werkvergunning_nummer - dat wordt in PHP gegenereerd
-                if (key === 'werkvergunning_nummer') continue;
+                if (key === 'werkvergunning_nummer' || key === 'admin_test_aanvraag' || key === 'aanvraag_session_id') continue;
 
                 // Deze lijst-keys worden expliciet als sessionStorage-string meegegeven.
                 if (Object.prototype.hasOwnProperty.call(lists, key)) continue;
@@ -521,5 +568,5 @@ $overzichtPagina = match ($role) {
             }
         });
     </script>
-</body>
+    </body>
 </html>

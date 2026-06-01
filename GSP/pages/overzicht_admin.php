@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../auth/auth.php';
+require_once __DIR__ . '/../config/db.php';
 requireRole(['admin']);
+
+$reviewNotification = latestReviewNotification(getDbConnection());
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -12,6 +15,7 @@ requireRole(['admin']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin overzicht - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css">
+    <link rel="stylesheet" href="../CSS/overzicht_admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -37,11 +41,6 @@ requireRole(['admin']);
     </div>
 
     <div class="header-right">
-        <button class="logout-btn" onclick="window.location.href='/index.html'">
-            <i class="fas fa-home"></i>
-            <span>PortfolioPagina</span>
-        </button>
-
         <button class="logout-btn" onclick="window.location.href='../logout.php'">
             <i class="fas fa-sign-out-alt"></i>
             <span>Uitloggen</span>
@@ -60,6 +59,14 @@ requireRole(['admin']);
                 </div>
                 <div class="action-card-title">Gebruikers beheren</div>
                 <div class="action-card-subtitle">Rollen en accounts aanpassen</div>
+            </div>
+
+            <div class="action-card test-action" onclick="window.location.href='../PHP/werkvergunning_vak1.php?new=1&test=1'">
+                <div class="action-card-icon">
+                    <i class="fas fa-vial"></i>
+                </div>
+                <div class="action-card-title">Testaanvraag</div>
+                <div class="action-card-subtitle">Doorloop zonder verplichte velden of database-opslag</div>
             </div>
 
             <div class="action-card" onclick="window.location.href='keuringen.php'">
@@ -85,15 +92,6 @@ requireRole(['admin']);
                 <div class="action-card-title">Mijn aanvragen</div>
                 <div class="action-card-subtitle">Eigen aanvragen bekijken</div>
             </div>
-
-            <div class="action-card" onclick="window.location.href='/index.html'">
-                <div class="action-card-icon">
-                    <i class="fas fa-home"></i>
-                </div>
-                <div class="action-card-title">Portfolio</div>
-                <div class="action-card-subtitle">Terug naar portfolio</div>
-            </div>
-
             <div class="action-card" onclick="window.location.href='contact.php'">
                 <div class="action-card-icon">
                     <i class="fas fa-envelope"></i>
@@ -105,21 +103,24 @@ requireRole(['admin']);
     </section>
 
     <section class="applications-section">
-        <h2 class="section-title">Admin overzicht</h2>
+        <h2 class="section-title">Lokale testaanvragen</h2>
 
-        <div class="applications-container">
+        <div class="applications-container" id="admin_test_aanvragen">
             <div class="empty-state">
                 <div class="empty-state-icon">
-                    <i class="fas fa-user-shield"></i>
+                    <i class="fas fa-vial"></i>
                 </div>
                 <div class="empty-state-text">
-                    U bent ingelogd als admin. Vanuit hier kunt u gebruikers, rollen en aanvragen beheren.
+                    Nog geen lokale testaanvragen op dit toestel.
                 </div>
             </div>
         </div>
     </section>
 </main>
 
+<?= reviewNotificationMarkup($reviewNotification) ?>
 <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+<script src="../JS/ui-feedback.js"></script>
+<script src="../JS/admin-test-aanvragen.js"></script>
 </body>
 </html>

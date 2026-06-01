@@ -1,0 +1,49 @@
+/* Eigen stylesheet voor de registratiepagina. */
+
+.login-card {
+    border-top: 4px solid rgba(8, 145, 178, 0.72);
+}
+
+.password-criteria {
+    display: grid;
+    gap: 6px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9rem;
+}
+
+.password-criteria li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #b42318;
+    font-weight: 700;
+}
+
+.password-criteria li::before {
+    content: "!";
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    color: #ffffff;
+    background: #dc2626;
+    font-size: 0.75rem;
+}
+
+.password-criteria li.is-valid {
+    color: #067647;
+}
+
+.password-criteria li.is-valid::before {
+    content: "✓";
+    background: #16a34a;
+}
+
+.login-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    filter: grayscale(0.2);
+}

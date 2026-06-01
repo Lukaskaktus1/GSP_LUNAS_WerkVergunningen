@@ -45,6 +45,7 @@ $flash = getFlashMessage();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/contact_page.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -85,11 +86,7 @@ $flash = getFlashMessage();
             <div class="form-section" style="margin-top:25px;">
                 <h2 class="section-title">Contactformulier</h2>
 
-                <?php if ($flash !== null): ?>
-                    <p style="margin-bottom:16px;color:<?= $flash['type'] === 'success' ? '#027a48' : '#b42318' ?>;">
-                        <?= e($flash['message']) ?>
-                    </p>
-                <?php endif; ?>
+                <?= flashDialogMarkup($flash) ?>
 
                 <form method="POST" action="contact.php">
                     <div class="form-group">
@@ -109,5 +106,6 @@ $flash = getFlashMessage();
     </main>
 
     <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

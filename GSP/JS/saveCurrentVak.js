@@ -3,8 +3,23 @@ function initWerkvergunningNummer() {
     const nummerInput = document.getElementById('werkvergunning_nummer');
     if (!nummerInput) return;
 
-    nummerInput.value = 'Automatisch bij indienen';
+    nummerInput.value = isAdminTestMode() ? 'TEST - niet opslaan in database' : 'Automatisch bij indienen';
     nummerInput.readOnly = true;
+}
+
+function currentUserRole() {
+    return document.body ? (document.body.dataset.userRole || '') : '';
+}
+
+function isAdminTestMode() {
+    return currentUserRole() === 'admin' && sessionStorage.getItem('admin_test_aanvraag') === 'true';
+}
+
+function appendTestParam(url) {
+    if (!isAdminTestMode()) return url;
+
+    const separator = url.includes('?') ? '&' : '?';
+    return url.includes('test=1') ? url : url + separator + 'test=1';
 }
 
 // Functie om te navigeren naar volgende pagina na opslaan
@@ -14,14 +29,16 @@ function navigateToNext(url) {
             return;
         }
         saveCurrentVak();
-        window.location.href = url;
+        window.location.href = appendTestParam(url);
     } catch (error) {
         console.error('Fout bij opslaan:', error);
-        window.location.href = url;
+        window.location.href = appendTestParam(url);
     }
 }
 
 function validateCurrentPage() {
+    if (isAdminTestMode()) return true;
+
     const card = document.querySelector('.form-card');
     if (!card) return true;
 
@@ -67,8 +84,16 @@ function validateCurrentPage() {
     }
 
     if (invalidFields.length > 0) {
-        message.textContent = 'Vul eerst alle verplichte velden op deze pagina in.';
-        invalidFields[0].reportValidity();
+        const problem = 'Vul eerst alle verplichte velden op deze pagina in.';
+        message.textContent = problem;
+        if (typeof window.showAppPopup === 'function') {
+            window.showAppPopup({
+                type: 'error',
+                title: 'Stap nog niet volledig',
+                message: problem,
+                solution: 'Controleer het gemarkeerde veld. Bij keuzevragen moet minstens een geldig antwoord geselecteerd zijn.'
+            });
+        }
         invalidFields[0].focus();
         return false;
     }
@@ -358,6 +383,32 @@ function attachSchoolToggle() {
     updateFirmaVisibility();
 }
 
+function attachExclusiveCheckPairs() {
+    document.addEventListener('change', function (event) {
+        const checkbox = event.target;
+        if (!(checkbox instanceof HTMLInputElement) || checkbox.type !== 'checkbox' || !checkbox.checked) {
+            return;
+        }
+
+        const pairId = checkbox.id.endsWith('_ja')
+            ? checkbox.id.replace(/_ja$/, '_neen')
+            : checkbox.id.endsWith('_neen')
+                ? checkbox.id.replace(/_neen$/, '_ja')
+                : checkbox.id === 'role_opdrachtgever'
+                    ? 'role_afdeling_iov'
+                    : checkbox.id === 'role_afdeling_iov'
+                        ? 'role_opdrachtgever'
+                        : '';
+
+        if (!pairId) return;
+
+        const pair = document.getElementById(pairId);
+        if (pair instanceof HTMLInputElement && pair.type === 'checkbox') {
+            pair.checked = false;
+        }
+    });
+}
+
 function initVakProgressBar() {
     const card = document.querySelector('.form-card');
     if (!card || document.querySelector('.vak-progress-bar')) return;
@@ -375,6 +426,7 @@ function initVakProgressBar() {
     ];
 
     const current = window.location.pathname.split('/').pop();
+    ensureAanvraagSession();
     sessionStorage.setItem('visited_' + current, 'true');
 
     const bar = document.createElement('nav');
@@ -382,13 +434,20 @@ function initVakProgressBar() {
     bar.setAttribute('aria-label', "Ingevulde pagina's");
 
     pages.forEach(function (page) {
+        const isCurrent = page[0] === current;
+        const isVisited = sessionStorage.getItem('visited_' + page[0]) === 'true';
+
+        if (!isAdminTestMode() && !isCurrent && !isVisited) {
+            return;
+        }
+
         const link = document.createElement('a');
-        link.href = page[0];
+        link.href = appendTestParam(page[0]);
         link.textContent = page[1];
 
-        if (page[0] === current) {
+        if (isCurrent) {
             link.classList.add('is-current');
-        } else if (sessionStorage.getItem('visited_' + page[0]) === 'true') {
+        } else if (isVisited) {
             link.classList.add('is-complete');
         }
 
@@ -402,8 +461,52 @@ function initVakProgressBar() {
     card.insertAdjacentElement('afterend', bar);
 }
 
+function ensureAanvraagSession() {
+    const params = new URLSearchParams(window.location.search);
+    const startsAdminTest = params.get('test') === '1' && currentUserRole() === 'admin';
+
+    if (params.get('new') === '1') {
+        clearAanvraagDraftData();
+        sessionStorage.setItem('aanvraag_session_id', String(Date.now()));
+        sessionStorage.setItem('admin_test_aanvraag', startsAdminTest ? 'true' : 'false');
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+    }
+
+    if (startsAdminTest) {
+        sessionStorage.setItem('admin_test_aanvraag', 'true');
+    }
+
+    if (currentUserRole() !== 'admin') {
+        sessionStorage.removeItem('admin_test_aanvraag');
+    }
+
+    if (!sessionStorage.getItem('aanvraag_session_id')) {
+        sessionStorage.setItem('aanvraag_session_id', String(Date.now()));
+    }
+}
+
+function initAdminTestModeUi() {
+    if (!isAdminTestMode()) return;
+
+    document.body.classList.add('admin-test-mode');
+
+    const card = document.querySelector('.form-card');
+    if (card && !document.querySelector('.test-mode-banner')) {
+        const banner = document.createElement('div');
+        banner.className = 'test-mode-banner';
+        banner.textContent = 'Admin testaanvraag: alle stappen zijn bereikbaar, verplichte velden zijn uitgeschakeld en er wordt niets naar de database gestuurd.';
+        card.prepend(banner);
+    }
+
+    document.querySelectorAll('input, select, textarea').forEach(function (field) {
+        if (field.type === 'hidden') return;
+        field.required = false;
+    });
+}
+
 function clearAanvraagDraftData() {
-    const prefixes = ['vak', 'visited_', 'aanvrager_', 'firma_naam', 'medewerkers', 'voertuigen_attesten', 'werktijd_', 'vermoedelijke_duur', 'geldig_tot', 'werkzaamheden', 'vca'];
+    const prefixes = ['vak', 'visited_', 'aanvrager_', 'firma_naam', 'medewerkers', 'voertuigen_attesten', 'werktijd_', 'vermoedelijke_duur', 'geldig_tot', 'werkzaamheden', 'vca', 'admin_test_aanvraag'];
     const keysToRemove = [];
 
     for (let i = 0; i < sessionStorage.length; i++) {
@@ -500,7 +603,7 @@ function attachNavigationAutoSave() {
     document.querySelectorAll('.navigation-buttons .nav-button').forEach(function (button) {
         button.addEventListener('click', function (event) {
             const label = button.textContent.trim().toLowerCase();
-            const shouldValidate = label.includes('volgende') || label.includes('indienen');
+    const shouldValidate = label.includes('volgende') || label.includes('indienen');
 
             if (shouldValidate && !validateCurrentPage()) {
                 event.preventDefault();
@@ -519,11 +622,14 @@ function attachNavigationAutoSave() {
 
 // Call deze functie bij page load
 document.addEventListener('DOMContentLoaded', function() {
+    ensureAanvraagSession();
     initStorageGroupsForPage();
     loadCurrentVakData();
     initWerkvergunningNummer();
     attachDynamicRowHandlers();
     attachSchoolToggle();
+    attachExclusiveCheckPairs();
     initVakProgressBar();
+    initAdminTestModeUi();
     attachNavigationAutoSave();
 });

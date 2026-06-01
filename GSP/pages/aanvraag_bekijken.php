@@ -228,74 +228,8 @@ function terugNaarVorigePagina(): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aanvraag bekijken - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css">
+    <link rel="stylesheet" href="../CSS/aanvraag_bekijken.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
-        }
-
-        .detail-field {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .detail-field.full {
-            grid-column: 1 / -1;
-        }
-
-        .detail-field label {
-            font-weight: 700;
-            color: #374151;
-        }
-
-        .readonly-box {
-            padding: 12px 14px;
-            border-radius: 10px;
-            background: #f9fafb;
-            border: 1px solid #d1d5db;
-            color: #111827;
-            min-height: 44px;
-            white-space: pre-wrap;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 6px 10px;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .status-goedgekeurd {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-afgekeurd {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .status-wachtend {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-concept {
-            background: #e5e7eb;
-            color: #374151;
-        }
-
-        @media (max-width: 800px) {
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 </head>
 <body>
 <header class="header">
@@ -529,5 +463,6 @@ function terugNaarVorigePagina(): string
 </main>
 
 <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

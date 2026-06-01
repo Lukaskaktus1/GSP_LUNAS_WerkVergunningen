@@ -12,6 +12,7 @@ requireRole(['leerling']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Overzicht - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css">
+    <link rel="stylesheet" href="../CSS/overzicht_leerling.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -31,11 +32,6 @@ requireRole(['leerling']);
     </div>
 
     <div class="header-right">
-        <button class="logout-btn" onclick="window.location.href='/index.html'">
-            <i class="fas fa-home"></i>
-            <span>PortfolioPagina</span>
-        </button>
-
         <button class="logout-btn" onclick="window.location.href='../logout.php'">
             <i class="fas fa-sign-out-alt"></i>
             <span>Uitloggen</span>
@@ -48,7 +44,7 @@ requireRole(['leerling']);
         <h2 class="section-title">Snelle acties</h2>
 
         <div class="quick-actions">
-            <div class="action-card highlighted" onclick="window.location.href='../PHP/werkvergunning_vak1.php'">
+            <div class="action-card highlighted" onclick="window.location.href='../PHP/werkvergunning_vak1.php?new=1'">
                 <div class="action-card-icon">
                     <i class="fas fa-plus"></i>
                 </div>
@@ -63,15 +59,6 @@ requireRole(['leerling']);
                 <div class="action-card-title">Mijn aanvragen</div>
                 <div class="action-card-subtitle">Bekijk uw ingediende aanvragen</div>
             </div>
-
-            <div class="action-card" onclick="window.location.href='/index.html'">
-                <div class="action-card-icon">
-                    <i class="fas fa-home"></i>
-                </div>
-                <div class="action-card-title">Portfolio</div>
-                <div class="action-card-subtitle">Terug naar portfolio</div>
-            </div>
-
             <div class="action-card" onclick="window.location.href='contact.php'">
                 <div class="action-card-icon">
                     <i class="fas fa-envelope"></i>
@@ -100,5 +87,6 @@ requireRole(['leerling']);
 </main>
 
 <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+<script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

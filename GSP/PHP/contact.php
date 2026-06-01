@@ -22,6 +22,7 @@ $overzichtPagina = match ($role) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
+    <link rel="stylesheet" href="../CSS/php_contact.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -82,5 +83,6 @@ $overzichtPagina = match ($role) {
             alert('Het bericht is succesvol verzonden! We nemen zo snel mogelijk contact met u op.');
         }
     </script>
+    <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>

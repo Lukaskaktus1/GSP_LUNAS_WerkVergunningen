@@ -30,6 +30,7 @@ $flash = getFlashMessage();
     <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
     
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/register.css">
 </head>
 <body>
     <div class="login-container">
@@ -40,12 +41,7 @@ $flash = getFlashMessage();
 
             <h1>Account aanmaken</h1>
             <p class="subtitle">Maak een account aan voor het werkvergunning portaal</p>
-
-            <?php if ($flash !== null): ?>
-                <p style="margin-bottom:16px;color:#b42318;">
-                    <?= e((string) ($flash['message'] ?? '')) ?>
-                </p>
-            <?php endif; ?>
+                <?= flashDialogMarkup($flash) ?>
 
             <form class="login-form" action="register_verwerk.php" method="POST">
                 <div class="form-group">
@@ -74,12 +70,17 @@ $flash = getFlashMessage();
                         type="password"
                         id="password"
                         name="password"
-                        placeholder="Min. 8 tekens, hoofdletter en speciaal teken"
-                        pattern="(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}"
+                        placeholder="Min. 8 tekens, cijfer en speciaal teken"
+                        pattern="(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
                         title="<?= e(passwordPolicyMessage()) ?>"
                         autocomplete="new-password"
                         required
                     >
+                    <ul class="password-criteria" id="password_criteria" aria-live="polite">
+                        <li data-criterion="length">Minstens 8 tekens</li>
+                        <li data-criterion="digit">Minstens 1 cijfer</li>
+                        <li data-criterion="special">Minstens 1 speciaal teken</li>
+                    </ul>
                 </div>
 
                 <div class="form-group">
@@ -87,7 +88,7 @@ $flash = getFlashMessage();
                     <input type="password" id="password_confirm" name="password_confirm" placeholder="Herhaal wachtwoord" autocomplete="new-password" required>
                 </div>
 
-                <button type="submit" class="login-button">Account aanmaken</button>
+                <button type="submit" class="login-button" id="register_submit">Account aanmaken</button>
             </form>
 
             <p style="text-align:center; margin-top:16px;">
@@ -102,5 +103,7 @@ $flash = getFlashMessage();
     </div>
 
     <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+    <script src="JS/ui-feedback.js"></script>
+    <script src="JS/register-validation.js"></script>
 </body>
 </html>
