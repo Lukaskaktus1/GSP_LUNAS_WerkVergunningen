@@ -64,7 +64,7 @@ $flash = getFlashMessage();
                     </div>
 
                     <div class="form-options">
-                        <a href="#" class="forgot-password">Wachtwoord vergeten?</a>
+                        <a href="wachtwoord_vergeten.php" class="forgot-password">Wachtwoord vergeten?</a>
                     </div>
 
                     <button type="submit" class="login-button">Inloggen</button>

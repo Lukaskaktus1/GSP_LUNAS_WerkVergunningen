@@ -1,0 +1,115 @@
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/includes/bootstrap.php';
+require_once __DIR__ . '/config/db.php';
+
+if (isset($_SESSION['user_id'])) {
+    redirect('index.php');
+}
+
+$token = trim((string) ($_GET['token'] ?? $_POST['token'] ?? ''));
+
+if ($token === '') {
+    setFlashMessage('error', 'Ongeldige herstel-link.');
+    redirect('index.php');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $password = (string) ($_POST['password'] ?? '');
+    $passwordConfirm = (string) ($_POST['password_confirm'] ?? '');
+
+    if (!passwordMeetsPolicy($password)) {
+        setFlashMessage('error', passwordPolicyMessage());
+        redirect('wachtwoord_reset.php?token=' . urlencode($token));
+    }
+
+    if ($password !== $passwordConfirm) {
+        setFlashMessage('error', 'De wachtwoorden komen niet overeen.');
+        redirect('wachtwoord_reset.php?token=' . urlencode($token));
+    }
+
+    try {
+        $pdo = getDbConnection();
+        $stmt = $pdo->prepare('
+            SELECT id
+            FROM users
+            WHERE reset_token = :token
+              AND reset_expires_at >= NOW()
+              AND actief = 1
+            LIMIT 1
+        ');
+        $stmt->execute(['token' => $token]);
+        $user = $stmt->fetch();
+
+        if (!is_array($user)) {
+            setFlashMessage('error', 'Deze herstel-link is ongeldig of vervallen.');
+            redirect('index.php');
+        }
+
+        $update = $pdo->prepare('
+            UPDATE users
+            SET wachtwoord_hash = :password_hash,
+                reset_token = NULL,
+                reset_expires_at = NULL
+            WHERE id = :id
+        ');
+        $update->execute([
+            'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+            'id' => (int) $user['id'],
+        ]);
+
+        setFlashMessage('success', 'Wachtwoord aangepast. U kunt nu inloggen.');
+        redirect('index.php');
+    } catch (Throwable $exception) {
+        error_log('Password reset failed: ' . $exception->getMessage());
+        setFlashMessage('error', 'Wachtwoord aanpassen is momenteel niet beschikbaar.');
+        redirect('index.php');
+    }
+}
+
+$flash = getFlashMessage();
+?>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nieuw wachtwoord - Werkvergunning Portaal</title>
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="icon-container">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h1>Nieuw wachtwoord</h1>
+            <p class="subtitle"><?= e(passwordPolicyMessage()) ?></p>
+
+            <?php if ($flash !== null): ?>
+                <p style="margin-bottom:16px;color:#b42318;"><?= e((string) ($flash['message'] ?? '')) ?></p>
+            <?php endif; ?>
+
+            <form class="login-form" method="POST" action="wachtwoord_reset.php">
+                <input type="hidden" name="token" value="<?= e($token) ?>">
+
+                <div class="form-group">
+                    <label for="password">Nieuw wachtwoord</label>
+                    <input type="password" id="password" name="password" pattern="(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password_confirm">Nieuw wachtwoord herhalen</label>
+                    <input type="password" id="password_confirm" name="password_confirm" required>
+                </div>
+
+                <button type="submit" class="login-button">Wachtwoord aanpassen</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
+</body>
+</html>

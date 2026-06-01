@@ -1,0 +1,546 @@
+:root {
+    --glass-accent: #2563eb;
+    --glass-accent-2: #0891b2;
+    --glass-green: #16a34a;
+    --glass-ink: #102033;
+    --glass-muted: #64748b;
+    --glass-panel: rgba(255, 255, 255, 0.74);
+    --glass-panel-strong: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.58);
+    --glass-shadow: 0 20px 55px rgba(15, 23, 42, 0.14);
+    --glass-shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.1);
+    --glass-radius: 18px;
+    --glass-header-height: 72px;
+    --glass-sidebar-width: 250px;
+}
+
+body.glass-page {
+    min-height: 100vh;
+    color: var(--glass-ink);
+    background:
+        radial-gradient(circle at 18% 10%, rgba(37, 99, 235, 0.22), transparent 26rem),
+        radial-gradient(circle at 86% 12%, rgba(22, 163, 74, 0.16), transparent 24rem),
+        linear-gradient(135deg, #eef6ff 0%, #f8fbff 50%, #ecfdf5 100%) !important;
+    background-attachment: fixed !important;
+}
+
+body.glass-page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.42));
+}
+
+body.glass-page .header-bar,
+body.glass-page .sidebar,
+body.glass-page .welcome-section,
+body.glass-page .card,
+body.glass-page .section-card,
+body.glass-page .project-card,
+body.glass-page .titel-section,
+body.glass-page .filters-section,
+body.glass-page .person,
+body.glass-page .entry-card,
+body.glass-page .empty-state,
+body.glass-page .page-container,
+body.glass-page .progress-row,
+body.glass-page .summary-card,
+body.glass-page .pomi-section,
+body.documentation-page main[style] > section,
+body.documentation-page main[style] > section > div {
+    border: 1px solid var(--glass-border) !important;
+    background: var(--glass-panel) !important;
+    box-shadow: var(--glass-shadow) !important;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+body.glass-page .header-bar {
+    height: var(--glass-header-height);
+    padding: 14px clamp(18px, 4vw, 44px) !important;
+    color: var(--glass-ink) !important;
+    border-top: 0 !important;
+    border-right: 0 !important;
+    border-left: 0 !important;
+}
+
+body.glass-page .header-left h1 {
+    margin-left: 0 !important;
+    font-size: clamp(16px, 2vw, 22px) !important;
+    line-height: 1.1;
+}
+
+body.glass-page .header-right {
+    gap: 12px !important;
+    margin-right: 0 !important;
+}
+
+body.glass-page .sidebar {
+    top: var(--glass-header-height) !important;
+    width: var(--glass-sidebar-width) !important;
+    min-height: calc(100vh - var(--glass-header-height)) !important;
+    border-left: 0 !important;
+    border-radius: 0 var(--glass-radius) var(--glass-radius) 0 !important;
+}
+
+body.glass-page .main-container {
+    margin-top: var(--glass-header-height) !important;
+    background: transparent !important;
+}
+
+body.dashboard-page .main-content,
+body.projects-page .main-content,
+body.progress-page .main-content {
+    margin-left: var(--glass-sidebar-width) !important;
+    width: calc(100% - var(--glass-sidebar-width)) !important;
+    min-height: calc(100vh - var(--glass-header-height)) !important;
+    padding: 34px !important;
+    background: transparent !important;
+}
+
+body.logbook-page .main-container,
+body.timeline-page .main-container {
+    margin-left: var(--glass-sidebar-width) !important;
+    width: calc(100% - var(--glass-sidebar-width)) !important;
+    min-height: calc(100vh - var(--glass-header-height)) !important;
+    padding: 34px !important;
+    background: transparent !important;
+}
+
+body.documentation-page .main-container {
+    margin-top: var(--glass-header-height) !important;
+    background: transparent !important;
+}
+
+body.documentation-page main[style] {
+    width: calc(100% - var(--glass-sidebar-width)) !important;
+    margin-left: var(--glass-sidebar-width) !important;
+    padding: 34px !important;
+}
+
+body.glass-page .gradient-text {
+    font-size: inherit !important;
+    font-weight: 800 !important;
+    background: linear-gradient(90deg, var(--glass-accent), var(--glass-accent-2), var(--glass-green)) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+body.glass-page .search-input,
+body.glass-page .search-logbook,
+body.glass-page .filter-project,
+body.glass-page .filter-category,
+body.glass-page .entry-modal-content input,
+body.glass-page .entry-modal-content select,
+body.glass-page .entry-modal-content textarea {
+    color: var(--glass-ink) !important;
+    border: 1px solid rgba(148, 163, 184, 0.28) !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.78) !important;
+    outline: none;
+}
+
+body.glass-page .search-input:focus,
+body.glass-page .search-logbook:focus,
+body.glass-page .filter-project:focus,
+body.glass-page .filter-category:focus,
+body.glass-page .entry-modal-content input:focus,
+body.glass-page .entry-modal-content select:focus,
+body.glass-page .entry-modal-content textarea:focus {
+    border-color: rgba(37, 99, 235, 0.55) !important;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
+}
+
+body.glass-page .notification-icon,
+body.glass-page .add-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    color: var(--glass-accent) !important;
+    background: rgba(255, 255, 255, 0.65) !important;
+}
+
+body.glass-page .notification-dot {
+    top: 9px;
+    right: 9px;
+    background: #22c55e !important;
+}
+
+body.glass-page .nav-list {
+    padding: 16px 12px !important;
+}
+
+body.glass-page .nav-item {
+    margin: 4px 0 !important;
+    max-width: none !important;
+}
+
+body.glass-page .nav-link {
+    gap: 12px;
+    color: #1f2937 !important;
+    border-radius: 14px !important;
+    font-weight: 700;
+}
+
+body.glass-page .nav-icon {
+    color: var(--glass-accent);
+}
+
+body.glass-page .nav-item.active .nav-link,
+body.glass-page .nav-link:hover {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, var(--glass-accent), var(--glass-accent-2)) !important;
+}
+
+body.glass-page .nav-item.active .nav-icon,
+body.glass-page .nav-link:hover .nav-icon {
+    color: #ffffff !important;
+}
+
+body.glass-page .welcome-section,
+body.glass-page .card,
+body.glass-page .section-card,
+body.glass-page .project-card,
+body.glass-page .titel-section,
+body.glass-page .filters-section,
+body.glass-page .person,
+body.glass-page .entry-card,
+body.glass-page .empty-state,
+body.glass-page .page-container,
+body.glass-page .progress-row,
+body.glass-page .summary-card,
+body.glass-page .pomi-section,
+body.documentation-page main[style] > section,
+body.documentation-page main[style] > section > div {
+    border-radius: var(--glass-radius) !important;
+}
+
+body.glass-page .welcome-title,
+body.glass-page .card-value,
+body.glass-page .section-header h3,
+body.glass-page .total-label,
+body.glass-page .total-hours,
+body.glass-page .content-title h2,
+body.glass-page .project-card__title h3,
+body.glass-page .project-section h4,
+body.glass-page .titel-section h2,
+body.glass-page .entry-info h3,
+body.glass-page .page-title,
+body.glass-page .section-title,
+body.glass-page .row-title,
+body.glass-page .summary-value,
+body.glass-page .pomi-title,
+body.glass-page .pomi-subtitle,
+body.documentation-page main[style] h1,
+body.documentation-page main[style] h2 {
+    color: var(--glass-ink) !important;
+}
+
+body.glass-page .welcome-subtitle,
+body.glass-page .card-subtitle,
+body.glass-page .card-header h3,
+body.glass-page .section-subtitle,
+body.glass-page .deadline-time,
+body.glass-page .content-title p,
+body.glass-page .project-card__subtitle,
+body.glass-page .meta-list,
+body.glass-page .muted,
+body.glass-page .titel-section p,
+body.glass-page .entry-info p,
+body.glass-page .entry-meta,
+body.glass-page .row-sub,
+body.glass-page .row-meta,
+body.glass-page .summary-title,
+body.glass-page .pomi-text,
+body.glass-page .pomi-list,
+body.documentation-page main[style] p,
+body.documentation-page main[style] li {
+    color: var(--glass-muted) !important;
+}
+
+body.glass-page .primary-btn,
+body.glass-page .new-entry-btn,
+body.glass-page #saveEntryBtn {
+    border: 0 !important;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, var(--glass-accent), var(--glass-accent-2)) !important;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.22) !important;
+}
+
+body.glass-page .filter-btn,
+body.glass-page .secondary-btn,
+body.glass-page .chip,
+body.glass-page .tags span,
+body.glass-page .icon-btn {
+    border: 1px solid rgba(148, 163, 184, 0.18) !important;
+    background: rgba(255, 255, 255, 0.64) !important;
+    color: var(--glass-ink) !important;
+}
+
+body.glass-page .progress,
+body.glass-page .mini-progress {
+    overflow: hidden;
+    background: rgba(148, 163, 184, 0.24) !important;
+}
+
+body.glass-page .progress__bar,
+body.glass-page .mini-progress__bar {
+    background: linear-gradient(90deg, var(--glass-accent), var(--glass-accent-2)) !important;
+}
+
+body.dashboard-page .welcome-section {
+    padding: clamp(24px, 4vw, 42px) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+body.dashboard-page .welcome-section::after {
+    content: "";
+    position: absolute;
+    right: -8rem;
+    bottom: -9rem;
+    width: 24rem;
+    height: 24rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.16), transparent 64%);
+}
+
+body.dashboard-page .summary-cards {
+    gap: 18px !important;
+}
+
+body.dashboard-page .card,
+body.dashboard-page .section-card {
+    background: var(--glass-panel-strong) !important;
+}
+
+body.dashboard-page .team-member {
+    border-radius: 14px !important;
+}
+
+body.projects-page .content-header,
+body.progress-page .content-header {
+    margin-bottom: 20px !important;
+}
+
+body.projects-page .projects-list,
+body.progress-page .progress-list {
+    gap: 16px !important;
+}
+
+body.projects-page .project-card {
+    padding: 20px !important;
+}
+
+body.projects-page .progress {
+    height: 10px !important;
+    border-radius: 999px !important;
+}
+
+body.projects-page .progress__bar {
+    border-radius: inherit !important;
+}
+
+body.logbook-page .titel-section {
+    padding: 22px 24px !important;
+    margin-bottom: 0 !important;
+}
+
+body.logbook-page .filters-section {
+    padding: 16px !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+}
+
+body.logbook-page .filters {
+    width: 100%;
+}
+
+body.logbook-page .search-logbook {
+    min-width: min(280px, 100%);
+}
+
+body.logbook-page .person {
+    overflow: hidden;
+    height: auto !important;
+}
+
+body.logbook-page .left-person,
+body.logbook-page .right-person {
+    height: 48px !important;
+}
+
+body.logbook-page .left-person a,
+body.logbook-page .right-person a {
+    line-height: 48px !important;
+}
+
+body.logbook-page .left-person .active,
+body.logbook-page .right-person .active {
+    background: linear-gradient(135deg, var(--glass-accent), var(--glass-accent-2)) !important;
+}
+
+body.logbook-page .entry-card {
+    background: rgba(255, 255, 255, 0.82) !important;
+}
+
+body.logbook-page .entry-date {
+    background: rgba(37, 99, 235, 0.1);
+}
+
+body.logbook-page .entry-modal {
+    background: rgba(15, 23, 42, 0.34) !important;
+    backdrop-filter: blur(6px);
+}
+
+body.logbook-page .entry-modal-content {
+    border: 1px solid var(--glass-border) !important;
+    background: var(--glass-panel-strong) !important;
+    box-shadow: var(--glass-shadow) !important;
+    backdrop-filter: blur(18px);
+}
+
+body.timeline-page h1 {
+    font-size: clamp(28px, 4vw, 42px);
+    color: var(--glass-ink);
+}
+
+body.timeline-page .page-container {
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+body.timeline-page .timeline-wrapper {
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.58);
+}
+
+body.timeline-page .timeline-frame {
+    border: 1px solid rgba(148, 163, 184, 0.22) !important;
+    background: #ffffff !important;
+    box-shadow: var(--glass-shadow-soft) !important;
+}
+
+body.progress-page .progress-row {
+    padding: 16px 18px !important;
+    background: rgba(255, 255, 255, 0.82) !important;
+}
+
+body.progress-page .summary-card {
+    padding: 18px !important;
+    background: rgba(255, 255, 255, 0.82) !important;
+}
+
+body.documentation-page main[style] > h1,
+body.documentation-page main[style] > p {
+    margin-left: 2px;
+}
+
+body.documentation-page main[style] > section {
+    padding: 24px !important;
+}
+
+body.documentation-page iframe {
+    background: #ffffff !important;
+    box-shadow: var(--glass-shadow-soft) !important;
+}
+
+body.documentation-page main[style] a[download] {
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+}
+
+@media (max-width: 1024px) {
+    :root {
+        --glass-sidebar-width: 210px;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --glass-header-height: 118px;
+        --glass-sidebar-width: 180px;
+    }
+
+    body.glass-page .header-bar {
+        height: var(--glass-header-height);
+    }
+
+    body.glass-page .header-right,
+    body.glass-page .search-container {
+        width: 100%;
+    }
+
+    body.glass-page .search-input {
+        width: 100% !important;
+    }
+
+    body.dashboard-page .main-content,
+    body.projects-page .main-content,
+    body.progress-page .main-content,
+    body.logbook-page .main-container,
+    body.timeline-page .main-container,
+    body.documentation-page main[style] {
+        padding: 22px !important;
+    }
+}
+
+@media (max-width: 590px) {
+    :root {
+        --glass-sidebar-width: 0px;
+    }
+
+    body.glass-page .sidebar {
+        position: static !important;
+        width: auto !important;
+        min-height: auto !important;
+        margin: calc(var(--glass-header-height) + 14px) 14px 0 !important;
+        border-left: 1px solid var(--glass-border) !important;
+        border-radius: var(--glass-radius) !important;
+    }
+
+    body.glass-page .nav-list {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px !important;
+    }
+
+    body.dashboard-page .main-content,
+    body.projects-page .main-content,
+    body.progress-page .main-content,
+    body.logbook-page .main-container,
+    body.timeline-page .main-container,
+    body.documentation-page main[style] {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 16px 14px 32px !important;
+    }
+
+    body.logbook-page .main-container,
+    body.timeline-page .main-container {
+        margin-top: 0 !important;
+    }
+
+    body.documentation-page .main-container {
+        display: block !important;
+    }
+}
+
+@media (max-width: 420px) {
+    body.glass-page .nav-list {
+        grid-template-columns: 1fr;
+    }
+
+    body.logbook-page .filters-section,
+    body.logbook-page .filters {
+        display: grid !important;
+        grid-template-columns: 1fr;
+    }
+}

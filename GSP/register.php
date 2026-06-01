@@ -49,18 +49,42 @@ $flash = getFlashMessage();
 
             <form class="login-form" action="register_verwerk.php" method="POST">
                 <div class="form-group">
+                    <label for="voornaam">Voornaam</label>
+                    <input type="text" id="voornaam" name="voornaam" placeholder="Voornaam" autocomplete="given-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="naam">Naam</label>
+                    <input type="text" id="naam" name="naam" placeholder="Familienaam" autocomplete="family-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefoon">Telefoonnummer</label>
+                    <input type="tel" id="telefoon" name="telefoon" placeholder="+32 ..." autocomplete="tel" required>
+                </div>
+
+                <div class="form-group">
                     <label for="email">E-mailadres</label>
-                    <input type="email" id="email" name="email" placeholder="naam@voorbeeld.be" required>
+                    <input type="email" id="email" name="email" placeholder="naam@voorbeeld.be" autocomplete="email" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Wachtwoord</label>
-                    <input type="password" id="password" name="password" placeholder="Minstens 8 tekens" required>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Min. 8 tekens, hoofdletter en speciaal teken"
+                        pattern="(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}"
+                        title="<?= e(passwordPolicyMessage()) ?>"
+                        autocomplete="new-password"
+                        required
+                    >
                 </div>
 
                 <div class="form-group">
                     <label for="password_confirm">Wachtwoord herhalen</label>
-                    <input type="password" id="password_confirm" name="password_confirm" placeholder="Herhaal wachtwoord" required>
+                    <input type="password" id="password_confirm" name="password_confirm" placeholder="Herhaal wachtwoord" autocomplete="new-password" required>
                 </div>
 
                 <button type="submit" class="login-button">Account aanmaken</button>

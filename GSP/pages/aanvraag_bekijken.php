@@ -158,6 +158,34 @@ $preventiemaatregelen = haalGekoppeldeWaarden(
     $aanvraagId
 );
 
+$medewerkers = [];
+if (databaseTableExists($pdo, 'vergunning_medewerker')) {
+    $stmtMedewerkers = $pdo->prepare("
+        SELECT CONCAT(TRIM(CONCAT(COALESCE(voornaam, ''), ' ', COALESCE(naam, ''))), 
+                      CASE WHEN telefoon IS NULL OR telefoon = '' THEN '' ELSE CONCAT(' - ', telefoon) END)
+        FROM vergunning_medewerker
+        WHERE vergunning_id = :vergunning_id
+        ORDER BY id ASC
+    ");
+    $stmtMedewerkers->execute(['vergunning_id' => $aanvraagId]);
+    $medewerkers = array_values(array_filter(array_map('strval', $stmtMedewerkers->fetchAll(PDO::FETCH_COLUMN))));
+}
+
+$voertuigAttesten = [];
+if (databaseTableExists($pdo, 'vergunning_voertuig_attest')) {
+    $stmtVoertuigen = $pdo->prepare("
+        SELECT CONCAT(
+            COALESCE(nummerplaat, ''),
+            CASE WHEN attest_geldig_tot IS NULL THEN '' ELSE CONCAT(' - attest geldig tot ', attest_geldig_tot) END
+        )
+        FROM vergunning_voertuig_attest
+        WHERE vergunning_id = :vergunning_id
+        ORDER BY id ASC
+    ");
+    $stmtVoertuigen->execute(['vergunning_id' => $aanvraagId]);
+    $voertuigAttesten = array_values(array_filter(array_map('trim', array_map('strval', $stmtVoertuigen->fetchAll(PDO::FETCH_COLUMN)))));
+}
+
 function statusLabelAanvraag(string $status): string
 {
     return match ($status) {
@@ -316,12 +344,30 @@ function terugNaarVorigePagina(): string
 
                 <div class="detail-field">
                     <label>Aanvrager</label>
-                    <div class="readonly-box"><?= e((string) ($aanvraag['eigenaar_email'] ?? '')) ?></div>
+                    <div class="readonly-box">
+                        <?= e(trim((string) ($aanvraag['aanvrager_voornaam'] ?? '') . ' ' . (string) ($aanvraag['aanvrager_naam'] ?? '')) ?: (string) ($aanvraag['eigenaar_email'] ?? '')) ?>
+                    </div>
+                </div>
+
+                <div class="detail-field">
+                    <label>Telefoon aanvrager</label>
+                    <div class="readonly-box"><?= e((string) ($aanvraag['aanvrager_telefoon'] ?? '')) ?></div>
                 </div>
 
                 <div class="detail-field">
                     <label>Rol aanvrager</label>
                     <div class="readonly-box"><?= e((string) ($aanvraag['eigenaar_rol'] ?? '')) ?></div>
+                </div>
+
+                <div class="detail-field">
+                    <label>School / firma</label>
+                    <div class="readonly-box">
+                        <?php if (array_key_exists('aanvrager_is_school', $aanvraag) && (int) ($aanvraag['aanvrager_is_school'] ?? 1) === 0): ?>
+                            Externe firma: <?= e((string) ($aanvraag['firma_naam'] ?? '')) ?>
+                        <?php else: ?>
+                            School
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <div class="detail-field">
@@ -357,6 +403,16 @@ function terugNaarVorigePagina(): string
                 <div class="detail-field full">
                     <label>Werkzaamheden</label>
                     <div class="readonly-box"><?= e((string) ($aanvraag['werkzaamheden'] ?? '')) ?></div>
+                </div>
+
+                <div class="detail-field full">
+                    <label>Medewerkers</label>
+                    <div class="readonly-box"><?= e(toonLijst($medewerkers)) ?></div>
+                </div>
+
+                <div class="detail-field full">
+                    <label>Voertuigen met attest</label>
+                    <div class="readonly-box"><?= e(toonLijst($voertuigAttesten)) ?></div>
                 </div>
 
                 <div class="detail-field full">
@@ -449,6 +505,27 @@ function terugNaarVorigePagina(): string
             </div>
         </div>
     </section>
+
+    <?php if ($magAllesZien && in_array((string) ($aanvraag['status'] ?? ''), ['ingediend', 'in_beoordeling'], true)): ?>
+        <section class="applications-section">
+            <h2 class="section-title">Keuring</h2>
+            <div class="applications-container">
+                <p>Keuring voor aanvraag <?= e((string) ($aanvraag['vergunning_nummer'] ?? '')) ?>.</p>
+                <div class="approval-panel">
+                    <form method="POST" action="aanvraag_keuren.php">
+                        <input type="hidden" name="id" value="<?= (int) $aanvraagId ?>">
+                        <input type="hidden" name="actie" value="afkeuren">
+                        <button class="approval-btn reject" type="submit">Afkeuren</button>
+                    </form>
+                    <form method="POST" action="aanvraag_keuren.php">
+                        <input type="hidden" name="id" value="<?= (int) $aanvraagId ?>">
+                        <input type="hidden" name="actie" value="goedkeuren">
+                        <button class="approval-btn approve" type="submit">Goedkeuren</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    <?php endif; ?>
 </main>
 
 <script src="https://kit.fontawesome.com/fec428329f.js" crossorigin="anonymous"></script>
