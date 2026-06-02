@@ -20,7 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo = getDbConnection();
 
-        if (!databaseColumnExists($pdo, 'users', 'reset_token') || !databaseColumnExists($pdo, 'users', 'reset_expires_at')) {
+        $canReset = passwordResetUsesTokenTable($pdo)
+            || (
+                databaseColumnExists($pdo, 'users', 'reset_token')
+                && databaseColumnExists($pdo, 'users', 'reset_expires_at')
+            );
+
+        if (!$canReset) {
             setFlashMessage('error', 'Wachtwoord herstellen is nog niet geactiveerd in de database.');
             redirect('wachtwoord_vergeten.php');
         }
@@ -30,15 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if (is_array($user)) {
-            $token = bin2hex(random_bytes(32));
-            $expiresAt = (new DateTimeImmutable('+1 hour'))->format('Y-m-d H:i:s');
-
-            $update = $pdo->prepare('UPDATE users SET reset_token = :token, reset_expires_at = :expires_at WHERE id = :id');
-            $update->execute([
-                'token' => $token,
-                'expires_at' => $expiresAt,
-                'id' => (int) $user['id'],
-            ]);
+            $token = createPasswordResetToken($pdo, (int) $user['id']);
 
             $resetLink = appBaseUrl() . '/wachtwoord_reset.php?token=' . urlencode($token);
             $message = "Hallo,\n\nGebruik deze link om je wachtwoord opnieuw in te stellen:\n{$resetLink}\n\nDeze link blijft 1 uur geldig.";

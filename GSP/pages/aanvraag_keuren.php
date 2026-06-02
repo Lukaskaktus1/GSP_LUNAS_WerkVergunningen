@@ -51,18 +51,38 @@ try {
         redirect('keuringen.php');
     }
 
-    $updateStmt = $pdo->prepare("
+    $updateParts = ['status = :status'];
+    if (databaseColumnExists($pdo, 'werkvergunning', 'updated_at')) {
+        $updateParts[] = 'updated_at = NOW()';
+    }
+
+    $updateStmt = $pdo->prepare('
         UPDATE werkvergunning
-        SET status = :status
+        SET ' . implode(', ', $updateParts) . '
         WHERE id = :id
-    ");
+    ');
 
     $updateStmt->execute([
         'status' => $nieuweStatus,
         'id' => $aanvraagId,
     ]);
 
-    if (!empty($aanvraag['eigenaar_user_id'])) {
+    if ($actie === 'goedkeuren') {
+        $herlaadStmt = $pdo->prepare('SELECT * FROM werkvergunning WHERE id = :id LIMIT 1');
+        $herlaadStmt->execute(['id' => $aanvraagId]);
+        $goedgekeurdeAanvraag = $herlaadStmt->fetch();
+
+        if (is_array($goedgekeurdeAanvraag)) {
+            initialiseerVak6Logs($pdo, $aanvraagId, $goedgekeurdeAanvraag);
+        }
+    }
+
+    $kanNotificatieOpslaan = databaseTableExists($pdo, 'notificatie')
+        && databaseColumnExists($pdo, 'notificatie', 'user_id')
+        && databaseColumnExists($pdo, 'notificatie', 'type')
+        && databaseColumnExists($pdo, 'notificatie', 'boodschap');
+
+    if (!empty($aanvraag['eigenaar_user_id']) && $kanNotificatieOpslaan) {
         $boodschap = $actie === 'goedkeuren'
             ? 'Uw werkvergunning ' . $aanvraag['vergunning_nummer'] . ' is goedgekeurd.'
             : 'Uw werkvergunning ' . $aanvraag['vergunning_nummer'] . ' is afgekeurd.';

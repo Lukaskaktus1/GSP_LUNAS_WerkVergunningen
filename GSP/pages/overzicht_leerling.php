@@ -23,7 +23,7 @@ requireRole(['leerling']);
         </div>
         <div class="header-title">
             <h1>Werkvergunning Portaal</h1>
-            <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <?= e(getCurrentUserRoleLabel()) ?></span></p>
+            <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <?= e(currentUserDisplayName()) ?></span></p>
         </div>
     </div>
 

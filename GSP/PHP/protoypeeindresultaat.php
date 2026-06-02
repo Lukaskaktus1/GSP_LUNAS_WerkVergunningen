@@ -24,6 +24,7 @@ $overzichtPagina = match ($role) {
 
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/eindresultaatprototype.css">
+    <link rel="stylesheet" href="../CSS/local-icons.css">
 </head>
 <body>
 
@@ -38,7 +39,7 @@ $overzichtPagina = match ($role) {
                 Welkom,
                 <span class="role-badge">
                     <i class="fas fa-user"></i>
-                    <?= e(getCurrentUserRoleLabel()) ?>
+                    <?= e(currentUserDisplayName()) ?>
                 </span>
             </p>
         </div>

@@ -1,7 +1,7 @@
 body {
             font-family: Arial, sans-serif;
             padding: clamp(12px, 3vw, 20px);
-            background-color: #f9f9f9;
+            background: #eef6ff;
         }
         h2, h3 {
             margin-top: 25px;

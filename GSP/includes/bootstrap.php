@@ -115,13 +115,17 @@ function getCurrentUserRoleLabel(): string
 
 function currentUserDisplayName(): string
 {
-    $name = trim((string) ($_SESSION['voornaam'] ?? '') . ' ' . (string) ($_SESSION['naam'] ?? ''));
+    $voornaam = trim((string) ($_SESSION['voornaam'] ?? ''));
+    $achternaam = trim((string) ($_SESSION['naam'] ?? $_SESSION['achternaam'] ?? ''));
+    $name = trim($voornaam . ' ' . $achternaam);
 
     if ($name !== '') {
         return $name;
     }
 
-    return (string) ($_SESSION['email'] ?? 'Gebruiker');
+    $email = trim((string) ($_SESSION['email'] ?? ''));
+
+    return $email !== '' ? $email : 'Gebruiker';
 }
 
 function passwordMeetsPolicy(string $password): bool
@@ -204,4 +208,142 @@ function appBaseUrl(): string
     $basePath = $gspPosition === false ? '/GSP' : substr($scriptName, 0, $gspPosition + 4);
 
     return rtrim($scheme . '://' . $host . $basePath, '/');
+}
+
+function gspRelativeAssetPrefix(): string
+{
+    $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+
+    if (preg_match('#/GSP/(pages|PHP)/#i', $scriptName) === 1) {
+        return '..';
+    }
+
+    return '.';
+}
+
+function passwordResetUsesTokenTable(PDO $pdo): bool
+{
+    return databaseTableExists($pdo, 'wachtwoord_reset_token')
+        && databaseColumnExists($pdo, 'wachtwoord_reset_token', 'token_hash')
+        && databaseColumnExists($pdo, 'wachtwoord_reset_token', 'vervalt_op');
+}
+
+function createPasswordResetToken(PDO $pdo, int $userId): string
+{
+    $token = bin2hex(random_bytes(32));
+    $expiresAt = (new DateTimeImmutable('+1 hour'))->format('Y-m-d H:i:s');
+
+    if (passwordResetUsesTokenTable($pdo)) {
+        $stmt = $pdo->prepare('
+            INSERT INTO wachtwoord_reset_token (user_id, token_hash, vervalt_op)
+            VALUES (:user_id, :token_hash, :vervalt_op)
+        ');
+        $stmt->execute([
+            'user_id' => $userId,
+            'token_hash' => hash('sha256', $token),
+            'vervalt_op' => $expiresAt,
+        ]);
+
+        return $token;
+    }
+
+    if (
+        !databaseColumnExists($pdo, 'users', 'reset_token')
+        || !databaseColumnExists($pdo, 'users', 'reset_expires_at')
+    ) {
+        throw new RuntimeException('Wachtwoordherstel is niet geconfigureerd in de database.');
+    }
+
+    $update = $pdo->prepare('
+        UPDATE users
+        SET reset_token = :token,
+            reset_expires_at = :expires_at
+        WHERE id = :id
+    ');
+    $update->execute([
+        'token' => $token,
+        'expires_at' => $expiresAt,
+        'id' => $userId,
+    ]);
+
+    return $token;
+}
+
+function findUserIdByPasswordResetToken(PDO $pdo, string $token): ?int
+{
+    if ($token === '') {
+        return null;
+    }
+
+    if (passwordResetUsesTokenTable($pdo)) {
+        $stmt = $pdo->prepare('
+            SELECT user_id
+            FROM wachtwoord_reset_token
+            WHERE token_hash = :token_hash
+              AND vervalt_op >= NOW()
+              AND gebruikt_op IS NULL
+            LIMIT 1
+        ');
+        $stmt->execute(['token_hash' => hash('sha256', $token)]);
+        $row = $stmt->fetch();
+
+        return is_array($row) ? (int) ($row['user_id'] ?? 0) : null;
+    }
+
+    if (
+        !databaseColumnExists($pdo, 'users', 'reset_token')
+        || !databaseColumnExists($pdo, 'users', 'reset_expires_at')
+    ) {
+        return null;
+    }
+
+    $stmt = $pdo->prepare('
+        SELECT id
+        FROM users
+        WHERE reset_token = :token
+          AND reset_expires_at >= NOW()
+          AND actief = 1
+        LIMIT 1
+    ');
+    $stmt->execute(['token' => $token]);
+    $row = $stmt->fetch();
+
+    return is_array($row) ? (int) ($row['id'] ?? 0) : null;
+}
+
+function completePasswordReset(PDO $pdo, int $userId, string $token, string $passwordHash): void
+{
+    $update = $pdo->prepare('
+        UPDATE users
+        SET wachtwoord_hash = :password_hash
+        WHERE id = :id
+    ');
+    $update->execute([
+        'password_hash' => $passwordHash,
+        'id' => $userId,
+    ]);
+
+    if (passwordResetUsesTokenTable($pdo)) {
+        $markUsed = $pdo->prepare('
+            UPDATE wachtwoord_reset_token
+            SET gebruikt_op = NOW()
+            WHERE user_id = :user_id
+              AND token_hash = :token_hash
+              AND gebruikt_op IS NULL
+        ');
+        $markUsed->execute([
+            'user_id' => $userId,
+            'token_hash' => hash('sha256', $token),
+        ]);
+    }
+
+    if (databaseColumnExists($pdo, 'users', 'reset_token')) {
+        $clearLegacy = $pdo->prepare('
+            UPDATE users
+            SET reset_token = NULL,
+                reset_expires_at = NULL
+            WHERE id = :id
+        ');
+        $clearLegacy->execute(['id' => $userId]);
+    }
 }

@@ -20,22 +20,6 @@ $overzichtPagina = match ($role) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Werkvergunning Vak 2 - Activiteiten – GTI Beveren</title>
-    <meta name="description" content="Werkvergunning formulier Vak 2 - Activiteiten. Registreer activiteiten en taken voor je werkvergunning.">
-    <meta name="keywords" content="werkvergunning activiteiten, vak 2, GTI Beveren">
-    <meta name="author" content="Lukas Vandenweyer, Jonas De Meersman">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_vak2_activiteiten.php">
-    
-    <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_vak2_activiteiten.php">
-    <meta property="og:title" content="Werkvergunning Vak 2 - Activiteiten – GTI Beveren">
-    <meta property="og:description" content="Werkvergunning formulier Vak 2 - Activiteiten. Registreer activiteiten en taken.">
-    <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
-</head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Werkvergunning - Activiteiten</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
     <link rel="stylesheet" href="../CSS/werkvergunning_vak2_activiteiten.css">
@@ -50,7 +34,7 @@ $overzichtPagina = match ($role) {
             </div>
             <div class="header-title">
                 <h1>Werkvergunning Portaal</h1>
-                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <?= e(getCurrentUserRoleLabel()) ?></span></p>
+                <p>Welkom, <span class="role-badge"><i class="fas fa-user"></i> <?= e(currentUserDisplayName()) ?></span></p>
             </div>
         </div>
         <div class="header-center">
@@ -271,8 +255,25 @@ $overzichtPagina = match ($role) {
                 </div>
                 <div class="info-box">
                     <p><strong>voor ◊ is een attest vereist!!!</strong></p>
-                    <p>Attesten (van het toestel en van de gebruiker) zijn geldig tot: <input type="date" class="info-box-input-date"></p>
-                    <p>Nummerplaat voertuig(en): <input type="text" class="info-box-input-text"></p>
+                </div>
+
+                <div class="form-group voertuigen-section">
+                    <label>Voertuigen met attest</label>
+                    <p class="field-note">Voeg per voertuig de nummerplaat en attestdatum toe.</p>
+                    <div class="dynamic-table" id="voertuigen_table" data-storage-key="voertuigen_attesten">
+                        <div class="dynamic-row" data-row>
+                            <div class="form-group">
+                                <label>Nummerplaat</label>
+                                <input type="text" data-field="nummerplaat" data-optional="true">
+                            </div>
+                            <div class="form-group">
+                                <label>Attest geldig tot</label>
+                                <input type="date" data-field="attest_geldig_tot" data-optional="true">
+                            </div>
+                            <button class="remove-row" type="button" aria-label="Voertuig verwijderen">-</button>
+                        </div>
+                    </div>
+                    <button class="add-row-btn" type="button" data-add-row="voertuigen_table">+ Voertuig toevoegen</button>
                 </div>
             </div>
 
@@ -332,6 +333,7 @@ $overzichtPagina = match ($role) {
     </main>
 <script src="../JS/ui-feedback.js"></script>
     <script src="../JS/saveCurrentVak.js"></script>
+<script src="../JS/ja-nee-toggle.js"></script>
 
     <script>
         // Functie om GEEN checkbox logica te beheren per sectie

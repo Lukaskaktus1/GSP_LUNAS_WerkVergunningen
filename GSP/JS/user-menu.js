@@ -1,4 +1,66 @@
 (function () {
+    function gspBasePath() {
+        var path = window.location.pathname.replace(/\\/g, '/');
+        var index = path.toLowerCase().indexOf('/gsp/');
+
+        if (index !== -1) {
+            return path.substring(0, index + 4);
+        }
+
+        return '';
+    }
+
+    function logoutUrl() {
+        var basePath = gspBasePath();
+
+        if (basePath !== '') {
+            return basePath + '/logout.php';
+        }
+
+        var path = window.location.pathname.replace(/\\/g, '/');
+
+        if (path.indexOf('/pages/') !== -1 || path.indexOf('/PHP/') !== -1) {
+            return '../logout.php';
+        }
+
+        return 'logout.php';
+    }
+
+    function menuUrls() {
+        var path = window.location.pathname.replace(/\\/g, '/');
+        var basePath = gspBasePath();
+
+        if (path.indexOf('/pages/') !== -1) {
+            return {
+                profiel: 'profiel.php',
+                profielDelete: 'profiel.php#account-verwijderen',
+                logout: logoutUrl()
+            };
+        }
+
+        if (path.indexOf('/PHP/') !== -1) {
+            return {
+                profiel: '../pages/profiel.php',
+                profielDelete: '../pages/profiel.php#account-verwijderen',
+                logout: logoutUrl()
+            };
+        }
+
+        if (basePath !== '') {
+            return {
+                profiel: basePath + '/pages/profiel.php',
+                profielDelete: basePath + '/pages/profiel.php#account-verwijderen',
+                logout: logoutUrl()
+            };
+        }
+
+        return {
+            profiel: 'pages/profiel.php',
+            profielDelete: 'pages/profiel.php#account-verwijderen',
+            logout: logoutUrl()
+        };
+    }
+
     function removeStandaloneLogoutButtons(headerRight) {
         headerRight.querySelectorAll('button').forEach(function (button) {
             var target = button.getAttribute('onclick') || '';
@@ -24,6 +86,7 @@
 
         removeStandaloneLogoutButtons(headerRight);
 
+        var urls = menuUrls();
         var menu = document.createElement('div');
         menu.className = 'user-menu';
         menu.innerHTML = [
@@ -32,9 +95,9 @@
             '  <span>Menu</span>',
             '</button>',
             '<div class="user-menu-panel" role="menu">',
-            '  <a href="/GSP/pages/profiel.php" role="menuitem">Gegevens aanpassen</a>',
-            '  <a class="danger" href="/GSP/pages/profiel.php#account-verwijderen" role="menuitem">Account verwijderen</a>',
-            '  <a href="/GSP/logout.php" role="menuitem">Uitloggen</a>',
+            '  <a href="' + urls.profiel + '" role="menuitem">Gegevens aanpassen</a>',
+            '  <a class="danger" href="' + urls.profielDelete + '" role="menuitem">Account verwijderen</a>',
+            '  <a href="' + urls.logout + '" role="menuitem" id="user-menu-logout">Uitloggen</a>',
             '</div>'
         ].join('');
 

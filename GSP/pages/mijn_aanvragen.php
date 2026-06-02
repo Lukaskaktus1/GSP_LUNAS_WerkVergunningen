@@ -26,26 +26,12 @@ $flash = getFlashMessage();
 
 function statusClass(string $status): string
 {
-    return match ($status) {
-        'goedgekeurd' => 'status-goedgekeurd',
-        'afgekeurd' => 'status-afgekeurd',
-        'ingediend', 'in_beoordeling' => 'status-wachtend',
-        default => 'status-concept',
-    };
+    return vergunningStatusClass($status);
 }
 
 function statusLabel(string $status): string
 {
-    return match ($status) {
-        'concept' => 'Concept',
-        'ingediend' => 'Ingediend',
-        'in_beoordeling' => 'In beoordeling',
-        'goedgekeurd' => 'Goedgekeurd',
-        'afgekeurd' => 'Afgekeurd',
-        'afgemeld' => 'Afgemeld',
-        'gesloten' => 'Gesloten',
-        default => 'Onbekend',
-    };
+    return vergunningStatusLabel($status);
 }
 ?>
 <!DOCTYPE html>
@@ -70,7 +56,7 @@ function statusLabel(string $status): string
                 Welkom,
                 <span class="role-badge">
                     <i class="fas fa-user"></i>
-                    <?= e(getCurrentUserRoleLabel()) ?>
+                    <?= e(currentUserDisplayName()) ?>
                 </span>
             </p>
         </div>
@@ -138,7 +124,18 @@ function statusLabel(string $status): string
                         <?php foreach ($aanvragen as $aanvraag): ?>
                             <?php
                             $status = (string) $aanvraag['status'];
-                            $magVerwijderen = !in_array($status, ['goedgekeurd', 'gesloten'], true);
+                            $magVerwijderen = !in_array($status, ['goedgekeurd', 'gesloten', 'afgerond', 'in_uitvoering'], true);
+                            $magVak6 = in_array($status, ['goedgekeurd', 'in_uitvoering'], true);
+                            $magVak7 = false;
+
+                            if ($magVak6 && databaseTableExists($pdo, 'werkvergunning_vak6_log')) {
+                                $checkStmt = $pdo->prepare('SELECT * FROM werkvergunning WHERE id = :id LIMIT 1');
+                                $checkStmt->execute(['id' => (int) $aanvraag['id']]);
+                                $row = $checkStmt->fetch();
+                                if (is_array($row)) {
+                                    $magVak7 = alleVak6DagenVolledig($pdo, (int) $row['id'], $row) && $status !== 'afgerond';
+                                }
+                            }
                             ?>
                             <tr>
                                 <td><?= e((string) $aanvraag['vergunning_nummer']) ?></td>
@@ -156,8 +153,28 @@ function statusLabel(string $status): string
                                             class="small-btn open-btn"
                                             onclick="window.location.href='aanvraag_bekijken.php?id=<?= e((string) $aanvraag['id']) ?>'"
                                         >
-                                            Openen
+                                            Bekijken
                                         </button>
+
+                                        <?php if ($magVak6): ?>
+                                            <button
+                                                class="small-btn"
+                                                type="button"
+                                                onclick="window.location.href='aanvraag_vak6.php?id=<?= e((string) $aanvraag['id']) ?>'"
+                                            >
+                                                Vak VI
+                                            </button>
+                                        <?php endif; ?>
+
+                                        <?php if ($magVak7): ?>
+                                            <button
+                                                class="small-btn"
+                                                type="button"
+                                                onclick="window.location.href='aanvraag_vak7.php?id=<?= e((string) $aanvraag['id']) ?>'"
+                                            >
+                                                Vak VII
+                                            </button>
+                                        <?php endif; ?>
 
                                         <?php if ($magVerwijderen): ?>
                                             <form action="aanvraag_verwijderen.php" method="POST" data-confirm-title="Aanvraag verwijderen" data-confirm-message="Weet u zeker dat u deze aanvraag wilt verwijderen?" data-confirm-solution="Verwijder alleen aanvragen die niet meer nodig zijn. Goedgekeurde of gesloten aanvragen blijven beschermd.">

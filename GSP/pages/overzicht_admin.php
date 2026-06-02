@@ -29,8 +29,8 @@ $reviewNotification = latestReviewNotification(getDbConnection());
             <p>
                 Welkom,
                 <span class="role-badge">
-                    <i class="fas fa-user-shield"></i>
-                    <?= e(getCurrentUserRoleLabel()) ?>
+                    <i class="fas fa-user"></i>
+                    <?= e(currentUserDisplayName()) ?>
                 </span>
             </p>
         </div>
