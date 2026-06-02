@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blad Schaar Steen — Game</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/BladSteenSchaar/css/style.css">
     <!-- Motion One: vanilla-JS animatie library -->
     <script src="https://cdn.jsdelivr.net/npm/motion@10/dist/motion.min.js"></script>
-    <script src="/scripts/javascript.js" defer></script>
+    <script src="/BladSteenSchaar/scripts/javascript.js" defer></script>
 </head>
 <body>
 
@@ -76,7 +76,7 @@
         <section class="choices" id="choices" >
             <p class="choices-title">Maak je keuze:</p>
             <div class="choice-grid">
-                <button class="choice-btn" data-keuze="blad"onclick="Blad">
+                <button class="choice-btn" data-keuze="blad" onclick="Blad()">
                     <span class="choice-icon">
                         <!-- Blad: gestileerd vel papier -->
                         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -90,7 +90,7 @@
                     <span class="choice-name">Blad</span>
                     <span class="choice-hint">verslaat steen</span>
                 </button>
-                <button class="choice-btn" data-keuze="schaar">
+                <button class="choice-btn" data-keuze="schaar" onclick="Schaar()">
                     <span class="choice-icon">
                         <!-- Schaar: twee ringen met kruisende bladen -->
                         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -104,7 +104,7 @@
                     <span class="choice-name">Schaar</span>
                     <span class="choice-hint">verslaat blad</span>
                 </button>
-                <button class="choice-btn" data-keuze="steen">
+                <button class="choice-btn" data-keuze="steen" onclick="Steen()">
                     <span class="choice-icon">
                         <!-- Steen: organische rotsvorm -->
                         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
