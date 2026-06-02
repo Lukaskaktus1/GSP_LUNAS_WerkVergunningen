@@ -330,7 +330,13 @@ $overzichtPagina = match ($role) {
                 <div class="signature-section">
                     <h3 class="subsection-title">PREVENTIEMAATREGELEN DIE HIERBOVEN NIET VOORKOMEN (ALLEEN PREVENTIEMAATREGELEN OVERNEMEN UIT RISICO-ANALYSE)</h3>
                     <div class="form-group">
-                        <textarea rows="4" placeholder="Voeg hier aanvullende preventiemaatregelen toe..."></textarea>
+                        <textarea
+                            id="preventie_aanvullend"
+                            name="preventie_aanvullend"
+                            rows="4"
+                            placeholder="Voeg hier aanvullende preventiemaatregelen toe..."
+                            data-optional="true"
+                        ></textarea>
                     </div>
                     
                     <div class="form-row-2">

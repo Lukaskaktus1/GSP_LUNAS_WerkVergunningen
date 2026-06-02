@@ -257,7 +257,7 @@ $overzichtPagina = match ($role) {
                     <p><strong>voor ◊ is een attest vereist!!!</strong></p>
                 </div>
 
-                <div class="form-group voertuigen-section">
+                <div class="form-group voertuigen-section" hidden>
                     <label>Voertuigen met attest</label>
                     <p class="field-note">Voeg per voertuig de nummerplaat en attestdatum toe.</p>
                     <div class="dynamic-table" id="voertuigen_table" data-storage-key="voertuigen_attesten">

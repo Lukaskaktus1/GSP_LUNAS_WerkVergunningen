@@ -59,16 +59,8 @@ function validateCurrentPage() {
     const vak2SchoolGroup = document.getElementById('vak2_school_group') || document.getElementById('vak2_klas_group');
     const vak2FirmaGroup = document.getElementById('vak2_firma_group');
     const vak4Group = document.getElementById('vak4_aandachtspunten_group');
-    card.querySelectorAll('input, select, textarea').forEach(function (field) {
-        if (field.dataset.optional === 'true') return;
-        if (field.disabled || field.readOnly || field.type === 'hidden') return;
-        if (['button', 'submit', 'checkbox', 'radio'].includes(field.type)) return;
-        if (field.closest('[hidden]')) return;
-
-        field.required = true;
-    });
-
     const invalidFields = Array.from(card.querySelectorAll('input, select, textarea')).filter(function (field) {
+        if (!field.required) return false;
         if (field.disabled || field.readOnly || field.type === 'hidden') return false;
         if (field.closest('[hidden]')) return false;
         if (firmaGroup && firmaGroup.hidden && field.closest('#firma_naam_group')) return false;
@@ -394,15 +386,28 @@ function saveDynamicRows(tableId, storageKey) {
 }
 
 function createDynamicRow(table, values) {
-    const template = table.querySelector('[data-row]');
+    const template = table.__rowTemplate || table.querySelector('[data-row]');
     if (!template) return null;
 
     const row = template.cloneNode(true);
+    row.hidden = false;
     row.querySelectorAll('[data-field]').forEach(function (field) {
         field.value = values && values[field.dataset.field] ? values[field.dataset.field] : '';
+        field.disabled = false;
     });
 
     return row;
+}
+
+function rememberDynamicTableTemplates() {
+    document.querySelectorAll('.dynamic-table').forEach(function (table) {
+        if (table.__rowTemplate) return;
+
+        const template = table.querySelector('[data-row]');
+        if (template) {
+            table.__rowTemplate = template.cloneNode(true);
+        }
+    });
 }
 
 function normalizeDynamicTable(tableId, storageKey) {
@@ -416,23 +421,74 @@ function normalizeDynamicTable(tableId, storageKey) {
         storedRows = [];
     }
 
+    const template = table.__rowTemplate || table.querySelector('[data-row]');
+    if (!template) return;
+
     if (!Array.isArray(storedRows) || storedRows.length === 0) {
+        table.innerHTML = '';
         return;
     }
-
-    const template = table.querySelector('[data-row]');
-    if (!template) return;
 
     table.innerHTML = '';
 
     storedRows.forEach(function (rowValues) {
         const row = template.cloneNode(true);
+        row.hidden = false;
         row.querySelectorAll('[data-field]').forEach(function (field) {
             field.value = rowValues && rowValues[field.dataset.field] ? rowValues[field.dataset.field] : '';
             field.disabled = false;
         });
         table.appendChild(row);
     });
+}
+
+function initVoertuigAttestenVisibility() {
+    const section = document.querySelector('.voertuigen-section');
+    const table = document.getElementById('voertuigen_table');
+    if (!section || !table) return;
+
+    const attestCheckboxIds = [
+        'vervoer_kraan',
+        'vervoer_heftruck',
+        'vervoer_hoogtewerker',
+        'vervoer_schaarlift',
+        'vervoer_verreiker'
+    ];
+
+    function hasAttestVehicle() {
+        return attestCheckboxIds.some(function (id) {
+            const checkbox = document.getElementById(id);
+            return checkbox instanceof HTMLInputElement && checkbox.checked && !checkbox.disabled;
+        });
+    }
+
+    function updateVisibility() {
+        const visible = hasAttestVehicle();
+        section.hidden = !visible;
+
+        section.querySelectorAll('input, button').forEach(function (field) {
+            field.disabled = !visible;
+        });
+
+        if (!visible) {
+            table.innerHTML = '';
+            sessionStorage.removeItem('voertuigen_attesten');
+        }
+    }
+
+    attestCheckboxIds.forEach(function (id) {
+        const checkbox = document.getElementById(id);
+        if (checkbox) {
+            checkbox.addEventListener('change', updateVisibility);
+        }
+    });
+
+    const geenCheckbox = document.getElementById('vervoer_geen');
+    if (geenCheckbox) {
+        geenCheckbox.addEventListener('change', updateVisibility);
+    }
+
+    updateVisibility();
 }
 
 function attachDynamicRowHandlers() {
@@ -813,7 +869,8 @@ function bindAanvraagSubmitForm(formId) {
         }
 
         if (typeof isAdminTestMode === 'function' && isAdminTestMode()) {
-            saveAdminTestAanvraag(collectAllAanvraagData());
+            const aanvraagData = collectAllAanvraagData();
+            saveAdminTestAanvraag(aanvraagData);
             clearAanvraagDraftData();
             sessionStorage.removeItem('admin_test_edit_id');
 
@@ -832,8 +889,6 @@ function bindAanvraagSubmitForm(formId) {
             return;
         }
 
-        clearAanvraagDraftData();
-        sessionStorage.removeItem('admin_test_edit_id');
         form.submit();
     });
 }
@@ -943,8 +998,10 @@ document.addEventListener('DOMContentLoaded', function() {
     ensureAanvraagSession();
     seedProfileDefaults();
     attachInlineInputIds();
+    rememberDynamicTableTemplates();
     initStorageGroupsForPage();
     loadCurrentVakData();
+    initVoertuigAttestenVisibility();
     initWerkvergunningNummer();
     attachDynamicRowHandlers();
     attachSchoolToggle();

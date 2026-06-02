@@ -605,3 +605,57 @@ td {
 .approval-btn.reject {
     background: #b42318;
 }
+
+.user-menu {
+    position: relative;
+}
+
+.user-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.84);
+    color: #1f2937;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 8px 12px;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+}
+
+.user-menu-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 10001;
+    display: none;
+    min-width: 220px;
+    overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+}
+
+.user-menu.open .user-menu-panel {
+    display: block;
+}
+
+.user-menu-panel a {
+    display: block;
+    padding: 12px 14px;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.user-menu-panel a:hover {
+    background: #eef6ff;
+}
+
+.user-menu-panel a.danger {
+    color: #b42318;
+}
