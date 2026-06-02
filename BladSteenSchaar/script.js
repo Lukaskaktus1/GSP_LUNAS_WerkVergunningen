@@ -1,5 +1,5 @@
-/* ============================================
-   Blad Schaar Steen — Game logica
+﻿/* ============================================
+   Blad Schaar Steen - Game logica
    Concepten die de leerlingen hier zien:
    - Variables (let, const)
    - Math.random()
@@ -15,37 +15,34 @@
 const { animate } = Motion;
 
 // =========================================================
-// CONSTANTEN — onveranderlijke waarden bovenaan zetten
+// CONSTANTEN - onveranderlijke waarden bovenaan zetten
 // =========================================================
 const KEUZES = ["blad", "schaar", "steen"];
 
-// SVG-strings per keuze — wordt in de arena en historie getoond
+// SVG-strings per keuze - wordt in de arena en historie getoond
 // Hetzelfde patroon als in de keuze-knoppen, maar groter formaat
 const SVG_BLAD = `
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="22" y="14" width="56" height="72" rx="6" fill="currentColor" opacity="0.12"/>
-        <rect x="22" y="14" width="56" height="72" rx="6" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
-        <line x1="34" y1="36" x2="66" y2="36" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-        <line x1="34" y1="50" x2="66" y2="50" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-        <line x1="34" y1="64" x2="56" y2="64" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+        <path d="M24 12h38l16 17v59H24z" fill="currentColor" opacity="0.13"/>
+        <path d="M24 12h38l16 17v59H24z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M62 13v19h16" fill="currentColor" opacity="0.18" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M35 45h30M35 58h30M35 71h19" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
     </svg>`;
 
 const SVG_SCHAAR = `
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <circle cx="28" cy="28" r="13" fill="none" stroke="currentColor" stroke-width="5"/>
-        <circle cx="28" cy="72" r="13" fill="none" stroke="currentColor" stroke-width="5"/>
-        <line x1="40" y1="28" x2="86" y2="60" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-        <line x1="40" y1="72" x2="86" y2="40" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-        <line x1="55" y1="38" x2="55" y2="62" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+        <circle cx="25" cy="28" r="12" fill="currentColor" opacity="0.12" stroke="currentColor" stroke-width="5"/>
+        <circle cx="25" cy="72" r="12" fill="currentColor" opacity="0.12" stroke="currentColor" stroke-width="5"/>
+        <path d="M36 34l19 16M36 66l19-16" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+        <path d="M55 50l34-29-9 26zM55 50l34 29-9-26z" fill="currentColor" opacity="0.22" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+        <circle cx="55" cy="50" r="5" fill="white" stroke="currentColor" stroke-width="4"/>
     </svg>`;
 
 const SVG_STEEN = `
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M 22,72 Q 12,48 28,28 Q 50,12 72,22 Q 90,38 84,64 Q 74,86 52,84 Q 32,82 22,72 Z"
-              fill="currentColor" opacity="0.18"
-              stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
-        <ellipse cx="38" cy="40" rx="8" ry="4" fill="currentColor" opacity="0.35"/>
-        <ellipse cx="62" cy="58" rx="5" ry="3" fill="currentColor" opacity="0.25"/>
+        <path d="M18 60l12-30 25-15 27 13 8 31-20 24-35 4z" fill="currentColor" opacity="0.16"/>
+        <path d="M18 60l12-30 25-15 27 13 8 31-20 24-35 4z" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M30 30l25 20 27-22M55 50l-20 37M55 50l15 33M18 60l37-10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
     </svg>`;
 
 const SVG_VRAAG = `
@@ -70,7 +67,7 @@ const WINT_VAN = {
 const PUNTEN_VOOR_WINST = 3;   // wie eerst 3 punten haalt, wint de game
 
 // =========================================================
-// STATE — alle variabelen die tijdens het spel kunnen wijzigen
+// STATE - alle variabelen die tijdens het spel kunnen wijzigen
 // =========================================================
 let playerScore = 0;
 let computerScore = 0;
@@ -79,7 +76,7 @@ let gameKlaar = false;          // wordt true zodra iemand 3 punten heeft
 let bezigMetRonde = false;      // voorkomt dubbel klikken tijdens animatie
 
 // =========================================================
-// DOM-REFERENTIES — bovenaan ophalen voor performance
+// DOM-REFERENTIES - bovenaan ophalen voor performance
 // =========================================================
 const playerScoreEl = document.getElementById("playerScore");
 const computerScoreEl = document.getElementById("computerScore");
@@ -107,7 +104,7 @@ const confettiLayer = document.getElementById("confettiLayer");
 /**
  * Computer kiest willekeurig uit de drie opties.
  * Math.random() geeft een getal tussen 0 (incl) en 1 (excl).
- * × KEUZES.length geeft 0..2.999, Math.floor maakt er 0/1/2 van.
+ * x KEUZES.length geeft 0..2.999, Math.floor maakt er 0/1/2 van.
  */
 function computerKeuze() {
     const index = Math.floor(Math.random() * KEUZES.length);
@@ -129,7 +126,7 @@ function bepaalWinnaar(speler, computer) {
 }
 
 /**
- * Speel één ronde: speler heeft op een keuze geklikt.
+ * Speel Ã©Ã©n ronde: speler heeft op een keuze geklikt.
  */
 async function speelRonde(spelerKeuze) {
     if (bezigMetRonde || gameKlaar) return;
@@ -155,8 +152,8 @@ async function speelRonde(spelerKeuze) {
     // Toon de echte symbolen (innerHTML omdat het SVG-strings zijn)
     playerHandEl.innerHTML = SYMBOLEN[spelerKeuze];
     computerHandEl.innerHTML = SYMBOLEN[cKeuze];
-    playerHandEl.classList.remove("placeholder");
-    computerHandEl.classList.remove("placeholder");
+    zetKeuzeClass(playerHandEl, spelerKeuze);
+    zetKeuzeClass(computerHandEl, cKeuze);
 
     // Reveal animatie
     animate(playerHandEl, { scale: [0.6, 1.15, 1] }, { duration: 0.4 });
@@ -178,7 +175,7 @@ async function speelRonde(spelerKeuze) {
         document.querySelector(".computer-hand").classList.add("winner");
         toonResult("Computer wint deze ronde", "loss");
     } else {
-        toonResult("Gelijkspel — niemand een punt", "tie");
+        toonResult("Gelijkspel - niemand een punt", "tie");
     }
 
     // Update score-tegels met pulse
@@ -216,8 +213,8 @@ async function speelRonde(spelerKeuze) {
 async function speelCountdown() {
     playerHandEl.innerHTML = SVG_VRAAG;
     computerHandEl.innerHTML = SVG_VRAAG;
-    playerHandEl.classList.add("placeholder");
-    computerHandEl.classList.add("placeholder");
+    zetKeuzeClass(playerHandEl);
+    zetKeuzeClass(computerHandEl);
 
     // Shake-effect op beide handen tegelijk
     const shakeOptions = { duration: 0.15, easing: "ease-in-out" };
@@ -248,12 +245,12 @@ function voegToeAanGeschiedenis(nr, speler, computer, uitslag) {
     const labels = { win: "Win", loss: "Verlies", tie: "Gelijk" };
     const row = document.createElement("div");
     row.className = `history-row ${uitslag}`;
-    // SVG-iconen worden ingesloten — namen tonen we onder als label
+    // SVG-iconen worden ingesloten - namen tonen we onder als label
     row.innerHTML = `
         <span class="round-num">R${nr}</span>
-        <span class="player-pick" title="${speler}">${SYMBOLEN[speler]}</span>
+        <span class="player-pick keuze-${speler}" title="${speler}">${SYMBOLEN[speler]}</span>
         <span class="vs">vs</span>
-        <span class="computer-pick" title="${computer}">${SYMBOLEN[computer]}</span>
+        <span class="computer-pick keuze-${computer}" title="${computer}">${SYMBOLEN[computer]}</span>
         <span class="result-badge">${labels[uitslag]}</span>
     `;
     historyList.prepend(row);
@@ -318,8 +315,8 @@ function resetGame() {
 
     playerHandEl.innerHTML = SVG_VRAAG;
     computerHandEl.innerHTML = SVG_VRAAG;
-    playerHandEl.classList.add("placeholder");
-    computerHandEl.classList.add("placeholder");
+    zetKeuzeClass(playerHandEl);
+    zetKeuzeClass(computerHandEl);
 
     resultBanner.hidden = true;
     document.querySelectorAll(".hand-display").forEach((d) => d.classList.remove("winner"));
@@ -343,6 +340,11 @@ function setKnoppenActief(actief) {
     choiceButtons.forEach((btn) => {
         btn.disabled = !actief;
     });
+}
+
+function zetKeuzeClass(element, keuze) {
+    element.classList.remove("placeholder", "keuze-blad", "keuze-schaar", "keuze-steen");
+    element.classList.add(keuze ? `keuze-${keuze}` : "placeholder");
 }
 
 /**
@@ -412,5 +414,5 @@ document.addEventListener("keydown", function (event) {
 // Initialiseer placeholder-style en SVG vraagteken op de hand-icons
 playerHandEl.innerHTML = SVG_VRAAG;
 computerHandEl.innerHTML = SVG_VRAAG;
-playerHandEl.classList.add("placeholder");
-computerHandEl.classList.add("placeholder");
+zetKeuzeClass(playerHandEl);
+zetKeuzeClass(computerHandEl);
