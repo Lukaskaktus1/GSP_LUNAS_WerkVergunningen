@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blad Schaar Steen — Game</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- Motion One: vanilla-JS animatie library -->
+    <script src="https://cdn.jsdelivr.net/npm/motion@10/dist/motion.min.js"></script>
+    <script src="/scripts/javascript.js" defer></script>
+</head>
+<body>
+
+    <!-- ============================================
+         HERO HEADER
+         ============================================ -->
+    <header class="hero">
+        <h1>Blad Steen Schaar</h1>
+        <p class="subtitle">Best of 5 — wie eerst 3 punten haalt, wint de game</p>
+    </header>
+
+    <main class="main-grid">
+
+        <!-- ============================================
+             SCOREBOARD
+             ============================================ -->
+        <section class="scoreboard">
+            <div class="score-tile player-tile">
+                <div class="score-label">
+                    <span class="material-icons">person</span>Jij
+                </div>
+                <div class="score-value" id="playerScore">0</div>
+            </div>
+            <div class="score-divider">
+                <span class="round-info">Ronde <span id="roundNumber">1</span></span>
+                <span class="best-of">van 5</span>
+            </div>
+            <div class="score-tile computer-tile">
+                <div class="score-label">
+                    <span class="material-icons">smart_toy</span>Computer
+                </div>
+                <div class="score-value" id="computerScore">0</div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             ARENA — keuzes worden hier getoond
+             ============================================ -->
+        <section class="arena" id="arena">
+            <div class="hand-display player-hand">
+                <div class="hand-label">Jouw keuze</div>
+                <div class="hand-icon placeholder" id="playerHand"></div>
+            </div>
+            <div class="vs-badge" id="vsBadge">
+                <span>VS</span>
+            </div>
+            <div class="hand-display computer-hand">
+                <div class="hand-label">Computer</div>
+                <div class="hand-icon placeholder" id="computerHand"></div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             RESULT BANNER — verschijnt na elke ronde
+             ============================================ -->
+        <section class="result-banner" id="resultBanner" hidden>
+            <p class="result-text" id="resultText"></p>
+        </section>
+
+        <!-- ============================================
+             KEUZE-TEGELS — speler klikt hier
+             SVG iconen i.p.v. emoji's voor consistente stijl
+             ============================================ -->
+        <section class="choices" id="choices" >
+            <p class="choices-title">Maak je keuze:</p>
+            <div class="choice-grid">
+                <button class="choice-btn" data-keuze="blad"onclick="Blad">
+                    <span class="choice-icon">
+                        <!-- Blad: gestileerd vel papier -->
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <rect x="22" y="14" width="56" height="72" rx="6" fill="currentColor" opacity="0.12"/>
+                            <rect x="22" y="14" width="56" height="72" rx="6" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+                            <line x1="34" y1="36" x2="66" y2="36" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="34" y1="50" x2="66" y2="50" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="34" y1="64" x2="56" y2="64" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <span class="choice-name">Blad</span>
+                    <span class="choice-hint">verslaat steen</span>
+                </button>
+                <button class="choice-btn" data-keuze="schaar">
+                    <span class="choice-icon">
+                        <!-- Schaar: twee ringen met kruisende bladen -->
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <circle cx="28" cy="28" r="13" fill="none" stroke="currentColor" stroke-width="5"/>
+                            <circle cx="28" cy="72" r="13" fill="none" stroke="currentColor" stroke-width="5"/>
+                            <line x1="40" y1="28" x2="86" y2="60" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+                            <line x1="40" y1="72" x2="86" y2="40" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+                            <line x1="55" y1="38" x2="55" y2="62" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+                        </svg>
+                    </span>
+                    <span class="choice-name">Schaar</span>
+                    <span class="choice-hint">verslaat blad</span>
+                </button>
+                <button class="choice-btn" data-keuze="steen">
+                    <span class="choice-icon">
+                        <!-- Steen: organische rotsvorm -->
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path d="M 22,72 Q 12,48 28,28 Q 50,12 72,22 Q 90,38 84,64 Q 74,86 52,84 Q 32,82 22,72 Z"
+                                  fill="currentColor" opacity="0.18"
+                                  stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+                            <ellipse cx="38" cy="40" rx="8" ry="4" fill="currentColor" opacity="0.35"/>
+                            <ellipse cx="62" cy="58" rx="5" ry="3" fill="currentColor" opacity="0.25"/>
+                        </svg>
+                    </span>
+                    <span class="choice-name">Steen</span>
+                    <span class="choice-hint">verslaat schaar</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================
+             EINDSCHERM — wordt getoond na 3 winsten
+             ============================================ -->
+        <section class="end-screen" id="endScreen" hidden>
+            <div class="end-card">
+                <div class="end-shine"></div>
+                <span class="end-eyebrow" id="endEyebrow">Game over</span>
+                <div class="end-icon" id="endIcon">
+                    <!-- Material Icon — wordt vervangen door JS afhankelijk van winnaar -->
+                    <span class="material-icons" id="endIconSymbol">emoji_events</span>
+                </div>
+                <h2 class="end-title" id="endTitle">Jij wint!</h2>
+                <p class="end-stats" id="endStats">3 - 0</p>
+                <button class="btn-restart" id="restartBtn">
+                    <span class="material-icons">refresh</span>Nieuwe game
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================
+             RONDE-HISTORIEK
+             ============================================ -->
+        <section class="history-section">
+            <h3 class="history-title">
+                <span class="material-icons">history</span>Geschiedenis
+            </h3>
+            <div class="history-list" id="historyList">
+                <p class="history-empty" id="historyEmpty">Nog geen rondes gespeeld</p>
+            </div>
+        </section>
+
+        <!-- ============================================
+             SPELREGELS
+             ============================================ -->
+        <section class="rules-section">
+            <h3 class="rules-title">
+                <span class="material-icons">help_outline</span>Spelregels
+            </h3>
+            <ul class="rules-list">
+                <li><strong>Blad</strong> verslaat <strong>Steen</strong> — papier omwikkelt de steen</li>
+                <li><strong>Schaar</strong> verslaat <strong>Blad</strong> — schaar knipt het papier</li>
+                <li><strong>Steen</strong> verslaat <strong>Schaar</strong> — steen verplettert de schaar</li>
+                <li>Gelijke keuze = gelijkspel, geen punt voor niemand</li>
+                <li>Wie als eerste <strong>3 punten</strong> haalt, wint de game</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Confetti container -->
+    <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+
+    <footer>
+        <p>Blad Schaar Steen &copy; GTI Beveren 2025-2026 — gemaakt met JavaScript</p>
+    </footer>
+</body>
+</html>
