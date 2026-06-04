@@ -47,6 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gameKlaar']) === 'tru
     <script src="script.js" defer></script>
 </head>
 <body>
+    <nav class="portfolio-menu" aria-label="Portfolio menu">
+        <a href="../index.html">Dashboard</a>
+        <a href="../Projecten.html">Projecten</a>
+        <a href="../Logboek.html">Logboek</a>
+        <a href="../TijdLijn.html">Tijdlijn</a>
+        <a href="../Uren_Tracking.html">Uren Tracking</a>
+        <a href="../Voortgang.html">Voortgang</a>
+        <a href="../Documentatie.html">Documentatie</a>
+    </nav>
 
     <!-- ============================================
          HERO HEADER
