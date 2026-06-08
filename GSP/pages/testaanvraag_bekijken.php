@@ -14,6 +14,8 @@ requireRole(['admin']);
     <link rel="stylesheet" href="../CSS/overzicht.css?v=20260608">
     <link rel="stylesheet" href="../CSS/aanvraag_bekijken.css?v=20260608">
     <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
+    <?= gspInlineCss(['overzicht.css', 'aanvraag_bekijken.css', 'local-icons.css']) ?>
+    <?= gspOverviewCriticalCss() ?>
 </head>
 <body>
 <header class="header">
