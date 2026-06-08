@@ -11,7 +11,7 @@
     <header class="topbar">
       <section class="brand-block" aria-label="Projectinformatie">
         <div class="brand-mark">BF</div>
-        <div>
+        <div class="brand-copy">
           <h1>BeatForge Studio</h1>
           <p id="statusText">Klaar</p>
           <div class="project-meta" aria-label="Projectstatus">
@@ -23,47 +23,50 @@
       </section>
 
       <section class="transport" aria-label="Transport">
-        <button class="icon-button play" id="playButton" type="button" title="Play">
-          <span aria-hidden="true">&gt;</span>
+        <button class="transport-button play" id="playButton" type="button" title="Play">
+          <span class="button-symbol" aria-hidden="true">&gt;</span>
           <span class="button-text">Play</span>
         </button>
-        <button class="icon-button stop" id="stopButton" type="button" title="Stop">
-          <span aria-hidden="true">[]</span>
+        <button class="transport-button stop" id="stopButton" type="button" title="Stop">
+          <span class="button-symbol" aria-hidden="true">[]</span>
           <span class="button-text">Stop</span>
         </button>
-        <label class="bpm-control" for="bpmInput">
+        <label class="number-control" for="bpmInput">
           <span>BPM</span>
           <input id="bpmInput" type="number" value="120" min="60" max="220">
         </label>
-        <label class="bpm-control" for="swingInput">
+        <label class="number-control" for="swingInput">
           <span>Swing</span>
           <input id="swingInput" type="number" value="0" min="0" max="65">
         </label>
-        <button class="icon-button theme-toggle" id="themeButton" type="button" title="Light palette">
-          <span aria-hidden="true">o</span>
-          <span class="button-text">Light</span>
-        </button>
       </section>
 
-      <section class="project-actions" aria-label="Projectacties">
-        <button id="showStudioButton" type="button">Studio</button>
+      <section class="view-switch" aria-label="Weergave">
+        <button id="showStudioButton" class="active-view-button" type="button">Studio</button>
         <button id="showPianoButton" type="button">Piano Roll</button>
-        <label class="file-action" for="sampleUpload">
-          <span aria-hidden="true">+</span>
-          Sample
-        </label>
-        <input id="sampleUpload" type="file" accept="audio/*" multiple>
-        <button id="fillButton" type="button">Starter beat</button>
-        <button id="randomTrackButton" type="button">Variatie</button>
-        <button id="shiftLeftButton" type="button">&lt; Step</button>
-        <button id="shiftRightButton" type="button">Step &gt;</button>
-        <button id="clearTrackButton" type="button">Track leeg</button>
-        <button id="resetButton" type="button">Reset</button>
-        <button id="saveButton" type="button">Save</button>
-        <button id="loadButton" type="button">Load</button>
-        <button class="disabled-action" type="button" disabled>Export</button>
+        <button class="theme-toggle" id="themeButton" type="button" title="Licht thema">
+          <span aria-hidden="true">o</span>
+          <span class="button-text">Licht</span>
+        </button>
       </section>
     </header>
+
+    <section class="command-bar studio-view" aria-label="Projectacties">
+      <label class="file-action primary-action" for="sampleUpload">
+        <span aria-hidden="true">+</span>
+        Sample
+      </label>
+      <input id="sampleUpload" type="file" accept="audio/*" multiple>
+      <button id="fillButton" class="primary-action" type="button">Starter beat</button>
+      <button id="randomTrackButton" type="button">Variatie</button>
+      <button id="shiftLeftButton" type="button">&lt; Step</button>
+      <button id="shiftRightButton" type="button">Step &gt;</button>
+      <button id="clearTrackButton" type="button">Track leeg</button>
+      <button id="resetButton" type="button">Reset</button>
+      <button id="saveButton" type="button">Opslaan</button>
+      <button id="loadButton" type="button">Laden</button>
+      <button class="disabled-action" type="button" disabled>Export</button>
+    </section>
 
     <section class="timeline-strip studio-view" aria-label="Timeline">
       <div class="timeline-label">Pattern A</div>
@@ -86,8 +89,8 @@
       </article>
 
       <article class="deck-card depth-card">
-        <span class="deck-label">Edit mode</span>
-        <strong id="stepDepthValue">Grid</strong>
+        <span class="deck-label">Grid</span>
+        <strong id="stepDepthValue">16 steps</strong>
         <span id="modifierStatus">Geen modifier actief</span>
       </article>
 
@@ -104,11 +107,6 @@
           <span><span id="sampleCount">0</span> sounds</span>
         </summary>
         <div class="panel-content">
-          <div class="panel-toolbar">
-            <span>Library</span>
-            <span>Drag ready</span>
-          </div>
-          <p class="hint">Kies een categorie, upload of record een sound, en sleep hem naar de beat.</p>
           <div class="category-tabs" id="categoryTabs" aria-label="Sound categorieen"></div>
           <label class="panel-field" for="categoryFilter">
             <span>Categorie</span>
@@ -156,7 +154,7 @@
               <button id="recordButton" type="button">Record</button>
               <button id="stopRecordButton" type="button" disabled>Stop</button>
             </div>
-            <span id="recordStatus">Microfoon klaar na toestemming</span>
+            <span id="recordStatus">Microfoon klaar</span>
           </section>
           <ul class="sample-list" id="sampleList"></ul>
         </div>
@@ -166,13 +164,12 @@
         <div class="panel-heading sequencer-heading">
           <div>
             <h2>Step Sequencer</h2>
-            <p>Shift selecteert horizontaal, Ctrl wijzigt aantal steps, Alt rekt een cel.</p>
+            <p id="stepReadout">Step 01</p>
           </div>
           <div class="sequencer-actions">
             <button id="addStepButton" type="button">+ Stap</button>
             <button id="removeStepButton" type="button">- Stap</button>
             <button id="accentButton" type="button">Accent</button>
-            <div class="step-readout" id="stepReadout">Step 01</div>
           </div>
         </div>
         <div class="step-header" id="stepHeader"></div>
@@ -188,11 +185,7 @@
           <span>8 ch</span>
         </summary>
         <div class="panel-content">
-          <div class="panel-toolbar">
-            <span>Volumes</span>
-            <span>Mute ready</span>
-          </div>
-          <section class="mini-menu" aria-label="Mixer tools">
+          <section class="mini-menu mixer-tools" aria-label="Mixer tools">
             <h3>Mixer tools</h3>
             <button id="normalizeButton" type="button">Normalize</button>
             <button id="unmuteAllButton" type="button">Alles aan</button>
@@ -207,7 +200,6 @@
         <div>
           <span class="deck-label">Piano Roll</span>
           <h2>Maak een eigen piano beat</h2>
-          <p>Sleep horizontaal over de grid om noten te tekenen. Voeg daarna je loop toe als piano-sound.</p>
         </div>
         <div class="piano-actions">
           <button id="backToStudioButton" type="button">Terug naar Studio</button>
@@ -241,9 +233,6 @@
     <footer class="studio-footer">
       <p>Alle rechten voorbehouden naar Jonas De Meersman</p>
       <a href="../Projecten.html">Portfolio site</a>
-      <span>Shift: horizontaal vakjes aanduiden</span>
-      <span>Ctrl: links/rechts slepen voor minder/meer steps</span>
-      <span>Alt: links/rechts slepen voor kortere/langere cel</span>
     </footer>
   </main>
 

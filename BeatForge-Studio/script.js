@@ -6,7 +6,7 @@ const MAX_STEPS = 32;
 let STEP_COUNT = 16;
 
 const categoryConfig = [
-  ["all", "All"],
+  ["all", "Alles"],
   ["kick", "Kicks"],
   ["snare", "Snares"],
   ["clap", "Claps"],
@@ -338,11 +338,11 @@ function renderSampleList() {
 
     const actions = document.createElement("div");
     actions.className = "sample-actions";
-    actions.append(createSampleButton("Play", "preview-button", () => previewSample(sample.id)));
-    actions.append(createSampleButton("Use", "", () => assignSampleToTrack(sample.id, state.selectedTrack)));
+    actions.append(createSampleButton("Beluister", "preview-button", () => previewSample(sample.id)));
+    actions.append(createSampleButton("Gebruik", "", () => assignSampleToTrack(sample.id, state.selectedTrack)));
 
     if (canDeleteSample(sample)) {
-      actions.append(createSampleButton("Delete", "delete-button", () => deleteSample(sample.id)));
+      actions.append(createSampleButton("Verwijder", "delete-button", () => deleteSample(sample.id)));
     }
 
     item.addEventListener("dragstart", (event) => {
@@ -1290,7 +1290,7 @@ function loadPattern() {
     state.lengths = normalizeNumberGrid(data.lengths, 1);
     state.tracks = normalizeTracks(data.tracks);
     document.body.classList.toggle("light-theme", Boolean(data.lightTheme));
-    elements.themeButton.querySelector(".button-text").textContent = data.lightTheme ? "Dark" : "Light";
+    elements.themeButton.querySelector(".button-text").textContent = data.lightTheme ? "Donker" : "Licht";
     applyGridSizing();
     renderEverything();
     setStatus("Pattern geladen");
@@ -1356,7 +1356,7 @@ function showStudioView() {
   elements.pianoPage.classList.add("hidden");
   elements.showStudioButton.classList.add("active-view-button");
   elements.showPianoButton.classList.remove("active-view-button");
-  setStatus("Studio view");
+  setStatus("Studio actief");
 }
 
 function showPianoView() {
@@ -1365,13 +1365,13 @@ function showPianoView() {
   elements.showStudioButton.classList.remove("active-view-button");
   elements.showPianoButton.classList.add("active-view-button");
   renderPianoRoll();
-  setStatus("Piano Roll view");
+  setStatus("Piano Roll actief");
 }
 
 function toggleTheme() {
   const light = document.body.classList.toggle("light-theme");
-  elements.themeButton.querySelector(".button-text").textContent = light ? "Dark" : "Light";
-  setStatus(light ? "Light palette actief" : "Dark palette actief");
+  elements.themeButton.querySelector(".button-text").textContent = light ? "Donker" : "Licht";
+  setStatus(light ? "Licht thema actief" : "Donker thema actief");
 }
 
 function updatePlaybackHighlight() {
@@ -1518,7 +1518,7 @@ function countActiveSteps(track) {
 }
 
 function typeLabel(type) {
-  const labels = { all: "All", kick: "Kick", snare: "Snare", clap: "Clap", hat: "Hi-hat", bass: "Bass", melody: "Melody", fx: "FX", piano: "Piano", recording: "Recording", uploaded: "Upload", sound: "Sound" };
+  const labels = { all: "Alles", kick: "Kick", snare: "Snare", clap: "Clap", hat: "Hi-hat", bass: "Bass", melody: "Melody", fx: "FX", piano: "Piano", recording: "Recording", uploaded: "Upload", sound: "Sound" };
   return labels[type] || "Sound";
 }
 
