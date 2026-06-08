@@ -1,1 +1,13 @@
-DirectoryIndex index.php index.html
+# GSP lokale regels voor wanneer deze map de webroot is.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # CSS-map is hoofdlettergevoelig op Linux-hosting.
+    RewriteRule ^css/(.*)$ CSS/$1 [L,NC]
+</IfModule>
+
+AddType text/css .css
+AddType application/javascript .js
+AddDefaultCharset utf-8
+AddCharset UTF-8 .html .php .css .js .xml .json

@@ -31,9 +31,9 @@ $klassen = gspKlassen();
     <meta property="og:description" content="Account aanmaken voor het werkvergunningen portaal. Registreer je nu als leerling, leerkracht of TA.">
     <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
     
-    <link rel="stylesheet" href="CSS/style.css">
-    <link rel="stylesheet" href="CSS/register.css?v=2">
-    <link rel="stylesheet" href="CSS/local-icons.css">
+    <link rel="stylesheet" href="CSS/style.css?v=20260608">
+    <link rel="stylesheet" href="CSS/register.css?v=20260608">
+    <link rel="stylesheet" href="CSS/local-icons.css?v=20260608">
 </head>
 <body>
     <div class="login-container">

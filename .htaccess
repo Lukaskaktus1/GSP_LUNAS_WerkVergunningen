@@ -20,6 +20,10 @@
     # Block access to sensitive files
     RewriteRule ^(config|auth|\.env|\.git)/ - [F,L]
     RewriteRule ^\.ht [F,L]
+
+    # CSS-map is hoofdlettergevoelig op Linux-hosting.
+    RewriteRule ^GSP/css/(.*)$ GSP/CSS/$1 [L,NC]
+    RewriteRule ^css/(.*)$ GSP/CSS/$1 [L,NC]
 </IfModule>
 
 # Gzip Compression
@@ -96,6 +100,8 @@
 # Charset UTF-8
 AddDefaultCharset utf-8
 AddCharset UTF-8 .html .php .css .js .xml .json
+AddType text/css .css
+AddType application/javascript .js
 
 # PHP Configuration (if available)
 <IfModule mod_php7.c>

@@ -74,9 +74,11 @@ $allowedRoles = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gebruikersbeheer - Werkvergunning Portaal</title>
-    <link rel="stylesheet" href="../CSS/overzicht.css">
-    <link rel="stylesheet" href="../CSS/admin_gebruikers.css?v=2">
-    <link rel="stylesheet" href="../CSS/local-icons.css">
+    <link rel="stylesheet" href="../CSS/overzicht.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/admin_gebruikers.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
+    <?= gspInlineCss(['overzicht.css', 'admin_gebruikers.css', 'local-icons.css']) ?>
+    <?= gspOverviewCriticalCss() ?>
 </head>
 
 <body>

@@ -37,9 +37,9 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vak VII afsluiting - Werkvergunning Portaal</title>
-    <link rel="stylesheet" href="../CSS/overzicht.css">
-    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
-    <link rel="stylesheet" href="../CSS/local-icons.css">
+    <link rel="stylesheet" href="../CSS/overzicht.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
 </head>
 <body>
 <header class="header">

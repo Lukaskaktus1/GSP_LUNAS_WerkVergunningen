@@ -37,9 +37,9 @@ $flash = getFlashMessage();
         <meta property="og:description" content="Login voor het werkvergunningen portaal. Leerlingen, leerkrachten en TA's kunnen hier inloggen.">
         <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
         
-        <link rel="stylesheet" href="CSS/style.css">
-    <link rel="stylesheet" href="CSS/login.css">
-        <link rel="stylesheet" href="CSS/local-icons.css">
+        <link rel="stylesheet" href="CSS/style.css?v=20260608">
+    <link rel="stylesheet" href="CSS/login.css?v=20260608">
+        <link rel="stylesheet" href="CSS/local-icons.css?v=20260608">
 </head>
     <body>
         <div class="login-container">

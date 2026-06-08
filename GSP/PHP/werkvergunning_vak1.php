@@ -26,9 +26,9 @@ $overzichtPagina = match ($role) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Werkvergunning - Vak I</title>
-    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
-    <link rel="stylesheet" href="../CSS/werkvergunning_vak1.css">
-    <link rel="stylesheet" href="../CSS/local-icons.css">
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/werkvergunning_vak1.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
 </head>
 <body
     data-user-role="<?= e($role) ?>"
