@@ -43,6 +43,8 @@ function statusLabel(string $status): string
     <link rel="stylesheet" href="../CSS/overzicht.css?v=20260608">
     <link rel="stylesheet" href="../CSS/mijn_aanvragen.css?v=20260608">
     <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
+    <?= gspInlineCss(['overzicht.css', 'mijn_aanvragen.css', 'local-icons.css']) ?>
+    <?= gspOverviewCriticalCss() ?>
 </head>
 <body>
 <header class="header">
