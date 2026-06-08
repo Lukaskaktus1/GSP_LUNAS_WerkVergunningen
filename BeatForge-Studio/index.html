@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeatForge Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="studio-shell">
+    <header class="topbar">
+      <section class="brand-block" aria-label="Projectinformatie">
+        <div class="brand-mark">BF</div>
+        <div>
+          <h1>BeatForge Studio</h1>
+          <p id="statusText">Klaar</p>
+        </div>
+      </section>
+
+      <section class="transport" aria-label="Transport">
+        <button class="icon-button play" id="playButton" type="button" title="Play">
+          <span aria-hidden="true">&gt;</span>
+          <span class="button-text">Play</span>
+        </button>
+        <button class="icon-button stop" id="stopButton" type="button" title="Stop">
+          <span aria-hidden="true">[]</span>
+          <span class="button-text">Stop</span>
+        </button>
+        <label class="bpm-control" for="bpmInput">
+          <span>BPM</span>
+          <input id="bpmInput" type="number" value="120" min="60" max="220">
+        </label>
+      </section>
+
+      <section class="project-actions" aria-label="Projectacties">
+        <label class="file-action" for="sampleUpload">
+          <span aria-hidden="true">+</span>
+          Sample
+        </label>
+        <input id="sampleUpload" type="file" accept="audio/*" multiple>
+        <button id="fillButton" type="button">Starter beat</button>
+        <button id="clearTrackButton" type="button">Track leeg</button>
+        <button id="resetButton" type="button">Reset</button>
+        <button id="saveButton" type="button">Save</button>
+        <button id="loadButton" type="button">Load</button>
+        <button class="disabled-action" type="button" disabled>Export</button>
+      </section>
+    </header>
+
+    <section class="timeline-strip" aria-label="Timeline">
+      <div class="timeline-label">Pattern A</div>
+      <div class="timeline-steps" id="timelineSteps"></div>
+    </section>
+
+    <section class="workspace">
+      <details class="sample-browser side-panel" aria-label="Sample browser" open>
+        <summary class="panel-heading collapsible-heading">
+          <h2>Samples</h2>
+          <span><span id="sampleCount">0</span> sounds</span>
+        </summary>
+        <div class="panel-content">
+          <p class="hint">Sleep een sample naar een vakje, of kies een track en klik op Use.</p>
+          <div class="track-picker" id="trackPicker"></div>
+          <ul class="sample-list" id="sampleList"></ul>
+        </div>
+      </details>
+
+      <section class="sequencer-panel" aria-label="Step sequencer">
+        <div class="panel-heading sequencer-heading">
+          <div>
+            <h2>Step Sequencer</h2>
+            <p>Sleep samples naar cellen om direct te plaatsen</p>
+          </div>
+          <div class="step-readout" id="stepReadout">Step 01</div>
+        </div>
+        <div class="step-header" id="stepHeader"></div>
+        <div class="grid-wrap">
+          <div class="track-labels" id="trackLabels"></div>
+          <div class="step-grid" id="stepGrid"></div>
+        </div>
+      </section>
+
+      <details class="mixer-panel side-panel" aria-label="Mixer" open>
+        <summary class="panel-heading collapsible-heading">
+          <h2>Mixer</h2>
+          <span>8 ch</span>
+        </summary>
+        <div class="panel-content">
+          <div class="mixer-list" id="mixerList"></div>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
