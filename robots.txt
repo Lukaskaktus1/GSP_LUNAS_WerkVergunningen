@@ -11,6 +11,7 @@ Allow: /Voortgang.html
 Allow: /Uren_Tracking.html
 Allow: /TijdLijn.html
 Allow: /Documentatie.html
+Allow: /BeatForge-Studio/
 Allow: /GSP/index.php
 Allow: /GSP/register.php
 Allow: /afbeeldingen/

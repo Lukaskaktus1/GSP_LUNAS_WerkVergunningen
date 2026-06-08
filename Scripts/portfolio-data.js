@@ -84,6 +84,19 @@
             statusOverride: "done",
             startDate: "2026-05-07",
             dueDate: "2026-05-18"
+        },
+        {
+            id: "beatforge",
+            title: "BeatForge Studio",
+            icon: "fa-music",
+            description: "Interactieve beatmaker met step sequencer, samples, mixer en piano roll.",
+            category: "Audio",
+            tags: ["beatforge", "studio", "muziek", "javascript"],
+            targetHours: 10,
+            statusOverride: "done",
+            startDate: "2026-05-20",
+            dueDate: "2026-06-08",
+            url: "BeatForge-Studio/index.html"
         }
     ];
 
@@ -190,6 +203,10 @@
 
         if (haystack.includes("documentatie") || haystack.includes("seo") || haystack.includes("optimalisatie")) {
             return "documentatie";
+        }
+
+        if (haystack.includes("beatforge") || haystack.includes("studio") || haystack.includes("muziek") || haystack.includes("audio") || haystack.includes("beatmaker")) {
+            return "beatforge";
         }
 
         if (haystack.includes("website") || haystack.includes("frontend") || haystack.includes("html") || haystack.includes("css") || haystack.includes("portfolio") || haystack.includes("contact") || haystack.includes("responsive") || haystack.includes("overzicht")) {
