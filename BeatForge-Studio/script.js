@@ -1,14 +1,31 @@
 const TRACK_COUNT = 8;
+const STORAGE_KEY = "beatforge-pattern-v2";
+const MIN_STEPS = 8;
+const MAX_STEPS = 32;
+
 let STEP_COUNT = 16;
-const STORAGE_KEY = "beatforge-pattern-v1";
+
+const categoryConfig = [
+  ["all", "All"],
+  ["kick", "Kicks"],
+  ["snare", "Snares"],
+  ["clap", "Claps"],
+  ["hat", "Hi-hats"],
+  ["bass", "Bass"],
+  ["melody", "Melody"],
+  ["fx", "FX"],
+  ["piano", "Piano"],
+  ["recording", "Recordings"],
+  ["uploaded", "Uploads"]
+];
 
 const defaultSamples = [
   { name: "Kick Classic", path: "samples/kick.wav", type: "kick", tone: "classic" },
-  { name: "Kick Deep", path: null, type: "kick", tone: "deep" },
+  { name: "Kick Deep 808", path: null, type: "kick", tone: "deep" },
   { name: "Kick Punch", path: null, type: "kick", tone: "punch" },
-  { name: "Kick Sub", path: null, type: "kick", tone: "sub" },
+  { name: "Kick Sub Clean", path: null, type: "kick", tone: "sub" },
   { name: "Snare Tight", path: "samples/snare.wav", type: "snare", tone: "tight" },
-  { name: "Snare Dust", path: null, type: "snare", tone: "dust" },
+  { name: "Snare Body", path: null, type: "snare", tone: "body" },
   { name: "Snare Bright", path: null, type: "snare", tone: "bright" },
   { name: "Clap Studio", path: "samples/clap.wav", type: "clap", tone: "studio" },
   { name: "Clap Wide", path: null, type: "clap", tone: "wide" },
@@ -18,11 +35,17 @@ const defaultSamples = [
   { name: "Bass Warm", path: "samples/bass.wav", type: "bass", tone: "warm" },
   { name: "Bass Acid", path: null, type: "bass", tone: "acid" },
   { name: "Bass Sub", path: null, type: "bass", tone: "sub" },
-  { name: "Melody Pluck", path: "samples/melody.wav", type: "melody", tone: "pluck" },
-  { name: "Melody Glass", path: null, type: "melody", tone: "glass" },
-  { name: "Melody Pad", path: null, type: "melody", tone: "pad" },
+  { name: "Lead Pluck", path: "samples/melody.wav", type: "melody", tone: "pluck" },
+  { name: "Lead Soft", path: null, type: "melody", tone: "soft" },
+  { name: "Pad Warm", path: null, type: "melody", tone: "pad" },
   { name: "FX Riser", path: null, type: "fx", tone: "riser" },
-  { name: "FX Zap", path: null, type: "fx", tone: "zap" }
+  { name: "FX Impact", path: null, type: "fx", tone: "impact" }
+];
+
+const pianoNotes = [
+  "C6", "B5", "A#5", "A5", "G#5", "G5", "F#5", "F5", "E5", "D#5", "D5", "C#5",
+  "C5", "B4", "A#4", "A4", "G#4", "G4", "F#4", "F4", "E4", "D#4", "D4", "C#4",
+  "C4", "B3", "A#3", "A3", "G#3", "G3", "F#3", "F3", "E3", "D#3", "D3", "C#3", "C3"
 ];
 
 const state = {
@@ -34,17 +57,14 @@ const state = {
   samples: [],
   tracks: [],
   pattern: [],
-  accents: [],
-  velocities: [],
   lengths: [],
   dragPaint: null,
-  editPaint: null,
+  gridGesture: null,
+  pianoGesture: null,
   skipNextClick: false,
-  modifierKeys: {
-    shift: false,
-    ctrl: false,
-    alt: false
-  }
+  mediaRecorder: null,
+  recordedChunks: [],
+  pianoNotes: []
 };
 
 const elements = {
@@ -62,6 +82,9 @@ const elements = {
   normalizeButton: document.getElementById("normalizeButton"),
   unmuteAllButton: document.getElementById("unmuteAllButton"),
   themeButton: document.getElementById("themeButton"),
+  showStudioButton: document.getElementById("showStudioButton"),
+  showPianoButton: document.getElementById("showPianoButton"),
+  backToStudioButton: document.getElementById("backToStudioButton"),
   saveButton: document.getElementById("saveButton"),
   loadButton: document.getElementById("loadButton"),
   bpmInput: document.getElementById("bpmInput"),
@@ -69,9 +92,15 @@ const elements = {
   densityInput: document.getElementById("densityInput"),
   densityValue: document.getElementById("densityValue"),
   categoryFilter: document.getElementById("categoryFilter"),
+  categoryTabs: document.getElementById("categoryTabs"),
   manualSoundName: document.getElementById("manualSoundName"),
   manualSoundType: document.getElementById("manualSoundType"),
   addSoundButton: document.getElementById("addSoundButton"),
+  recordSoundName: document.getElementById("recordSoundName"),
+  recordSoundType: document.getElementById("recordSoundType"),
+  recordButton: document.getElementById("recordButton"),
+  stopRecordButton: document.getElementById("stopRecordButton"),
+  recordStatus: document.getElementById("recordStatus"),
   statusText: document.getElementById("statusText"),
   sampleUpload: document.getElementById("sampleUpload"),
   sampleList: document.getElementById("sampleList"),
@@ -88,48 +117,38 @@ const elements = {
   stepDepthValue: document.getElementById("stepDepthValue"),
   modifierStatus: document.getElementById("modifierStatus"),
   stepCountMeta: document.getElementById("stepCountMeta"),
-  masterMeter: document.getElementById("masterMeter")
+  masterMeter: document.getElementById("masterMeter"),
+  pianoPage: document.getElementById("pianoPage"),
+  pianoNameInput: document.getElementById("pianoNameInput"),
+  pianoStepsInput: document.getElementById("pianoStepsInput"),
+  pianoLengthInput: document.getElementById("pianoLengthInput"),
+  pianoKeys: document.getElementById("pianoKeys"),
+  pianoRollGrid: document.getElementById("pianoRollGrid"),
+  playPianoButton: document.getElementById("playPianoButton"),
+  clearPianoButton: document.getElementById("clearPianoButton"),
+  addPianoSoundButton: document.getElementById("addPianoSoundButton")
 };
 
 function initializeStudio() {
   state.samples = defaultSamples.map((sample, index) => ({
     ...sample,
     id: `default-${index}`,
+    source: "default",
     buffer: null,
     loadFailed: false
   }));
 
   const starterTypes = ["kick", "snare", "clap", "hat", "hat", "bass", "melody", "fx"];
-
   state.tracks = Array.from({ length: TRACK_COUNT }, (_, index) => {
-    const sample = state.samples.find((item) => item.type === starterTypes[index]) || state.samples[index % state.samples.length];
-
-    return {
-      id: index,
-      sampleId: sample.id,
-      volume: 0.82,
-      muted: false
-    };
+    const sample = state.samples.find((item) => item.type === starterTypes[index]) || state.samples[index];
+    return { id: index, sampleId: sample.id, volume: 0.82, muted: false };
   });
 
-  state.pattern = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(false));
-  state.accents = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(false));
-  state.velocities = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(1));
-  state.lengths = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(1));
-
-  applyGridSizing();
-  renderMasterMeter();
-  renderTimeline();
-  renderStepHeader();
-  renderTrackPicker();
-  renderSampleList();
-  renderTrackLabels();
-  renderStepGrid();
-  renderMixer();
+  resetGrids();
   bindEvents();
-  updateDensityReadout();
-  updateStudioOverview();
-  updatePlaybackHighlight();
+  applyGridSizing();
+  renderEverything();
+  setStatus("Klaar");
 }
 
 function bindEvents() {
@@ -147,36 +166,67 @@ function bindEvents() {
   elements.normalizeButton.addEventListener("click", normalizeMixer);
   elements.unmuteAllButton.addEventListener("click", unmuteAllTracks);
   elements.themeButton.addEventListener("click", toggleTheme);
+  elements.showStudioButton.addEventListener("click", showStudioView);
+  elements.showPianoButton.addEventListener("click", showPianoView);
+  elements.backToStudioButton.addEventListener("click", showStudioView);
   elements.saveButton.addEventListener("click", savePattern);
   elements.loadButton.addEventListener("click", loadPattern);
   elements.bpmInput.addEventListener("change", clampBpm);
   elements.swingInput.addEventListener("change", clampSwing);
   elements.densityInput.addEventListener("input", updateDensityReadout);
-  elements.categoryFilter.addEventListener("change", renderSampleList);
+  elements.categoryFilter.addEventListener("change", () => {
+    renderCategoryTabs();
+    renderSampleList();
+  });
   elements.addSoundButton.addEventListener("click", addManualSound);
   elements.sampleUpload.addEventListener("change", handleSampleUpload);
-  window.addEventListener("keydown", handleModifierKeys);
-  window.addEventListener("keyup", handleModifierKeys);
-  window.addEventListener("mouseup", () => {
-    state.editPaint = null;
-  });
+  elements.recordButton.addEventListener("click", startRecording);
+  elements.stopRecordButton.addEventListener("click", stopRecording);
+  elements.pianoStepsInput.addEventListener("change", renderPianoRoll);
+  elements.pianoLengthInput.addEventListener("change", clampPianoLength);
+  elements.playPianoButton.addEventListener("click", playPianoPattern);
+  elements.clearPianoButton.addEventListener("click", clearPianoPattern);
+  elements.addPianoSoundButton.addEventListener("click", addPianoSound);
+  window.addEventListener("mouseup", endGestures);
+  window.addEventListener("keydown", (event) => updateModifierStatus(null, event));
+  window.addEventListener("keyup", (event) => updateModifierStatus(null, event));
+}
+
+function renderEverything() {
+  renderMasterMeter();
+  renderTimeline();
+  renderStepHeader();
+  renderCategoryTabs();
+  renderTrackPicker();
+  renderSampleList();
+  renderTrackLabels();
+  renderStepGrid();
+  renderMixer();
+  renderPianoRoll();
+  updateDensityReadout();
+  updateStudioOverview();
+  updatePlaybackHighlight();
+}
+
+function resetGrids() {
+  state.pattern = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(false));
+  state.lengths = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(1));
 }
 
 function renderMasterMeter() {
   elements.masterMeter.innerHTML = "";
-
   for (let index = 0; index < 24; index += 1) {
     const bar = document.createElement("span");
     bar.className = "meter-bar";
-    bar.style.height = `${22 + ((index * 17) % 55)}%`;
+    bar.style.height = `${20 + ((index * 13) % 58)}%`;
     elements.masterMeter.appendChild(bar);
   }
 }
 
 function renderTimeline() {
   elements.timelineSteps.innerHTML = "";
+  elements.timelineSteps.style.gridTemplateColumns = `repeat(${STEP_COUNT}, minmax(28px, 1fr))`;
   elements.stepCountMeta.textContent = `${STEP_COUNT} steps`;
-
   for (let step = 0; step < STEP_COUNT; step += 1) {
     const marker = document.createElement("div");
     marker.className = "timeline-step";
@@ -188,40 +238,39 @@ function renderTimeline() {
 
 function renderStepHeader() {
   elements.stepHeader.innerHTML = "<div></div>";
-
   for (let step = 0; step < STEP_COUNT; step += 1) {
-    const stepNumber = document.createElement("div");
-    stepNumber.className = `step-number${step % 4 === 0 ? " downbeat" : ""}`;
-    stepNumber.textContent = step + 1;
-    elements.stepHeader.appendChild(stepNumber);
+    const number = document.createElement("div");
+    number.className = `step-number${step % 4 === 0 ? " downbeat" : ""}`;
+    number.textContent = step + 1;
+    elements.stepHeader.appendChild(number);
   }
 }
 
-function renderTrackPicker() {
-  elements.trackPicker.innerHTML = "";
-
-  state.tracks.forEach((track, index) => {
+function renderCategoryTabs() {
+  elements.categoryTabs.innerHTML = "";
+  const selected = elements.categoryFilter.value;
+  categoryConfig.forEach(([value, label]) => {
+    const count = value === "all" ? state.samples.length : state.samples.filter((sample) => sample.type === value).length;
     const button = document.createElement("button");
-    button.className = `track-select-button${state.selectedTrack === index ? " selected" : ""}`;
+    button.className = `category-tab${selected === value ? " active" : ""}`;
     button.type = "button";
-    button.textContent = `T${index + 1}`;
+    button.textContent = `${label} ${count}`;
     button.addEventListener("click", () => {
-      selectTrack(index);
+      elements.categoryFilter.value = value;
+      renderCategoryTabs();
+      renderSampleList();
     });
-    elements.trackPicker.appendChild(button);
+    elements.categoryTabs.appendChild(button);
   });
 }
 
 function renderSampleList() {
   elements.sampleList.innerHTML = "";
-  const selectedCategory = elements.categoryFilter.value;
-  const visibleSamples = selectedCategory === "all"
-    ? state.samples
-    : state.samples.filter((sample) => sample.type === selectedCategory);
+  const category = elements.categoryFilter.value;
+  const samples = category === "all" ? state.samples : state.samples.filter((sample) => sample.type === category);
+  elements.sampleCount.textContent = samples.length;
 
-  elements.sampleCount.textContent = visibleSamples.length;
-
-  visibleSamples.forEach((sample) => {
+  samples.forEach((sample) => {
     const item = document.createElement("li");
     item.className = "sample-item";
     item.draggable = true;
@@ -232,25 +281,20 @@ function renderSampleList() {
     details.innerHTML = `
       <div class="sample-topline">
         <span class="sample-name">${escapeHtml(sample.name)}</span>
-        <span class="sample-type">${escapeHtml(sample.type || "sound")}</span>
+        <span class="sample-type">${escapeHtml(typeLabel(sample.type))}</span>
       </div>
-      <span class="sample-path">${escapeHtml(sample.path || `Synth ${sample.tone || "custom"}`)}</span>
+      <span class="sample-path">${escapeHtml(getSampleSubtitle(sample))}</span>
     `;
     details.appendChild(createWaveformElement(sample));
 
     const actions = document.createElement("div");
     actions.className = "sample-actions";
+    actions.append(createSampleButton("Play", "preview-button", () => previewSample(sample.id)));
+    actions.append(createSampleButton("Use", "", () => assignSampleToTrack(sample.id, state.selectedTrack)));
 
-    const previewButton = document.createElement("button");
-    previewButton.className = "preview-button";
-    previewButton.type = "button";
-    previewButton.textContent = "Play";
-    previewButton.addEventListener("click", () => previewSample(sample.id));
-
-    const assignButton = document.createElement("button");
-    assignButton.type = "button";
-    assignButton.textContent = "Use";
-    assignButton.addEventListener("click", () => assignSampleToTrack(sample.id, state.selectedTrack));
+    if (canDeleteSample(sample)) {
+      actions.append(createSampleButton("Delete", "delete-button", () => deleteSample(sample.id)));
+    }
 
     item.addEventListener("dragstart", (event) => {
       event.dataTransfer.setData("text/plain", sample.id);
@@ -259,22 +303,55 @@ function renderSampleList() {
       state.dragPaint = null;
       setStatus(`${sample.name} wordt gesleept`);
     });
-
     item.addEventListener("dragend", () => {
       item.classList.remove("dragging");
       clearDropTargets();
       state.dragPaint = null;
     });
 
-    actions.append(previewButton, assignButton);
     item.append(details, actions);
     elements.sampleList.appendChild(item);
   });
 }
 
+function createSampleButton(text, className, onClick) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = text;
+  if (className) {
+    button.className = className;
+  }
+  button.addEventListener("click", onClick);
+  return button;
+}
+
+function createWaveformElement(sample) {
+  const waveform = document.createElement("div");
+  waveform.className = "waveform-strip";
+  waveform.setAttribute("aria-hidden", "true");
+  for (let index = 0; index < 18; index += 1) {
+    const bar = document.createElement("span");
+    const seed = sample.name.length * 7 + index * 11 + (sample.tone || sample.type).length * 5;
+    bar.style.height = `${22 + (seed % 70)}%`;
+    waveform.appendChild(bar);
+  }
+  return waveform;
+}
+
+function renderTrackPicker() {
+  elements.trackPicker.innerHTML = "";
+  state.tracks.forEach((track, index) => {
+    const button = document.createElement("button");
+    button.className = `track-select-button${state.selectedTrack === index ? " selected" : ""}`;
+    button.type = "button";
+    button.textContent = `T${index + 1}`;
+    button.addEventListener("click", () => selectTrack(index));
+    elements.trackPicker.appendChild(button);
+  });
+}
+
 function renderTrackLabels() {
   elements.trackLabels.innerHTML = "";
-
   state.tracks.forEach((track, index) => {
     const sample = getSampleById(track.sampleId);
     const row = document.createElement("div");
@@ -286,7 +363,7 @@ function renderTrackLabels() {
         <strong>${escapeHtml(sample?.name || "Empty")}</strong>
         <small>${countActiveSteps(index)} steps actief</small>
       </span>
-      <span class="track-chip">${escapeHtml(sample?.type || "sound")}</span>
+      <span class="track-chip">${escapeHtml(typeLabel(sample?.type || "sound"))}</span>
     `;
     row.addEventListener("click", () => selectTrack(index));
     row.addEventListener("dragover", (event) => {
@@ -296,9 +373,8 @@ function renderTrackLabels() {
     row.addEventListener("dragleave", () => row.classList.remove("drop-target"));
     row.addEventListener("drop", (event) => {
       event.preventDefault();
-      const sampleId = event.dataTransfer.getData("text/plain");
       row.classList.remove("drop-target");
-      assignSampleToTrack(sampleId, index);
+      assignSampleToTrack(event.dataTransfer.getData("text/plain"), index);
     });
     elements.trackLabels.appendChild(row);
   });
@@ -306,37 +382,26 @@ function renderTrackLabels() {
 
 function renderStepGrid() {
   elements.stepGrid.innerHTML = "";
-
   for (let track = 0; track < TRACK_COUNT; track += 1) {
     for (let step = 0; step < STEP_COUNT; step += 1) {
       const cell = document.createElement("button");
       cell.className = [
         "step-cell",
         state.pattern[track][step] ? "active" : "",
-        state.accents[track][step] ? "accented" : "",
-        getVelocityClass(state.velocities[track][step]),
         getLengthClass(state.lengths[track][step])
       ].filter(Boolean).join(" ");
       cell.type = "button";
       cell.dataset.track = track;
       cell.dataset.step = step;
-      cell.title = `Track ${track + 1}, step ${step + 1} - Ctrl diepte, Alt lengte, Shift rij slepen`;
-      cell.addEventListener("mousedown", (event) => beginStepEdit(event, track, step));
-      cell.addEventListener("mouseenter", (event) => continueStepEdit(event, track, step));
+      cell.style.setProperty("--length-scale", state.lengths[track][step]);
+      cell.title = `Track ${track + 1}, step ${step + 1}`;
+      cell.addEventListener("mousedown", (event) => beginGridGesture(event, track, step));
+      cell.addEventListener("mouseenter", (event) => continueGridGesture(event, track, step));
       cell.addEventListener("click", (event) => handleStepClick(event, track, step));
-      cell.addEventListener("dragover", (event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = "copy";
-        if (event.shiftKey) {
-          previewShiftPaint(track, step);
-        } else {
-          clearRangePreview();
-          cell.classList.add("drop-target");
-        }
-      });
+      cell.addEventListener("dragover", (event) => handleSampleDragOver(event, track, step, cell));
       cell.addEventListener("dragenter", (event) => {
         if (event.shiftKey) {
-          previewShiftPaint(track, step);
+          previewSampleRange(track, step);
         }
       });
       cell.addEventListener("dragleave", () => {
@@ -346,8 +411,8 @@ function renderStepGrid() {
       });
       cell.addEventListener("drop", (event) => {
         event.preventDefault();
-        const sampleId = event.dataTransfer.getData("text/plain");
         cell.classList.remove("drop-target");
+        const sampleId = event.dataTransfer.getData("text/plain");
         if (event.shiftKey) {
           paintSampleRange(sampleId, track, step);
         } else {
@@ -361,12 +426,10 @@ function renderStepGrid() {
 
 function renderMixer() {
   elements.mixerList.innerHTML = "";
-
   state.tracks.forEach((track, index) => {
     const sample = getSampleById(track.sampleId);
     const channel = document.createElement("div");
     channel.className = "mixer-channel";
-
     channel.innerHTML = `
       <div class="channel-index">${index + 1}</div>
       <div class="channel-main">
@@ -376,60 +439,81 @@ function renderMixer() {
           <span class="volume-value">${Math.round(track.volume * 100)}%</span>
         </div>
       </div>
-      <button class="mute-button${track.muted ? " muted" : ""}" type="button" title="Mute track ${index + 1}">M</button>
+      <button class="mute-button${track.muted ? " muted" : ""}" type="button">M</button>
     `;
-
     const volumeInput = channel.querySelector("input");
     const volumeValue = channel.querySelector(".volume-value");
     const muteButton = channel.querySelector(".mute-button");
-
     volumeInput.addEventListener("input", () => {
       track.volume = Number(volumeInput.value);
       volumeValue.textContent = `${Math.round(track.volume * 100)}%`;
     });
-
     muteButton.addEventListener("click", () => {
       track.muted = !track.muted;
       muteButton.classList.toggle("muted", track.muted);
-      setStatus(track.muted ? `Track ${index + 1} muted` : `Track ${index + 1} unmuted`);
+      setStatus(track.muted ? `Track ${index + 1} muted` : `Track ${index + 1} aan`);
     });
-
     elements.mixerList.appendChild(channel);
   });
 }
 
-function beginStepEdit(event, track, step) {
-  if (!event.ctrlKey && !event.metaKey && !event.altKey) {
+function beginGridGesture(event, track, step) {
+  if (event.ctrlKey || event.metaKey) {
+    event.preventDefault();
+    state.gridGesture = { mode: "steps", startStep: step, startCount: STEP_COUNT };
+    state.skipNextClick = true;
+    updateModifierStatus("Ctrl: sleep links/rechts voor minder/meer steps");
     return;
   }
 
-  event.preventDefault();
-  const mode = event.altKey ? "length" : "velocity";
-  const direction = event.shiftKey ? -1 : 1;
-  state.editPaint = {
-    track,
-    mode,
-    direction
-  };
-  state.skipNextClick = true;
-  applyStepEdit(mode, track, step, direction);
+  if (event.altKey) {
+    event.preventDefault();
+    state.gridGesture = { mode: "length", track, step, startStep: step, startLength: state.lengths[track][step] || 1 };
+    state.pattern[track][step] = true;
+    state.skipNextClick = true;
+    updateModifierStatus("Alt: cel korter/langer maken");
+    updateStepCell(track, step);
+    return;
+  }
+
+  if (event.shiftKey) {
+    event.preventDefault();
+    state.gridGesture = { mode: "select", track, startStep: step };
+    state.skipNextClick = true;
+    paintStepRange(track, step);
+    updateModifierStatus("Shift: horizontaal selecteren");
+  }
 }
 
-function continueStepEdit(event, track, step) {
-  if (!state.editPaint || event.buttons !== 1 || state.editPaint.track !== track) {
+function continueGridGesture(event, track, step) {
+  if (!state.gridGesture || event.buttons !== 1) {
     return;
   }
 
-  applyStepEdit(state.editPaint.mode, track, step, state.editPaint.direction);
+  if (state.gridGesture.mode === "steps") {
+    const delta = step - state.gridGesture.startStep;
+    resizeSteps(state.gridGesture.startCount + delta, true);
+    return;
+  }
+
+  if (state.gridGesture.mode === "length" && track === state.gridGesture.track) {
+    const delta = step - state.gridGesture.startStep;
+    const nextLength = clampNumber(state.gridGesture.startLength + delta * 0.5, 0.5, 4);
+    state.lengths[track][state.gridGesture.step] = nextLength;
+    updateStepCell(track, state.gridGesture.step);
+    setStatus(`Lengte: ${nextLength}x`);
+    return;
+  }
+
+  if (state.gridGesture.mode === "select" && track === state.gridGesture.track) {
+    paintStepRange(track, step);
+  }
 }
 
-function applyStepEdit(mode, track, step, direction) {
-  if (mode === "length") {
-    changeStepLength(track, step, direction);
-    return;
-  }
-
-  changeStepVelocity(track, step, direction);
+function endGestures() {
+  state.gridGesture = null;
+  state.pianoGesture = null;
+  updateModifierStatus();
 }
 
 function handleStepClick(event, track, step) {
@@ -437,157 +521,61 @@ function handleStepClick(event, track, step) {
     state.skipNextClick = false;
     return;
   }
-
-  if (event.ctrlKey || event.metaKey) {
-    changeStepVelocity(track, step, event.shiftKey ? -1 : 1);
-    return;
-  }
-
-  if (event.altKey) {
-    changeStepLength(track, step, event.shiftKey ? -1 : 1);
-    return;
-  }
-
-  toggleStep(track, step);
-}
-
-function toggleStep(track, step) {
   state.pattern[track][step] = !state.pattern[track][step];
   if (!state.pattern[track][step]) {
-    state.accents[track][step] = false;
-    state.velocities[track][step] = 1;
     state.lengths[track][step] = 1;
   }
-  const cell = elements.stepGrid.querySelector(`[data-track="${track}"][data-step="${step}"]`);
-  cell.classList.toggle("active", state.pattern[track][step]);
-  cell.classList.remove("accented");
+  updateStepCell(track, step);
   renderTrackLabels();
   updateStudioOverview();
 }
 
-function changeStepVelocity(track, step, direction) {
-  state.pattern[track][step] = true;
-  const values = [0.55, 0.8, 1, 1.25];
-  const currentIndex = getClosestValueIndex(values, state.velocities[track][step]);
-  const nextIndex = Math.min(values.length - 1, Math.max(0, currentIndex + direction));
-  state.velocities[track][step] = values[nextIndex];
-  state.accents[track][step] = state.velocities[track][step] > 1;
-  updateStepCellVisual(track, step);
-  renderTrackLabels();
-  updatePlaybackHighlight();
-  updateStudioOverview();
-  setStatus(`Diepte step ${step + 1}: ${Math.round(state.velocities[track][step] * 100)}%`);
-}
-
-function changeStepLength(track, step, direction) {
-  state.pattern[track][step] = true;
-  const values = [0.5, 1, 1.5, 2];
-  const currentIndex = getClosestValueIndex(values, state.lengths[track][step]);
-  const nextIndex = Math.min(values.length - 1, Math.max(0, currentIndex + direction));
-  state.lengths[track][step] = values[nextIndex];
-  updateStepCellVisual(track, step);
-  renderTrackLabels();
-  updatePlaybackHighlight();
-  updateStudioOverview();
-  setStatus(`Lengte step ${step + 1}: ${state.lengths[track][step]}x`);
-}
-
-function updateStepCellVisual(track, step) {
-  const cell = elements.stepGrid.querySelector(`[data-track="${track}"][data-step="${step}"]`);
-
-  if (!cell) {
-    return;
-  }
-
-  const isPlaying = cell.classList.contains("playing");
-  cell.className = [
-    "step-cell",
-    state.pattern[track][step] ? "active" : "",
-    state.accents[track][step] ? "accented" : "",
-    getVelocityClass(state.velocities[track][step]),
-    getLengthClass(state.lengths[track][step]),
-    isPlaying ? "playing" : ""
-  ].filter(Boolean).join(" ");
-}
-
-function getClosestValueIndex(values, currentValue) {
-  return values.reduce((bestIndex, value, index) => {
-    const bestDistance = Math.abs(values[bestIndex] - currentValue);
-    const distance = Math.abs(value - currentValue);
-    return distance < bestDistance ? index : bestIndex;
-  }, 0);
-}
-
-function selectTrack(trackIndex) {
-  state.selectedTrack = trackIndex;
-  renderTrackPicker();
-  renderTrackLabels();
-  updateStudioOverview();
-  setStatus(`Track ${trackIndex + 1} geselecteerd`);
-}
-
-function placeSampleOnStep(sampleId, trackIndex, stepIndex) {
-  const sample = getSampleById(sampleId);
-
-  if (!sample) {
-    return;
-  }
-
-  state.selectedTrack = trackIndex;
-  state.tracks[trackIndex].sampleId = sampleId;
-  state.pattern[trackIndex][stepIndex] = true;
-  state.velocities[trackIndex][stepIndex] = Math.max(state.velocities[trackIndex][stepIndex], 1);
-  state.lengths[trackIndex][stepIndex] = state.lengths[trackIndex][stepIndex] || 1;
-
-  renderTrackPicker();
-  renderTrackLabels();
-  renderMixer();
-
-  const cell = elements.stepGrid.querySelector(`[data-track="${trackIndex}"][data-step="${stepIndex}"]`);
-  cell?.classList.add("active");
-  updateStudioOverview();
-  setStatus(`${sample.name} op track ${trackIndex + 1}, step ${stepIndex + 1}`);
-}
-
-function previewShiftPaint(trackIndex, stepIndex) {
-  if (!state.dragPaint || state.dragPaint.track !== trackIndex) {
-    state.dragPaint = {
-      track: trackIndex,
-      startStep: stepIndex
-    };
-  }
-
-  clearRangePreview();
-  getStepRange(state.dragPaint.startStep, stepIndex).forEach((step) => {
-    const cell = elements.stepGrid.querySelector(`[data-track="${trackIndex}"][data-step="${step}"]`);
-    cell?.classList.add("range-preview");
-  });
-}
-
-function paintSampleRange(sampleId, trackIndex, stepIndex) {
-  const sample = getSampleById(sampleId);
-
-  if (!sample) {
-    return;
-  }
-
-  if (!state.dragPaint || state.dragPaint.track !== trackIndex) {
-    state.dragPaint = {
-      track: trackIndex,
-      startStep: stepIndex
-    };
-  }
-
-  const range = getStepRange(state.dragPaint.startStep, stepIndex);
-  state.selectedTrack = trackIndex;
-  state.tracks[trackIndex].sampleId = sampleId;
-
+function paintStepRange(track, endStep) {
+  const range = getRange(state.gridGesture.startStep, endStep);
   range.forEach((step) => {
-    state.pattern[trackIndex][step] = true;
-    state.velocities[trackIndex][step] = Math.max(state.velocities[trackIndex][step], 1);
-    state.lengths[trackIndex][step] = state.lengths[trackIndex][step] || 1;
+    state.pattern[track][step] = true;
+    updateStepCell(track, step);
   });
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`${range.length} vakjes aangeduid op track ${track + 1}`);
+}
 
+function handleSampleDragOver(event, track, step, cell) {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "copy";
+  if (event.shiftKey) {
+    previewSampleRange(track, step);
+    return;
+  }
+  clearRangePreview();
+  cell.classList.add("drop-target");
+}
+
+function previewSampleRange(track, step) {
+  if (!state.dragPaint || state.dragPaint.track !== track) {
+    state.dragPaint = { track, startStep: step };
+  }
+  clearRangePreview();
+  getRange(state.dragPaint.startStep, step).forEach((rangeStep) => {
+    getCell(track, rangeStep)?.classList.add("range-preview");
+  });
+}
+
+function paintSampleRange(sampleId, track, step) {
+  const sample = getSampleById(sampleId);
+  if (!sample) {
+    return;
+  }
+  if (!state.dragPaint || state.dragPaint.track !== track) {
+    state.dragPaint = { track, startStep: step };
+  }
+  state.tracks[track].sampleId = sampleId;
+  state.selectedTrack = track;
+  const range = getRange(state.dragPaint.startStep, step);
+  range.forEach((rangeStep) => {
+    state.pattern[track][rangeStep] = true;
+  });
   state.dragPaint = null;
   clearRangePreview();
   renderTrackPicker();
@@ -595,22 +583,45 @@ function paintSampleRange(sampleId, trackIndex, stepIndex) {
   renderStepGrid();
   renderMixer();
   updateStudioOverview();
-  setStatus(`${sample.name} geplaatst op ${range.length} steps in track ${trackIndex + 1}`);
+  setStatus(`${sample.name} geplaatst op ${range.length} vakjes`);
 }
 
-function getStepRange(startStep, endStep) {
-  const min = Math.min(startStep, endStep);
-  const max = Math.max(startStep, endStep);
-  return Array.from({ length: max - min + 1 }, (_, index) => min + index);
+function placeSampleOnStep(sampleId, track, step) {
+  const sample = getSampleById(sampleId);
+  if (!sample) {
+    return;
+  }
+  state.tracks[track].sampleId = sampleId;
+  state.selectedTrack = track;
+  state.pattern[track][step] = true;
+  renderTrackPicker();
+  renderTrackLabels();
+  renderStepGrid();
+  renderMixer();
+  updateStudioOverview();
+  setStatus(`${sample.name} op track ${track + 1}, step ${step + 1}`);
+}
+
+function updateStepCell(track, step) {
+  const cell = getCell(track, step);
+  if (!cell) {
+    return;
+  }
+  const playing = cell.classList.contains("playing");
+  cell.className = [
+    "step-cell",
+    state.pattern[track][step] ? "active" : "",
+    getLengthClass(state.lengths[track][step]),
+    playing ? "playing" : ""
+  ].filter(Boolean).join(" ");
+  cell.style.setProperty("--length-scale", state.lengths[track][step]);
 }
 
 function assignSampleToTrack(sampleId, trackIndex) {
   const sample = getSampleById(sampleId);
-
   if (!sample) {
     return;
   }
-
   state.tracks[trackIndex].sampleId = sampleId;
   state.selectedTrack = trackIndex;
   renderTrackPicker();
@@ -620,242 +631,267 @@ function assignSampleToTrack(sampleId, trackIndex) {
   setStatus(`${sample.name} gekoppeld aan track ${trackIndex + 1}`);
 }
 
-function createWaveformElement(sample) {
-  const waveform = document.createElement("div");
-  waveform.className = "waveform-strip";
-  waveform.setAttribute("aria-hidden", "true");
-
-  for (let index = 0; index < 18; index += 1) {
-    const bar = document.createElement("span");
-    const seed = sample.name.length + index * 9 + (sample.type || "").length * 5;
-    bar.style.height = `${24 + (seed % 68)}%`;
-    waveform.appendChild(bar);
-  }
-
-  return waveform;
-}
-
-function getVelocityClass(value) {
-  if (value >= 1.18) {
-    return "depth-hard";
-  }
-
-  if (value >= 0.9) {
-    return "depth-mid";
-  }
-
-  if (value > 0) {
-    return "depth-soft";
-  }
-
-  return "";
-}
-
-function getLengthClass(value) {
-  if (value >= 1.5) {
-    return "length-long";
-  }
-
-  if (value <= 0.5) {
-    return "length-short";
-  }
-
-  return "";
-}
-
-async function previewSample(sampleId) {
+function deleteSample(sampleId) {
   const sample = getSampleById(sampleId);
+  if (!sample || !canDeleteSample(sample)) {
+    return;
+  }
+  const fallback = state.samples.find((item) => item.source === "default");
+  state.samples = state.samples.filter((item) => item.id !== sampleId);
+  state.tracks.forEach((track) => {
+    if (track.sampleId === sampleId) {
+      track.sampleId = fallback.id;
+    }
+  });
+  renderCategoryTabs();
+  renderSampleList();
+  renderTrackLabels();
+  renderMixer();
+  updateStudioOverview();
+  setStatus(`${sample.name} verwijderd`);
+}
 
-  if (!sample) {
+async function addManualSound() {
+  const type = elements.manualSoundType.value;
+  const name = elements.manualSoundName.value.trim() || `${typeLabel(type)} Custom ${state.samples.length + 1}`;
+  state.samples.push(createSynthSample(name, type, "custom", "manual"));
+  elements.manualSoundName.value = "";
+  elements.categoryFilter.value = type;
+  renderCategoryTabs();
+  renderSampleList();
+  setStatus(`${name} toegevoegd`);
+}
+
+async function handleSampleUpload(event) {
+  await ensureAudioContext();
+  const files = Array.from(event.target.files);
+  for (const file of files) {
+    try {
+      const buffer = await state.audioContext.decodeAudioData(await file.arrayBuffer());
+      state.samples.push({
+        id: `upload-${crypto.randomUUID()}`,
+        name: file.name.replace(/\.[^/.]+$/, ""),
+        path: file.name,
+        type: "uploaded",
+        tone: "audio",
+        source: "uploaded",
+        buffer,
+        loadFailed: false
+      });
+    } catch (error) {
+      setStatus(`${file.name} kon niet laden`);
+    }
+  }
+  event.target.value = "";
+  elements.categoryFilter.value = "uploaded";
+  renderCategoryTabs();
+  renderSampleList();
+  setStatus(`${files.length} upload${files.length === 1 ? "" : "s"} toegevoegd`);
+}
+
+async function startRecording() {
+  if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+    setStatus("Opnemen wordt niet ondersteund in deze browser");
     return;
   }
 
-  await ensureAudioContext();
-
-  if (state.audioContext.state === "suspended") {
-    await state.audioContext.resume();
-  }
-
-  if (!sample.buffer && !sample.loadFailed) {
-    await loadSampleBuffer(sample);
-  }
-
-  if (sample.buffer) {
-    const source = state.audioContext.createBufferSource();
-    const gain = state.audioContext.createGain();
-
-    source.buffer = sample.buffer;
-    source.playbackRate.value = 1;
-    gain.gain.value = 0.9;
-    source.connect(gain);
-    gain.connect(state.audioContext.destination);
-    source.start();
-  } else {
-    playFallbackSound(sample, 0.9, 1);
-  }
-
-  setStatus(`${sample.name} preview`);
-}
-
-function clearDropTargets() {
-  document.querySelectorAll(".drop-target").forEach((element) => element.classList.remove("drop-target"));
-  clearRangePreview();
-}
-
-function clearRangePreview() {
-  document.querySelectorAll(".range-preview").forEach((element) => element.classList.remove("range-preview"));
-}
-
-function fillStarterBeat() {
-  state.pattern = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(false));
-  state.accents = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(false));
-  state.velocities = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(1));
-  state.lengths = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(1));
-
-  state.tracks.forEach((track, trackIndex) => {
-    const sample = getSampleById(track.sampleId);
-    const type = sample?.type || "";
-    const name = sample?.name.toLowerCase() || "";
-    let steps = [];
-
-    if (type === "kick" || name.includes("kick")) {
-      steps = [0, 4, 8, 12];
-    } else if (type === "snare" || name.includes("snare")) {
-      steps = [4, 12];
-    } else if (type === "clap" || name.includes("clap")) {
-      steps = [6, 14];
-    } else if (type === "hat" || name.includes("hat")) {
-      steps = [2, 4, 6, 8, 10, 12, 14];
-    } else if (type === "bass" || name.includes("bass")) {
-      steps = [0, 3, 7, 10, 14];
-    } else if (type === "melody" || name.includes("melody")) {
-      steps = [2, 6, 10, 15];
-    }
-
-    steps.forEach((step) => {
-      state.pattern[trackIndex][step] = true;
-      state.accents[trackIndex][step] = step % 4 === 0;
-      state.velocities[trackIndex][step] = step % 4 === 0 ? 1.25 : 0.9;
-      state.lengths[trackIndex][step] = type === "bass" || type === "melody" ? 1.5 : 1;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    state.recordedChunks = [];
+    state.mediaRecorder = new MediaRecorder(stream);
+    state.mediaRecorder.addEventListener("dataavailable", (event) => {
+      if (event.data.size > 0) {
+        state.recordedChunks.push(event.data);
+      }
     });
-  });
-
-  renderStepGrid();
-  renderTrackLabels();
-  updatePlaybackHighlight();
-  updateStudioOverview();
-  setStatus("Starter beat geplaatst");
-}
-
-function clearSelectedTrack() {
-  state.pattern[state.selectedTrack] = Array(STEP_COUNT).fill(false);
-  state.accents[state.selectedTrack] = Array(STEP_COUNT).fill(false);
-  state.velocities[state.selectedTrack] = Array(STEP_COUNT).fill(1);
-  state.lengths[state.selectedTrack] = Array(STEP_COUNT).fill(1);
-  renderStepGrid();
-  renderTrackLabels();
-  updatePlaybackHighlight();
-  updateStudioOverview();
-  setStatus(`Track ${state.selectedTrack + 1} leeggemaakt`);
-}
-
-function randomizeSelectedTrack() {
-  const trackIndex = state.selectedTrack;
-  const sample = getSampleById(state.tracks[trackIndex].sampleId);
-  const density = clampDensity() / 100;
-  const type = sample?.type || "";
-
-  state.pattern[trackIndex] = Array.from({ length: STEP_COUNT }, (_, step) => {
-    const strongStep = step % 4 === 0;
-    const offbeat = step % 2 === 1;
-    let chance = density;
-
-    if (type === "kick") {
-      chance = strongStep ? density + 0.28 : density * 0.35;
-    } else if (type === "snare" || type === "clap") {
-      chance = step === 4 || step === 12 ? density + 0.34 : density * 0.24;
-    } else if (type === "hat") {
-      chance = offbeat ? density + 0.25 : density * 0.7;
-    } else if (type === "bass") {
-      chance = strongStep ? density + 0.16 : density * 0.48;
-    } else if (type === "melody") {
-      chance = strongStep || step % 3 === 0 ? density * 0.78 : density * 0.28;
-    } else if (type === "fx") {
-      chance = step === 0 || step === STEP_COUNT - 1 ? density * 0.7 : density * 0.12;
-    }
-
-    return Math.random() < Math.min(0.92, chance);
-  });
-
-  state.accents[trackIndex] = state.pattern[trackIndex].map((active, step) => active && step % 4 === 0);
-  state.velocities[trackIndex] = state.pattern[trackIndex].map((active, step) => {
-    if (!active) {
-      return 1;
-    }
-
-    return step % 4 === 0 ? 1.25 : 0.8 + Math.random() * 0.25;
-  });
-  state.lengths[trackIndex] = state.pattern[trackIndex].map((active) => {
-    if (!active) {
-      return 1;
-    }
-
-    return Math.random() > 0.78 ? 1.5 : 1;
-  });
-  renderStepGrid();
-  renderTrackLabels();
-  updateStudioOverview();
-  setStatus(`Variatie gemaakt voor track ${trackIndex + 1}`);
-}
-
-function shiftSelectedTrack(direction) {
-  const trackIndex = state.selectedTrack;
-  state.pattern[trackIndex] = rotateRow(state.pattern[trackIndex], direction);
-  state.accents[trackIndex] = rotateRow(state.accents[trackIndex], direction);
-  state.velocities[trackIndex] = rotateRow(state.velocities[trackIndex], direction);
-  state.lengths[trackIndex] = rotateRow(state.lengths[trackIndex], direction);
-  renderStepGrid();
-  renderTrackLabels();
-  updateStudioOverview();
-  setStatus(`Track ${trackIndex + 1} verschoven`);
-}
-
-function accentCurrentStep() {
-  const trackIndex = state.selectedTrack;
-  const stepIndex = state.currentStep;
-  state.pattern[trackIndex][stepIndex] = true;
-  state.accents[trackIndex][stepIndex] = !state.accents[trackIndex][stepIndex];
-  state.velocities[trackIndex][stepIndex] = state.accents[trackIndex][stepIndex] ? 1.25 : 1;
-  renderStepGrid();
-  updatePlaybackHighlight();
-  updateStudioOverview();
-  setStatus(`Accent op track ${trackIndex + 1}, step ${stepIndex + 1}`);
-}
-
-function rotateRow(row, direction) {
-  if (direction < 0) {
-    return row.slice(1).concat(row[0]);
+    state.mediaRecorder.addEventListener("stop", () => finishRecording(stream));
+    state.mediaRecorder.start();
+    elements.recordButton.disabled = true;
+    elements.stopRecordButton.disabled = false;
+    elements.recordStatus.textContent = "Recording...";
+    setStatus("Opname gestart");
+  } catch (error) {
+    setStatus("Microfoon toestemming geweigerd of niet beschikbaar");
   }
+}
 
-  return [row[row.length - 1]].concat(row.slice(0, -1));
+function stopRecording() {
+  if (state.mediaRecorder?.state === "recording") {
+    state.mediaRecorder.stop();
+  }
+}
+
+async function finishRecording(stream) {
+  stream.getTracks().forEach((track) => track.stop());
+  elements.recordButton.disabled = false;
+  elements.stopRecordButton.disabled = true;
+  elements.recordStatus.textContent = "Opname opgeslagen in sounds";
+
+  await ensureAudioContext();
+  const type = elements.recordSoundType.value;
+  const name = elements.recordSoundName.value.trim() || `Recording ${state.samples.length + 1}`;
+  const blob = new Blob(state.recordedChunks, { type: state.recordedChunks[0]?.type || "audio/webm" });
+
+  try {
+    const buffer = await state.audioContext.decodeAudioData(await blob.arrayBuffer());
+    state.samples.push({
+      id: `record-${crypto.randomUUID()}`,
+      name,
+      path: "Browser recording",
+      type,
+      tone: "recording",
+      source: "recording",
+      buffer,
+      loadFailed: false
+    });
+    elements.recordSoundName.value = "";
+    elements.categoryFilter.value = type;
+    renderCategoryTabs();
+    renderSampleList();
+    setStatus(`${name} opgenomen`);
+  } catch (error) {
+    setStatus("Opname kon niet als audio geladen worden");
+  }
+}
+
+function renderPianoRoll() {
+  const steps = clampPianoSteps();
+  elements.pianoKeys.innerHTML = "";
+  elements.pianoRollGrid.innerHTML = "";
+  elements.pianoRollGrid.style.gridTemplateColumns = `repeat(${steps}, minmax(32px, 1fr))`;
+  elements.pianoRollGrid.style.gridTemplateRows = `repeat(${pianoNotes.length}, 28px)`;
+
+  pianoNotes.forEach((note) => {
+    const key = document.createElement("button");
+    key.className = `piano-key${note.includes("#") ? " sharp" : ""}`;
+    key.type = "button";
+    key.textContent = note;
+    key.addEventListener("click", () => playPianoNote(note, 0.8, 0.45));
+    elements.pianoKeys.appendChild(key);
+  });
+
+  pianoNotes.forEach((note, noteIndex) => {
+    for (let step = 0; step < steps; step += 1) {
+      const cell = document.createElement("button");
+      const noteInfo = getPianoNoteAt(note, step);
+      cell.className = `piano-cell${noteInfo ? " active" : ""}${noteInfo?.start === step ? " start" : ""}`;
+      cell.type = "button";
+      cell.dataset.note = note;
+      cell.dataset.step = step;
+      cell.textContent = noteInfo?.start === step ? note : "";
+      cell.addEventListener("mousedown", (event) => beginPianoGesture(event, note, step));
+      cell.addEventListener("mouseenter", (event) => continuePianoGesture(event, note, step));
+      cell.addEventListener("click", (event) => {
+        if (state.skipNextClick) {
+          state.skipNextClick = false;
+          return;
+        }
+        addOrRemovePianoNote(note, step, clampPianoLength());
+      });
+      elements.pianoRollGrid.appendChild(cell);
+    }
+  });
+}
+
+function beginPianoGesture(event, note, step) {
+  event.preventDefault();
+  state.pianoGesture = { note, start: step };
+  state.skipNextClick = true;
+  addOrUpdatePianoNote(note, step, clampPianoLength());
+}
+
+function continuePianoGesture(event, note, step) {
+  if (!state.pianoGesture || event.buttons !== 1 || state.pianoGesture.note !== note) {
+    return;
+  }
+  const length = Math.max(1, Math.abs(step - state.pianoGesture.start) + 1);
+  const start = Math.min(step, state.pianoGesture.start);
+  addOrUpdatePianoNote(note, start, length);
+}
+
+function addOrRemovePianoNote(note, step, length) {
+  const existingIndex = state.pianoNotes.findIndex((item) => item.note === note && step >= item.start && step < item.start + item.length);
+  if (existingIndex >= 0) {
+    state.pianoNotes.splice(existingIndex, 1);
+  } else {
+    addOrUpdatePianoNote(note, step, length);
+  }
+  renderPianoRoll();
+}
+
+function addOrUpdatePianoNote(note, start, length) {
+  const steps = clampPianoSteps();
+  state.pianoNotes = state.pianoNotes.filter((item) => !(item.note === note && item.start === start));
+  state.pianoNotes.push({ note, start, length: Math.min(length, steps - start), velocity: 0.86 });
+  renderPianoRoll();
+}
+
+function getPianoNoteAt(note, step) {
+  return state.pianoNotes.find((item) => item.note === note && step >= item.start && step < item.start + item.length);
+}
+
+function clearPianoPattern() {
+  state.pianoNotes = [];
+  renderPianoRoll();
+  setStatus("Piano roll leeggemaakt");
+}
+
+async function playPianoPattern() {
+  await ensureAudioContext();
+  const stepMs = getStepDuration(0);
+  state.pianoNotes.forEach((note) => {
+    const start = state.audioContext.currentTime + (note.start * stepMs) / 1000;
+    playPianoNote(note.note, note.velocity, (note.length * stepMs) / 1000, start);
+  });
+  setStatus("Piano beat speelt");
+}
+
+function addPianoSound() {
+  if (!state.pianoNotes.length) {
+    setStatus("Maak eerst minstens een piano noot");
+    return;
+  }
+  const name = elements.pianoNameInput.value.trim() || `Piano loop ${state.samples.length + 1}`;
+  state.samples.push({
+    id: `piano-${crypto.randomUUID()}`,
+    name,
+    path: `${state.pianoNotes.length} notes`,
+    type: "piano",
+    tone: "roll",
+    source: "piano",
+    pianoNotes: state.pianoNotes.map((note) => ({ ...note })),
+    pianoStepCount: clampPianoSteps(),
+    buffer: null,
+    loadFailed: false
+  });
+  elements.categoryFilter.value = "piano";
+  renderCategoryTabs();
+  renderSampleList();
+  showStudioView();
+  setStatus(`${name} toegevoegd aan Piano sounds`);
+}
+
+async function previewSample(sampleId) {
+  await ensureAudioContext();
+  const sample = getSampleById(sampleId);
+  if (!sample) {
+    return;
+  }
+  await playSample(sample, 0.9, 1, state.audioContext.currentTime);
+  setStatus(`${sample.name} preview`);
 }
 
 async function startPlayback() {
   await ensureAudioContext();
-
   if (state.audioContext.state === "suspended") {
     await state.audioContext.resume();
   }
-
   if (state.isPlaying) {
     return;
   }
-
   await preloadDefaultSamples();
   state.isPlaying = true;
   setStatus("Aan het spelen");
-
-  // The first hit plays immediately; the timeout loop advances from there.
   playCurrentStep();
   scheduleNextStep();
 }
@@ -871,13 +907,14 @@ function scheduleNextStep() {
 
 function playCurrentStep() {
   updatePlaybackHighlight();
-
   state.tracks.forEach((track, trackIndex) => {
     if (!state.pattern[trackIndex][state.currentStep] || track.muted) {
       return;
     }
-
-    playTrackSample(track, trackIndex);
+    const sample = getSampleById(track.sampleId);
+    if (sample) {
+      playSample(sample, track.volume, state.lengths[trackIndex][state.currentStep] || 1, state.audioContext.currentTime);
+    }
   });
 }
 
@@ -891,48 +928,122 @@ function stopPlayback() {
   setStatus("Gestopt");
 }
 
-function updatePlaybackHighlight() {
-  elements.stepReadout.textContent = `Step ${String(state.currentStep + 1).padStart(2, "0")}`;
-
-  document.querySelectorAll(".step-cell.playing").forEach((cell) => cell.classList.remove("playing"));
-  document.querySelectorAll(".timeline-step.playing").forEach((step) => step.classList.remove("playing"));
-
-  document.querySelectorAll(`.step-cell[data-step="${state.currentStep}"]`).forEach((cell) => {
-    cell.classList.add("playing");
-  });
-
-  const timelineStep = elements.timelineSteps.querySelector(`[data-step="${state.currentStep}"]`);
-  timelineStep?.classList.add("playing");
-  updateMasterMeter(calculateStepEnergy(state.currentStep));
-}
-
-async function playTrackSample(track, trackIndex) {
-  await ensureAudioContext();
-  const sample = getSampleById(track.sampleId);
-
-  if (!sample) {
+async function playSample(sample, volume, lengthFactor, startTime) {
+  if (sample.type === "piano" && sample.pianoNotes) {
+    playPianoSample(sample, volume, startTime);
     return;
   }
 
-  if (!sample.buffer && !sample.loadFailed) {
+  if (!sample.buffer && sample.path && !sample.loadFailed) {
     await loadSampleBuffer(sample);
   }
 
   if (sample.buffer) {
     const source = state.audioContext.createBufferSource();
     const gain = state.audioContext.createGain();
-    const stepLength = state.lengths[trackIndex]?.[state.currentStep] || 1;
-
     source.buffer = sample.buffer;
-    source.playbackRate.value = 1 / stepLength;
-    gain.gain.value = getTrackStepVolume(track, trackIndex);
+    source.playbackRate.value = 1 / lengthFactor;
+    gain.gain.value = volume;
     source.connect(gain);
     gain.connect(state.audioContext.destination);
-    source.start();
+    source.start(startTime);
     return;
   }
 
-  playFallbackSound(sample, getTrackStepVolume(track, trackIndex), state.lengths[trackIndex]?.[state.currentStep] || 1);
+  playSynthSample(sample, volume, lengthFactor, startTime);
+}
+
+function playPianoSample(sample, volume, startTime) {
+  const stepSeconds = getStepDuration(0) / 1000;
+  sample.pianoNotes.forEach((note) => {
+    playPianoNote(note.note, volume * note.velocity, note.length * stepSeconds, startTime + note.start * stepSeconds);
+  });
+}
+
+function playPianoNote(note, volume = 0.8, duration = 0.5, startTime = null) {
+  ensureAudioContext();
+  const start = startTime ?? state.audioContext.currentTime;
+  const frequency = noteToFrequency(note);
+  const oscillator = state.audioContext.createOscillator();
+  const gain = state.audioContext.createGain();
+  const filter = state.audioContext.createBiquadFilter();
+  oscillator.type = "triangle";
+  oscillator.frequency.value = frequency;
+  filter.type = "lowpass";
+  filter.frequency.value = 2800;
+  gain.gain.setValueAtTime(0.001, start);
+  gain.gain.exponentialRampToValueAtTime(Math.max(0.001, volume), start + 0.018);
+  gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+  oscillator.connect(filter);
+  filter.connect(gain);
+  gain.connect(state.audioContext.destination);
+  oscillator.start(start);
+  oscillator.stop(start + duration + 0.03);
+}
+
+function playSynthSample(sample, volume, lengthFactor, startTime) {
+  const now = startTime;
+  const oscillator = state.audioContext.createOscillator();
+  const gain = state.audioContext.createGain();
+  const filter = state.audioContext.createBiquadFilter();
+  const type = sample.type;
+  const tone = sample.tone || "classic";
+  oscillator.connect(filter);
+  filter.connect(gain);
+  gain.connect(state.audioContext.destination);
+  gain.gain.setValueAtTime(Math.max(0.001, volume), now);
+
+  if (type === "kick") {
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(tone === "sub" ? 88 : tone === "punch" ? 165 : 132, now);
+    oscillator.frequency.exponentialRampToValueAtTime(tone === "deep" || tone === "sub" ? 36 : 48, now + 0.18 * lengthFactor);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26 * lengthFactor);
+    oscillator.start(now);
+    oscillator.stop(now + 0.28 * lengthFactor);
+    return;
+  }
+
+  if (type === "snare" || type === "clap") {
+    oscillator.type = tone === "bright" || tone === "wide" ? "square" : "triangle";
+    oscillator.frequency.value = type === "clap" ? 1050 : tone === "body" ? 190 : 250;
+    filter.type = "highpass";
+    filter.frequency.value = tone === "body" ? 420 : 720;
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14 * lengthFactor);
+    oscillator.start(now);
+    oscillator.stop(now + 0.16 * lengthFactor);
+    return;
+  }
+
+  if (type === "hat") {
+    oscillator.type = "square";
+    oscillator.frequency.value = tone === "open" ? 6400 : tone === "tick" ? 8800 : 7400;
+    filter.type = "highpass";
+    filter.frequency.value = tone === "open" ? 3800 : 5200;
+    gain.gain.exponentialRampToValueAtTime(0.001, now + (tone === "open" ? 0.25 : 0.06) * lengthFactor);
+    oscillator.start(now);
+    oscillator.stop(now + (tone === "open" ? 0.26 : 0.07) * lengthFactor);
+    return;
+  }
+
+  if (type === "fx") {
+    oscillator.type = tone === "impact" ? "sine" : "sawtooth";
+    oscillator.frequency.setValueAtTime(tone === "impact" ? 92 : 260, now);
+    oscillator.frequency.exponentialRampToValueAtTime(tone === "impact" ? 42 : 1900, now + 0.35 * lengthFactor);
+    filter.type = tone === "impact" ? "lowpass" : "bandpass";
+    filter.frequency.value = tone === "impact" ? 560 : 850;
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38 * lengthFactor);
+    oscillator.start(now);
+    oscillator.stop(now + 0.4 * lengthFactor);
+    return;
+  }
+
+  oscillator.type = type === "bass" ? "sawtooth" : "triangle";
+  oscillator.frequency.value = type === "bass" ? (tone === "acid" ? 118 : tone === "sub" ? 54 : 82) : (tone === "pad" ? 260 : 380);
+  filter.type = "lowpass";
+  filter.frequency.value = type === "bass" ? (tone === "acid" ? 1100 : 420) : 1600;
+  gain.gain.exponentialRampToValueAtTime(0.001, now + (type === "bass" ? 0.26 : 0.36) * lengthFactor);
+  oscillator.start(now);
+  oscillator.stop(now + (type === "bass" ? 0.28 : 0.38) * lengthFactor);
 }
 
 async function ensureAudioContext() {
@@ -943,361 +1054,101 @@ async function ensureAudioContext() {
 }
 
 async function preloadDefaultSamples() {
-  await Promise.all(
-    state.samples
-      .filter((sample) => sample.path && !sample.buffer && !sample.loadFailed)
-      .map((sample) => loadSampleBuffer(sample))
-  );
+  await Promise.all(state.samples.filter((sample) => sample.path && !sample.buffer && !sample.loadFailed).map(loadSampleBuffer));
 }
 
 async function loadSampleBuffer(sample) {
-  if (!sample.path) {
+  if (!sample.path || sample.source === "uploaded" || sample.source === "recording") {
     return;
   }
-
   try {
     const response = await fetch(sample.path);
-
     if (!response.ok) {
-      throw new Error(`Sample not found: ${sample.path}`);
+      throw new Error("Sample not found");
     }
-
-    const arrayBuffer = await response.arrayBuffer();
-    sample.buffer = await state.audioContext.decodeAudioData(arrayBuffer);
+    sample.buffer = await state.audioContext.decodeAudioData(await response.arrayBuffer());
   } catch (error) {
     sample.loadFailed = true;
-    console.info(`${sample.name} uses generated fallback audio. Place a WAV file at ${sample.path} to use your own sample.`);
   }
 }
 
-function playFallbackSound(sampleOrType, volume, lengthFactor = 1) {
-  const type = typeof sampleOrType === "string" ? sampleOrType : sampleOrType.type;
-  const tone = typeof sampleOrType === "string" ? "classic" : sampleOrType.tone || "classic";
-  const now = state.audioContext.currentTime;
-  const safeVolume = Math.max(0.001, volume);
-  const oscillator = state.audioContext.createOscillator();
-  const gain = state.audioContext.createGain();
-  const filter = state.audioContext.createBiquadFilter();
-
-  oscillator.connect(filter);
-  filter.connect(gain);
-  gain.connect(state.audioContext.destination);
-
-  // Fallback sounds keep the app playable until real WAV files are added.
-  gain.gain.setValueAtTime(safeVolume, now);
-
-  if (type === "kick") {
-    oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(tone === "sub" ? 95 : tone === "punch" ? 165 : 135, now);
-    oscillator.frequency.exponentialRampToValueAtTime(tone === "deep" || tone === "sub" ? 34 : 48, now + 0.18 * lengthFactor);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24 * lengthFactor);
-    oscillator.start(now);
-    oscillator.stop(now + 0.26 * lengthFactor);
-    return;
-  }
-
-  if (type === "snare" || type === "clap") {
-    oscillator.type = tone === "bright" || tone === "wide" ? "square" : "triangle";
-    oscillator.frequency.value = type === "clap" ? (tone === "wide" ? 1200 : 900) : (tone === "dust" ? 180 : 260);
-    filter.type = "highpass";
-    filter.frequency.value = tone === "dust" ? 420 : 720;
-    gain.gain.exponentialRampToValueAtTime(0.001, now + (type === "clap" ? 0.16 : 0.12) * lengthFactor);
-    oscillator.start(now);
-    oscillator.stop(now + 0.17 * lengthFactor);
-    return;
-  }
-
-  if (type === "hat") {
-    oscillator.type = "square";
-    oscillator.frequency.value = tone === "open" ? 6400 : tone === "tick" ? 8800 : 7400;
-    filter.type = "highpass";
-    filter.frequency.value = tone === "open" ? 3800 : 5200;
-    gain.gain.exponentialRampToValueAtTime(0.001, now + (tone === "open" ? 0.24 : 0.055) * lengthFactor);
-    oscillator.start(now);
-    oscillator.stop(now + (tone === "open" ? 0.25 : 0.06) * lengthFactor);
-    return;
-  }
-
-  if (type === "fx") {
-    oscillator.type = tone === "zap" ? "square" : "sawtooth";
-    oscillator.frequency.setValueAtTime(tone === "zap" ? 1300 : 260, now);
-    oscillator.frequency.exponentialRampToValueAtTime(tone === "zap" ? 120 : 1900, now + 0.35 * lengthFactor);
-    filter.type = "bandpass";
-    filter.frequency.value = tone === "zap" ? 1400 : 850;
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.36 * lengthFactor);
-    oscillator.start(now);
-    oscillator.stop(now + 0.38 * lengthFactor);
-    return;
-  }
-
-  oscillator.type = "sawtooth";
-  oscillator.frequency.value = type === "bass" ? (tone === "acid" ? 118 : tone === "sub" ? 54 : 82) : (tone === "glass" ? 540 : tone === "pad" ? 260 : 330);
-  filter.type = "lowpass";
-  filter.frequency.value = type === "bass" ? (tone === "acid" ? 1100 : 420) : (tone === "pad" ? 900 : 1700);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + (type === "bass" ? 0.25 : 0.34) * lengthFactor);
-  oscillator.start(now);
-  oscillator.stop(now + (type === "bass" ? 0.26 : 0.36) * lengthFactor);
-}
-
-async function handleSampleUpload(event) {
-  await ensureAudioContext();
-  const files = Array.from(event.target.files);
-
-  for (const file of files) {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = await state.audioContext.decodeAudioData(arrayBuffer);
-      const sample = {
-        id: `upload-${crypto.randomUUID()}`,
-        name: file.name.replace(/\.[^/.]+$/, ""),
-        path: file.name,
-        type: "uploaded",
-        buffer,
-        loadFailed: false
-      };
-      const savedSample = await saveSampleOnServer(file);
-
-      if (savedSample) {
-        sample.name = savedSample.name;
-        sample.path = savedSample.path;
-      }
-
-      state.samples.push(sample);
-    } catch (error) {
-      setStatus(`${file.name} kon niet laden`);
-    }
-  }
-
-  event.target.value = "";
-  renderSampleList();
-  updateStudioOverview();
-  setStatus(`${files.length} sample${files.length === 1 ? "" : "s"} toegevoegd`);
-}
-
-async function saveSampleOnServer(file) {
-  if (!window.location.protocol.startsWith("http")) {
-    return null;
-  }
-
-  try {
-    const data = new FormData();
-    data.append("sample", file);
-
-    const response = await fetch("upload.php", {
-      method: "POST",
-      body: data
+function fillStarterBeat() {
+  resetGrids();
+  state.tracks.forEach((track, trackIndex) => {
+    const sample = getSampleById(track.sampleId);
+    const type = sample?.type || "";
+    let steps = [];
+    if (type === "kick") steps = [0, 4, 8, 12];
+    else if (type === "snare") steps = [4, 12];
+    else if (type === "clap") steps = [6, 14];
+    else if (type === "hat") steps = [2, 4, 6, 8, 10, 12, 14];
+    else if (type === "bass") steps = [0, 3, 7, 10, 14];
+    else if (type === "melody" || type === "piano") steps = [2, 6, 10, 15];
+    else if (type === "fx") steps = [0, 15];
+    steps.filter((step) => step < STEP_COUNT).forEach((step) => {
+      state.pattern[trackIndex][step] = true;
+      state.lengths[trackIndex][step] = type === "bass" || type === "piano" ? 1.5 : 1;
     });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    return await response.json();
-  } catch (error) {
-    return null;
-  }
+  });
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus("Starter beat geplaatst");
 }
 
-function getStepDuration(stepIndex = state.currentStep) {
-  const bpm = clampBpm();
-  const swing = clampSwing() / 100;
-  const baseDuration = (60 / bpm / 4) * 1000;
-  const swingOffset = baseDuration * swing * 0.5;
-  return stepIndex % 2 === 0 ? baseDuration + swingOffset : baseDuration - swingOffset;
+function randomizeSelectedTrack() {
+  const trackIndex = state.selectedTrack;
+  const sample = getSampleById(state.tracks[trackIndex].sampleId);
+  const density = clampDensity() / 100;
+  state.pattern[trackIndex] = Array.from({ length: STEP_COUNT }, (_, step) => {
+    const strong = step % 4 === 0;
+    const offbeat = step % 2 === 1;
+    let chance = density;
+    if (sample?.type === "kick") chance = strong ? density + 0.28 : density * 0.25;
+    else if (sample?.type === "snare" || sample?.type === "clap") chance = step === 4 || step === 12 ? density + 0.3 : density * 0.2;
+    else if (sample?.type === "hat") chance = offbeat ? density + 0.25 : density * 0.7;
+    else if (sample?.type === "fx") chance = step === 0 || step === STEP_COUNT - 1 ? density * 0.7 : density * 0.1;
+    return Math.random() < Math.min(0.95, chance);
+  });
+  state.lengths[trackIndex] = state.pattern[trackIndex].map((active) => active && Math.random() > 0.78 ? 1.5 : 1);
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Variatie gemaakt voor track ${trackIndex + 1}`);
 }
 
-function clampBpm() {
-  const bpm = Math.min(220, Math.max(60, Number(elements.bpmInput.value) || 120));
-  elements.bpmInput.value = bpm;
-  return bpm;
+function shiftSelectedTrack(direction) {
+  state.pattern[state.selectedTrack] = rotateRow(state.pattern[state.selectedTrack], direction);
+  state.lengths[state.selectedTrack] = rotateRow(state.lengths[state.selectedTrack], direction);
+  renderStepGrid();
+  renderTrackLabels();
+  setStatus(`Track ${state.selectedTrack + 1} verschoven`);
 }
 
-function clampSwing() {
-  const swing = Math.min(65, Math.max(0, Number(elements.swingInput.value) || 0));
-  elements.swingInput.value = swing;
-  return swing;
+function accentCurrentStep() {
+  const track = state.selectedTrack;
+  state.pattern[track][state.currentStep] = true;
+  state.lengths[track][state.currentStep] = state.lengths[track][state.currentStep] >= 1.5 ? 1 : 1.5;
+  updateStepCell(track, state.currentStep);
+  updateStudioOverview();
+  setStatus(`Accent/lengte aangepast op step ${state.currentStep + 1}`);
 }
 
-function clampDensity() {
-  const density = Math.min(90, Math.max(10, Number(elements.densityInput.value) || 42));
-  elements.densityInput.value = density;
-  elements.densityValue.textContent = `${density}%`;
-  return density;
-}
-
-function updateDensityReadout() {
-  clampDensity();
+function clearSelectedTrack() {
+  state.pattern[state.selectedTrack] = Array(STEP_COUNT).fill(false);
+  state.lengths[state.selectedTrack] = Array(STEP_COUNT).fill(1);
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Track ${state.selectedTrack + 1} leeggemaakt`);
 }
 
 function resetPattern() {
-  state.pattern = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(false));
-  state.accents = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(false));
-  state.velocities = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(1));
-  state.lengths = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(1));
+  resetGrids();
   renderStepGrid();
   renderTrackLabels();
-  updatePlaybackHighlight();
   updateStudioOverview();
   setStatus("Pattern leeggemaakt");
-}
-
-function savePattern() {
-  const data = {
-    bpm: clampBpm(),
-    selectedTrack: state.selectedTrack,
-    tracks: state.tracks.map((track) => ({
-      sampleId: track.sampleId,
-      volume: track.volume,
-      muted: track.muted
-    })),
-    customSamples: state.samples
-      .filter((sample) => sample.id.startsWith("manual-"))
-      .map((sample) => ({
-        id: sample.id,
-        name: sample.name,
-        type: sample.type,
-        tone: sample.tone || "custom"
-      })),
-    pattern: state.pattern,
-    accents: state.accents,
-    velocities: state.velocities,
-    lengths: state.lengths,
-    stepCount: STEP_COUNT,
-    swing: clampSwing(),
-    density: clampDensity(),
-    lightTheme: document.body.classList.contains("light-theme")
-  };
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  setStatus("Pattern opgeslagen");
-}
-
-function loadPattern() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-
-  if (!saved) {
-    setStatus("Geen opgeslagen pattern gevonden");
-    return;
-  }
-
-  try {
-    const data = JSON.parse(saved);
-    elements.bpmInput.value = data.bpm || 120;
-    elements.swingInput.value = data.swing || 0;
-    elements.densityInput.value = data.density || 42;
-    STEP_COUNT = Math.min(32, Math.max(8, Number(data.stepCount) || STEP_COUNT));
-    restoreCustomSamples(data.customSamples);
-    state.selectedTrack = data.selectedTrack || 0;
-    state.pattern = normalizePattern(data.pattern);
-    state.accents = normalizeAccents(data.accents, state.pattern);
-    state.velocities = normalizeNumberGrid(data.velocities, 1, state.pattern);
-    state.lengths = normalizeNumberGrid(data.lengths, 1, state.pattern);
-    state.tracks = normalizeTracks(data.tracks);
-    document.body.classList.toggle("light-theme", Boolean(data.lightTheme));
-    elements.themeButton.querySelector(".button-text").textContent = data.lightTheme ? "Dark" : "Light";
-
-    applyGridSizing();
-    renderTimeline();
-    renderStepHeader();
-    renderSampleList();
-    renderTrackPicker();
-    renderTrackLabels();
-    renderStepGrid();
-    renderMixer();
-    updateDensityReadout();
-    updateStudioOverview();
-    updatePlaybackHighlight();
-    setStatus("Pattern geladen");
-  } catch (error) {
-    setStatus("Opgeslagen pattern kon niet laden");
-  }
-}
-
-function normalizePattern(pattern) {
-  return Array.from({ length: TRACK_COUNT }, (_, trackIndex) => {
-    const row = Array.isArray(pattern?.[trackIndex]) ? pattern[trackIndex] : [];
-    return Array.from({ length: STEP_COUNT }, (_, stepIndex) => Boolean(row[stepIndex]));
-  });
-}
-
-function normalizeAccents(accents, pattern) {
-  return Array.from({ length: TRACK_COUNT }, (_, trackIndex) => {
-    const row = Array.isArray(accents?.[trackIndex]) ? accents[trackIndex] : [];
-    return Array.from({ length: STEP_COUNT }, (_, stepIndex) => Boolean(row[stepIndex]) && Boolean(pattern[trackIndex][stepIndex]));
-  });
-}
-
-function normalizeNumberGrid(grid, fallbackValue, pattern) {
-  return Array.from({ length: TRACK_COUNT }, (_, trackIndex) => {
-    const row = Array.isArray(grid?.[trackIndex]) ? grid[trackIndex] : [];
-    return Array.from({ length: STEP_COUNT }, (_, stepIndex) => {
-      const value = Number(row[stepIndex]);
-      return pattern[trackIndex][stepIndex] && Number.isFinite(value) ? value : fallbackValue;
-    });
-  });
-}
-
-function resizeSteps(nextCount) {
-  const safeCount = Math.min(32, Math.max(8, nextCount));
-
-  if (safeCount === STEP_COUNT) {
-    setStatus("Stappen blijven tussen 8 en 32");
-    return;
-  }
-
-  STEP_COUNT = safeCount;
-  resizeGridRows(state.pattern, false);
-  resizeGridRows(state.accents, false);
-  resizeGridRows(state.velocities, 1);
-  resizeGridRows(state.lengths, 1);
-  state.currentStep = Math.min(state.currentStep, STEP_COUNT - 1);
-
-  applyGridSizing();
-  renderTimeline();
-  renderStepHeader();
-  renderStepGrid();
-  renderTrackLabels();
-  updatePlaybackHighlight();
-  updateStudioOverview();
-  setStatus(`${STEP_COUNT} steps actief`);
-}
-
-function resizeGridRows(grid, fillValue) {
-  grid.forEach((row) => {
-    if (row.length > STEP_COUNT) {
-      row.splice(STEP_COUNT);
-      return;
-    }
-
-    while (row.length < STEP_COUNT) {
-      row.push(fillValue);
-    }
-  });
-}
-
-function applyGridSizing() {
-  document.documentElement.style.setProperty("--step-count", STEP_COUNT);
-  elements.stepCountMeta.textContent = `${STEP_COUNT} steps`;
-}
-
-function addManualSound() {
-  const type = elements.manualSoundType.value;
-  const name = elements.manualSoundName.value.trim() || `${typeLabel(type)} Custom ${state.samples.length + 1}`;
-
-  state.samples.push({
-    id: `manual-${crypto.randomUUID()}`,
-    name,
-    path: null,
-    type,
-    tone: "custom",
-    buffer: null,
-    loadFailed: false
-  });
-
-  elements.manualSoundName.value = "";
-  elements.categoryFilter.value = type;
-  renderSampleList();
-  setStatus(`${name} toegevoegd`);
 }
 
 function normalizeMixer() {
@@ -1305,7 +1156,6 @@ function normalizeMixer() {
     track.volume = 0.82;
     track.muted = false;
   });
-
   renderMixer();
   setStatus("Mixer genormaliseerd");
 }
@@ -1314,9 +1164,153 @@ function unmuteAllTracks() {
   state.tracks.forEach((track) => {
     track.muted = false;
   });
-
   renderMixer();
   setStatus("Alle tracks staan aan");
+}
+
+function resizeSteps(nextCount, quiet = false) {
+  const safeCount = Math.min(MAX_STEPS, Math.max(MIN_STEPS, nextCount));
+  if (safeCount === STEP_COUNT) {
+    return;
+  }
+  STEP_COUNT = safeCount;
+  resizeRows(state.pattern, false);
+  resizeRows(state.lengths, 1);
+  state.currentStep = Math.min(state.currentStep, STEP_COUNT - 1);
+  applyGridSizing();
+  renderTimeline();
+  renderStepHeader();
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  if (!quiet) {
+    setStatus(`${STEP_COUNT} steps actief`);
+  }
+}
+
+function resizeRows(grid, fillValue) {
+  grid.forEach((row) => {
+    while (row.length < STEP_COUNT) row.push(fillValue);
+    if (row.length > STEP_COUNT) row.splice(STEP_COUNT);
+  });
+}
+
+function applyGridSizing() {
+  document.documentElement.style.setProperty("--step-count", STEP_COUNT);
+  elements.stepCountMeta.textContent = `${STEP_COUNT} steps`;
+}
+
+function savePattern() {
+  const data = {
+    bpm: clampBpm(),
+    swing: clampSwing(),
+    density: clampDensity(),
+    selectedTrack: state.selectedTrack,
+    stepCount: STEP_COUNT,
+    tracks: state.tracks,
+    pattern: state.pattern,
+    lengths: state.lengths,
+    lightTheme: document.body.classList.contains("light-theme"),
+    customSamples: state.samples.filter(canDeleteSample).map(serializeSample)
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  setStatus("Pattern opgeslagen");
+}
+
+function loadPattern() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) {
+    setStatus("Geen opgeslagen pattern gevonden");
+    return;
+  }
+  try {
+    const data = JSON.parse(saved);
+    restoreCustomSamples(data.customSamples);
+    STEP_COUNT = Math.min(MAX_STEPS, Math.max(MIN_STEPS, Number(data.stepCount) || 16));
+    elements.bpmInput.value = data.bpm || 120;
+    elements.swingInput.value = data.swing || 0;
+    elements.densityInput.value = data.density || 42;
+    state.selectedTrack = Math.min(TRACK_COUNT - 1, data.selectedTrack || 0);
+    state.pattern = normalizeBooleanGrid(data.pattern);
+    state.lengths = normalizeNumberGrid(data.lengths, 1);
+    state.tracks = normalizeTracks(data.tracks);
+    document.body.classList.toggle("light-theme", Boolean(data.lightTheme));
+    elements.themeButton.querySelector(".button-text").textContent = data.lightTheme ? "Dark" : "Light";
+    applyGridSizing();
+    renderEverything();
+    setStatus("Pattern geladen");
+  } catch (error) {
+    setStatus("Opgeslagen pattern kon niet laden");
+  }
+}
+
+function serializeSample(sample) {
+  return {
+    id: sample.id,
+    name: sample.name,
+    path: sample.path,
+    type: sample.type,
+    tone: sample.tone,
+    source: sample.source,
+    pianoNotes: sample.pianoNotes,
+    pianoStepCount: sample.pianoStepCount
+  };
+}
+
+function restoreCustomSamples(samples = []) {
+  if (!Array.isArray(samples)) {
+    return;
+  }
+  samples.forEach((sample) => {
+    if (!sample?.id || state.samples.some((item) => item.id === sample.id)) {
+      return;
+    }
+    state.samples.push({ ...sample, buffer: null, loadFailed: false });
+  });
+}
+
+function normalizeTracks(tracks = []) {
+  return Array.from({ length: TRACK_COUNT }, (_, index) => {
+    const saved = tracks[index] || {};
+    const sampleExists = state.samples.some((sample) => sample.id === saved.sampleId);
+    return {
+      id: index,
+      sampleId: sampleExists ? saved.sampleId : state.tracks[index].sampleId,
+      volume: Number.isFinite(saved.volume) ? saved.volume : 0.82,
+      muted: Boolean(saved.muted)
+    };
+  });
+}
+
+function normalizeBooleanGrid(grid = []) {
+  return Array.from({ length: TRACK_COUNT }, (_, track) => {
+    const row = Array.isArray(grid[track]) ? grid[track] : [];
+    return Array.from({ length: STEP_COUNT }, (_, step) => Boolean(row[step]));
+  });
+}
+
+function normalizeNumberGrid(grid = [], fallback) {
+  return Array.from({ length: TRACK_COUNT }, (_, track) => {
+    const row = Array.isArray(grid[track]) ? grid[track] : [];
+    return Array.from({ length: STEP_COUNT }, (_, step) => Number(row[step]) || fallback);
+  });
+}
+
+function showStudioView() {
+  document.querySelectorAll(".studio-view").forEach((view) => view.classList.remove("hidden"));
+  elements.pianoPage.classList.add("hidden");
+  elements.showStudioButton.classList.add("active-view-button");
+  elements.showPianoButton.classList.remove("active-view-button");
+  setStatus("Studio view");
+}
+
+function showPianoView() {
+  document.querySelectorAll(".studio-view").forEach((view) => view.classList.add("hidden"));
+  elements.pianoPage.classList.remove("hidden");
+  elements.showStudioButton.classList.remove("active-view-button");
+  elements.showPianoButton.classList.add("active-view-button");
+  renderPianoRoll();
+  setStatus("Piano Roll view");
 }
 
 function toggleTheme() {
@@ -1325,75 +1319,30 @@ function toggleTheme() {
   setStatus(light ? "Light palette actief" : "Dark palette actief");
 }
 
-function handleModifierKeys(event) {
-  state.modifierKeys.shift = event.shiftKey;
-  state.modifierKeys.ctrl = event.ctrlKey || event.metaKey;
-  state.modifierKeys.alt = event.altKey;
-  updateModifierStatus();
+function updatePlaybackHighlight() {
+  elements.stepReadout.textContent = `Step ${String(state.currentStep + 1).padStart(2, "0")}`;
+  document.querySelectorAll(".step-cell.playing").forEach((cell) => cell.classList.remove("playing"));
+  document.querySelectorAll(".timeline-step.playing").forEach((step) => step.classList.remove("playing"));
+  document.querySelectorAll(`.step-cell[data-step="${state.currentStep}"]`).forEach((cell) => cell.classList.add("playing"));
+  elements.timelineSteps.querySelector(`[data-step="${state.currentStep}"]`)?.classList.add("playing");
+  updateMasterMeter(calculateStepEnergy(state.currentStep));
 }
 
-function updateModifierStatus() {
-  const active = [];
-
-  if (state.modifierKeys.shift) {
-    active.push("Shift rij-sleep");
-  }
-
-  if (state.modifierKeys.ctrl) {
-    active.push("Ctrl diepte");
-  }
-
-  if (state.modifierKeys.alt) {
-    active.push("Alt lengte");
-  }
-
-  elements.modifierStatus.textContent = active.length ? active.join(" + ") : "Geen modifier actief";
-  const selectedVelocity = state.velocities[state.selectedTrack]?.[state.currentStep] || 1;
-  elements.stepDepthValue.textContent = `${Math.round(selectedVelocity * 100)}%`;
-}
-
-function normalizeTracks(tracks) {
-  return Array.from({ length: TRACK_COUNT }, (_, index) => {
-    const savedTrack = tracks?.[index] || {};
-    const sampleExists = state.samples.some((sample) => sample.id === savedTrack.sampleId);
-
-    return {
-      id: index,
-      sampleId: sampleExists ? savedTrack.sampleId : state.tracks[index].sampleId,
-      volume: Number.isFinite(savedTrack.volume) ? savedTrack.volume : state.tracks[index].volume,
-      muted: Boolean(savedTrack.muted)
-    };
+function updateMasterMeter(energy) {
+  const safeEnergy = Math.max(0, Math.min(1, energy));
+  elements.masterMeter.querySelectorAll(".meter-bar").forEach((bar, index) => {
+    const active = safeEnergy > index / 24;
+    bar.classList.toggle("active", active);
+    bar.style.height = active ? `${36 + ((index * 11) % 58)}%` : `${18 + ((index * 7) % 28)}%`;
   });
 }
 
-function restoreCustomSamples(customSamples) {
-  if (!Array.isArray(customSamples)) {
-    return;
-  }
-
-  customSamples.forEach((sample) => {
-    if (!sample?.id || state.samples.some((item) => item.id === sample.id)) {
-      return;
-    }
-
-    state.samples.push({
-      id: sample.id,
-      name: sample.name || "Custom sound",
-      path: null,
-      type: sample.type || "fx",
-      tone: sample.tone || "custom",
-      buffer: null,
-      loadFailed: false
-    });
-  });
-}
-
-function getSampleById(sampleId) {
-  return state.samples.find((sample) => sample.id === sampleId);
-}
-
-function countActiveSteps(trackIndex) {
-  return state.pattern[trackIndex].filter(Boolean).length;
+function calculateStepEnergy(step) {
+  if (!state.isPlaying) return 0;
+  const energy = state.tracks.reduce((total, track, index) => {
+    return total + (state.pattern[index][step] && !track.muted ? track.volume : 0);
+  }, 0);
+  return Math.min(1, energy / 3.2);
 }
 
 function updateStudioOverview() {
@@ -1404,51 +1353,131 @@ function updateStudioOverview() {
   updateModifierStatus();
 }
 
-function updateMasterMeter(energy) {
-  const safeEnergy = Math.max(0, Math.min(1, energy));
-  elements.masterMeter.querySelectorAll(".meter-bar").forEach((bar, index) => {
-    const threshold = index / 24;
-    const active = safeEnergy > threshold;
-    bar.classList.toggle("active", active);
-    bar.style.height = active ? `${36 + ((index * 11) % 58)}%` : `${18 + ((index * 7) % 28)}%`;
-  });
-}
-
-function calculateStepEnergy(stepIndex) {
-  if (!state.isPlaying) {
-    return 0;
+function updateModifierStatus(message = null, keyEvent = null) {
+  const active = [];
+  if (message) active.push(message);
+  else {
+    if (keyEvent?.shiftKey) active.push("Shift: horizontaal aanduiden");
+    if (keyEvent?.ctrlKey || keyEvent?.metaKey) active.push("Ctrl: steps wijzigen");
+    if (keyEvent?.altKey) active.push("Alt: cel rekken");
   }
-
-  const energy = state.tracks.reduce((total, track, trackIndex) => {
-    if (!state.pattern[trackIndex][stepIndex] || track.muted) {
-      return total;
-    }
-
-    return total + getTrackStepVolume(track, trackIndex);
-  }, 0);
-
-  return Math.min(1, energy / 3.4);
+  elements.modifierStatus.textContent = active.length ? active.join(" + ") : "Geen modifier actief";
+  elements.stepDepthValue.textContent = `${STEP_COUNT} steps`;
 }
 
-function getTrackStepVolume(track, trackIndex) {
-  const accentBoost = state.accents[trackIndex]?.[state.currentStep] ? 1.22 : 1;
-  const depth = state.velocities[trackIndex]?.[state.currentStep] || 1;
-  return Math.min(1, track.volume * accentBoost * depth);
+function clampBpm() {
+  const bpm = clampNumber(Number(elements.bpmInput.value) || 120, 60, 220);
+  elements.bpmInput.value = bpm;
+  return bpm;
+}
+
+function clampSwing() {
+  const swing = clampNumber(Number(elements.swingInput.value) || 0, 0, 65);
+  elements.swingInput.value = swing;
+  return swing;
+}
+
+function clampDensity() {
+  const density = clampNumber(Number(elements.densityInput.value) || 42, 10, 90);
+  elements.densityInput.value = density;
+  elements.densityValue.textContent = `${density}%`;
+  return density;
+}
+
+function updateDensityReadout() {
+  clampDensity();
+}
+
+function getStepDuration(step = state.currentStep) {
+  const bpm = clampBpm();
+  const swing = clampSwing() / 100;
+  const base = (60 / bpm / 4) * 1000;
+  const offset = base * swing * 0.5;
+  return step % 2 === 0 ? base + offset : base - offset;
+}
+
+function clampPianoSteps() {
+  const steps = clampNumber(Number(elements.pianoStepsInput.value) || STEP_COUNT, MIN_STEPS, MAX_STEPS);
+  elements.pianoStepsInput.value = steps;
+  state.pianoNotes = state.pianoNotes.filter((note) => note.start < steps).map((note) => ({ ...note, length: Math.min(note.length, steps - note.start) }));
+  return steps;
+}
+
+function clampPianoLength() {
+  const length = clampNumber(Number(elements.pianoLengthInput.value) || 2, 1, 8);
+  elements.pianoLengthInput.value = length;
+  return length;
+}
+
+function getCell(track, step) {
+  return elements.stepGrid.querySelector(`[data-track="${track}"][data-step="${step}"]`);
+}
+
+function getRange(a, b) {
+  const min = Math.min(a, b);
+  const max = Math.max(a, b);
+  return Array.from({ length: max - min + 1 }, (_, index) => min + index);
+}
+
+function clearDropTargets() {
+  document.querySelectorAll(".drop-target").forEach((element) => element.classList.remove("drop-target"));
+  clearRangePreview();
+}
+
+function clearRangePreview() {
+  document.querySelectorAll(".range-preview").forEach((element) => element.classList.remove("range-preview"));
+}
+
+function getLengthClass(length) {
+  if (length >= 1.5) return "length-long";
+  if (length <= 0.75) return "length-short";
+  return "";
+}
+
+function rotateRow(row, direction) {
+  return direction < 0 ? row.slice(1).concat(row[0]) : [row[row.length - 1]].concat(row.slice(0, -1));
+}
+
+function createSynthSample(name, type, tone, source) {
+  return { id: `${source}-${crypto.randomUUID()}`, name, path: null, type, tone, source, buffer: null, loadFailed: false };
+}
+
+function getSampleById(id) {
+  return state.samples.find((sample) => sample.id === id);
+}
+
+function getSampleSubtitle(sample) {
+  if (sample.source === "piano") return `${sample.pianoNotes?.length || 0} piano notes`;
+  if (sample.source === "recording") return "Recorded audio";
+  if (sample.source === "uploaded") return sample.path || "Uploaded audio";
+  if (sample.path) return sample.path;
+  return `Synth ${sample.tone || "custom"}`;
+}
+
+function canDeleteSample(sample) {
+  return ["manual", "uploaded", "recording", "piano"].includes(sample.source);
+}
+
+function countActiveSteps(track) {
+  return state.pattern[track].filter(Boolean).length;
 }
 
 function typeLabel(type) {
-  const labels = {
-    kick: "Kick",
-    snare: "Snare",
-    clap: "Clap",
-    hat: "Hi-hat",
-    bass: "Bass",
-    melody: "Melody",
-    fx: "FX",
-    uploaded: "Upload"
-  };
-
+  const labels = { all: "All", kick: "Kick", snare: "Snare", clap: "Clap", hat: "Hi-hat", bass: "Bass", melody: "Melody", fx: "FX", piano: "Piano", recording: "Recording", uploaded: "Upload", sound: "Sound" };
   return labels[type] || "Sound";
+}
+
+function noteToFrequency(note) {
+  const noteNames = { C: 0, "C#": 1, D: 2, "D#": 3, E: 4, F: 5, "F#": 6, G: 7, "G#": 8, A: 9, "A#": 10, B: 11 };
+  const match = note.match(/^([A-G]#?)(\d)$/);
+  const semitone = noteNames[match[1]];
+  const octave = Number(match[2]);
+  const midi = (octave + 1) * 12 + semitone;
+  return 440 * Math.pow(2, (midi - 69) / 12);
+}
+
+function clampNumber(value, min, max) {
+  return Math.min(max, Math.max(min, value));
 }
 
 function setStatus(message) {

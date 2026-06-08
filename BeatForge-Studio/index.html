@@ -40,12 +40,14 @@
           <input id="swingInput" type="number" value="0" min="0" max="65">
         </label>
         <button class="icon-button theme-toggle" id="themeButton" type="button" title="Light palette">
-          <span aria-hidden="true">○</span>
+          <span aria-hidden="true">o</span>
           <span class="button-text">Light</span>
         </button>
       </section>
 
       <section class="project-actions" aria-label="Projectacties">
+        <button id="showStudioButton" type="button">Studio</button>
+        <button id="showPianoButton" type="button">Piano Roll</button>
         <label class="file-action" for="sampleUpload">
           <span aria-hidden="true">+</span>
           Sample
@@ -63,12 +65,12 @@
       </section>
     </header>
 
-    <section class="timeline-strip" aria-label="Timeline">
+    <section class="timeline-strip studio-view" aria-label="Timeline">
       <div class="timeline-label">Pattern A</div>
       <div class="timeline-steps" id="timelineSteps"></div>
     </section>
 
-    <section class="control-deck" aria-label="Studio overzicht">
+    <section class="control-deck studio-view" aria-label="Studio overzicht">
       <article class="deck-card selected-track-card">
         <span class="deck-label">Geselecteerde track</span>
         <strong id="selectedTrackName">Track 1</strong>
@@ -84,8 +86,8 @@
       </article>
 
       <article class="deck-card depth-card">
-        <span class="deck-label">Step diepte</span>
-        <strong id="stepDepthValue">100%</strong>
+        <span class="deck-label">Edit mode</span>
+        <strong id="stepDepthValue">Grid</strong>
         <span id="modifierStatus">Geen modifier actief</span>
       </article>
 
@@ -95,7 +97,7 @@
       </article>
     </section>
 
-    <section class="workspace">
+    <section class="workspace studio-view">
       <details class="sample-browser side-panel" aria-label="Sample browser" open>
         <summary class="panel-heading collapsible-heading">
           <h2>Samples</h2>
@@ -106,7 +108,8 @@
             <span>Library</span>
             <span>Drag ready</span>
           </div>
-          <p class="hint">Sleep een sample naar een vakje, of kies een track en klik op Use.</p>
+          <p class="hint">Kies een categorie, upload of record een sound, en sleep hem naar de beat.</p>
+          <div class="category-tabs" id="categoryTabs" aria-label="Sound categorieen"></div>
           <label class="panel-field" for="categoryFilter">
             <span>Categorie</span>
             <select id="categoryFilter">
@@ -118,6 +121,9 @@
               <option value="bass">Bass</option>
               <option value="melody">Melody</option>
               <option value="fx">FX</option>
+              <option value="piano">Piano</option>
+              <option value="recording">Recordings</option>
+              <option value="uploaded">Uploads</option>
             </select>
           </label>
           <div class="track-picker" id="trackPicker"></div>
@@ -132,8 +138,25 @@
               <option value="bass">Bass</option>
               <option value="melody">Melody</option>
               <option value="fx">FX</option>
+              <option value="piano">Piano</option>
             </select>
             <button id="addSoundButton" type="button">Toevoegen</button>
+          </section>
+          <section class="mini-menu" aria-label="Opnemen">
+            <h3>Record sound</h3>
+            <input id="recordSoundName" type="text" placeholder="Naam opname">
+            <select id="recordSoundType">
+              <option value="recording">Recording</option>
+              <option value="kick">Kick</option>
+              <option value="snare">Snare</option>
+              <option value="hat">Hi-hat</option>
+              <option value="fx">FX</option>
+            </select>
+            <div class="record-actions">
+              <button id="recordButton" type="button">Record</button>
+              <button id="stopRecordButton" type="button" disabled>Stop</button>
+            </div>
+            <span id="recordStatus">Microfoon klaar na toestemming</span>
           </section>
           <ul class="sample-list" id="sampleList"></ul>
         </div>
@@ -143,7 +166,7 @@
         <div class="panel-heading sequencer-heading">
           <div>
             <h2>Step Sequencer</h2>
-            <p>Shift sleept een rij, Ctrl wijzigt diepte, Alt wijzigt lengte</p>
+            <p>Shift selecteert horizontaal, Ctrl wijzigt aantal steps, Alt rekt een cel.</p>
           </div>
           <div class="sequencer-actions">
             <button id="addStepButton" type="button">+ Stap</button>
@@ -179,12 +202,48 @@
       </details>
     </section>
 
+    <section class="piano-page app-view hidden" id="pianoPage" aria-label="Piano Roll">
+      <header class="piano-hero">
+        <div>
+          <span class="deck-label">Piano Roll</span>
+          <h2>Maak een eigen piano beat</h2>
+          <p>Sleep horizontaal over de grid om noten te tekenen. Voeg daarna je loop toe als piano-sound.</p>
+        </div>
+        <div class="piano-actions">
+          <button id="backToStudioButton" type="button">Terug naar Studio</button>
+          <button id="playPianoButton" type="button">Play piano</button>
+          <button id="clearPianoButton" type="button">Leegmaken</button>
+          <button id="addPianoSoundButton" type="button">Toevoegen als sound</button>
+        </div>
+      </header>
+
+      <section class="piano-toolbar">
+        <label class="panel-field" for="pianoNameInput">
+          <span>Naam</span>
+          <input id="pianoNameInput" type="text" value="Piano loop">
+        </label>
+        <label class="panel-field" for="pianoStepsInput">
+          <span>Steps</span>
+          <input id="pianoStepsInput" type="number" min="8" max="32" value="16">
+        </label>
+        <label class="panel-field" for="pianoLengthInput">
+          <span>Nootlengte</span>
+          <input id="pianoLengthInput" type="number" min="1" max="8" value="2">
+        </label>
+      </section>
+
+      <section class="piano-roll-shell">
+        <div class="piano-keys" id="pianoKeys"></div>
+        <div class="piano-roll-grid" id="pianoRollGrid"></div>
+      </section>
+    </section>
+
     <footer class="studio-footer">
       <p>Alle rechten voorbehouden naar Jonas De Meersman</p>
       <a href="../Projecten.html">Portfolio site</a>
-      <span>Shift: rij vullen tijdens slepen</span>
-      <span>Ctrl: step-diepte groter/kleiner</span>
-      <span>Alt: lengte van een step aanpassen</span>
+      <span>Shift: horizontaal vakjes aanduiden</span>
+      <span>Ctrl: links/rechts slepen voor minder/meer steps</span>
+      <span>Alt: links/rechts slepen voor kortere/langere cel</span>
     </footer>
   </main>
 
