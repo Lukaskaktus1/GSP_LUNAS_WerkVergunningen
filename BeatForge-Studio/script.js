@@ -19,28 +19,77 @@ const categoryConfig = [
   ["uploaded", "Uploads"]
 ];
 
-const defaultSamples = [
-  { name: "Kick Classic", path: "samples/kick.wav", type: "kick", tone: "classic" },
-  { name: "Kick Deep 808", path: null, type: "kick", tone: "deep" },
-  { name: "Kick Punch", path: null, type: "kick", tone: "punch" },
-  { name: "Kick Sub Clean", path: null, type: "kick", tone: "sub" },
-  { name: "Snare Tight", path: "samples/snare.wav", type: "snare", tone: "tight" },
-  { name: "Snare Body", path: null, type: "snare", tone: "body" },
-  { name: "Snare Bright", path: null, type: "snare", tone: "bright" },
-  { name: "Clap Studio", path: "samples/clap.wav", type: "clap", tone: "studio" },
-  { name: "Clap Wide", path: null, type: "clap", tone: "wide" },
-  { name: "Hi-hat Closed", path: "samples/hihat.wav", type: "hat", tone: "closed" },
-  { name: "Hi-hat Open", path: null, type: "hat", tone: "open" },
-  { name: "Hi-hat Tick", path: null, type: "hat", tone: "tick" },
-  { name: "Bass Warm", path: "samples/bass.wav", type: "bass", tone: "warm" },
-  { name: "Bass Acid", path: null, type: "bass", tone: "acid" },
-  { name: "Bass Sub", path: null, type: "bass", tone: "sub" },
-  { name: "Lead Pluck", path: "samples/melody.wav", type: "melody", tone: "pluck" },
-  { name: "Lead Soft", path: null, type: "melody", tone: "soft" },
-  { name: "Pad Warm", path: null, type: "melody", tone: "pad" },
-  { name: "FX Riser", path: null, type: "fx", tone: "riser" },
-  { name: "FX Impact", path: null, type: "fx", tone: "impact" }
-];
+const soundBlueprints = {
+  kick: {
+    count: 28,
+    path: "samples/kick.wav",
+    names: ["Classic", "Deep 808", "Punch", "Sub Clean", "Club", "Tape", "Short", "Hard", "Round", "Dark", "Air", "Knock", "Boom", "Drive"],
+    tones: ["classic", "deep", "punch", "sub", "club", "tape", "short"]
+  },
+  snare: {
+    count: 24,
+    path: "samples/snare.wav",
+    names: ["Tight", "Body", "Bright", "Rim", "Snap", "Tape", "Dry", "Wide", "Soft", "Crack", "Studio", "Dark"],
+    tones: ["tight", "body", "bright", "rim", "snap", "tape"]
+  },
+  clap: {
+    count: 18,
+    path: "samples/clap.wav",
+    names: ["Studio", "Wide", "Short", "Room", "Stack", "Tape", "Clean", "Bright", "Dry"],
+    tones: ["studio", "wide", "short", "room", "stack", "bright"]
+  },
+  hat: {
+    count: 30,
+    path: "samples/hihat.wav",
+    names: ["Closed", "Open", "Tick", "Air", "Dust", "Sharp", "Soft", "Tight", "Metal", "Clean", "Trap", "House", "Short", "Long", "Stereo"],
+    tones: ["closed", "open", "tick", "air", "dust", "sharp", "soft"]
+  },
+  bass: {
+    count: 28,
+    path: "samples/bass.wav",
+    names: ["Warm", "Acid", "Sub", "Rubber", "Dark", "Round", "Drive", "Pulse", "Short", "Long", "Mono", "Deep", "Clean", "Growl"],
+    tones: ["warm", "acid", "sub", "rubber", "dark", "drive", "pulse"]
+  },
+  melody: {
+    count: 32,
+    path: "samples/melody.wav",
+    names: ["Lead Pluck", "Lead Soft", "Pad Warm", "Bell", "Keys", "Dream", "Pulse", "Arp", "Chord", "Glow", "Analog", "Digital", "Soft Pluck", "Bright Pad", "LoFi", "Clean"],
+    tones: ["pluck", "soft", "pad", "bell", "keys", "dream", "arp", "chord"]
+  },
+  fx: {
+    count: 24,
+    path: null,
+    names: ["Riser", "Impact", "Sweep", "Drop", "Noise Hit", "Reverse", "Zap", "Downlift", "Laser", "Sub Drop", "Vinyl Stop", "Air Hit"],
+    tones: ["riser", "impact", "sweep", "drop", "noise", "reverse", "zap", "downlift"]
+  },
+  piano: {
+    count: 16,
+    path: null,
+    names: ["Piano Clean", "Piano Warm", "Piano Soft", "Piano Bright", "Piano Chord", "Piano Pluck", "Piano House", "Piano LoFi"],
+    tones: ["clean", "warm", "soft", "bright", "chord", "pluck", "house", "lofi"]
+  }
+};
+
+const defaultSamples = buildDefaultSamples();
+
+function buildDefaultSamples() {
+  return Object.entries(soundBlueprints).flatMap(([type, config]) => {
+    return Array.from({ length: config.count }, (_, index) => {
+      const name = config.names[index % config.names.length];
+      const tone = config.tones[index % config.tones.length];
+      const bank = Math.floor(index / config.names.length) + 1;
+      const usesWav = Boolean(config.path) && index === 0;
+
+      return {
+        name: `${name} ${String(bank).padStart(2, "0")}`,
+        path: usesWav ? config.path : null,
+        type,
+        tone,
+        variant: index
+      };
+    });
+  });
+}
 
 const pianoNotes = [
   "C6", "B5", "A#5", "A5", "G#5", "G5", "F#5", "F5", "E5", "D#5", "D5", "C#5",
@@ -988,6 +1037,10 @@ function playSynthSample(sample, volume, lengthFactor, startTime) {
   const filter = state.audioContext.createBiquadFilter();
   const type = sample.type;
   const tone = sample.tone || "classic";
+  const variant = Number(sample.variant) || 0;
+  const pitchShift = 1 + ((variant % 9) - 4) * 0.018;
+  const decayShift = 1 + (variant % 5) * 0.08;
+  const filterShift = 1 + (variant % 7) * 0.055;
   oscillator.connect(filter);
   filter.connect(gain);
   gain.connect(state.audioContext.destination);
@@ -995,55 +1048,57 @@ function playSynthSample(sample, volume, lengthFactor, startTime) {
 
   if (type === "kick") {
     oscillator.type = "sine";
-    oscillator.frequency.setValueAtTime(tone === "sub" ? 88 : tone === "punch" ? 165 : 132, now);
-    oscillator.frequency.exponentialRampToValueAtTime(tone === "deep" || tone === "sub" ? 36 : 48, now + 0.18 * lengthFactor);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26 * lengthFactor);
+    oscillator.frequency.setValueAtTime((tone === "sub" ? 88 : tone === "punch" ? 165 : tone === "short" ? 142 : 132) * pitchShift, now);
+    oscillator.frequency.exponentialRampToValueAtTime((tone === "deep" || tone === "sub" ? 36 : 48) * pitchShift, now + 0.18 * lengthFactor);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24 * lengthFactor * decayShift);
     oscillator.start(now);
-    oscillator.stop(now + 0.28 * lengthFactor);
+    oscillator.stop(now + 0.3 * lengthFactor * decayShift);
     return;
   }
 
   if (type === "snare" || type === "clap") {
     oscillator.type = tone === "bright" || tone === "wide" ? "square" : "triangle";
-    oscillator.frequency.value = type === "clap" ? 1050 : tone === "body" ? 190 : 250;
+    oscillator.frequency.value = (type === "clap" ? 1050 : tone === "body" ? 190 : 250) * pitchShift;
     filter.type = "highpass";
-    filter.frequency.value = tone === "body" ? 420 : 720;
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14 * lengthFactor);
+    filter.frequency.value = (tone === "body" ? 420 : 720) * filterShift;
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13 * lengthFactor * decayShift);
     oscillator.start(now);
-    oscillator.stop(now + 0.16 * lengthFactor);
+    oscillator.stop(now + 0.17 * lengthFactor * decayShift);
     return;
   }
 
   if (type === "hat") {
     oscillator.type = "square";
-    oscillator.frequency.value = tone === "open" ? 6400 : tone === "tick" ? 8800 : 7400;
+    oscillator.frequency.value = (tone === "open" ? 6400 : tone === "tick" ? 8800 : tone === "soft" ? 5800 : 7400) * pitchShift;
     filter.type = "highpass";
-    filter.frequency.value = tone === "open" ? 3800 : 5200;
-    gain.gain.exponentialRampToValueAtTime(0.001, now + (tone === "open" ? 0.25 : 0.06) * lengthFactor);
+    filter.frequency.value = (tone === "open" ? 3800 : 5200) * filterShift;
+    gain.gain.exponentialRampToValueAtTime(0.001, now + (tone === "open" ? 0.25 : 0.055) * lengthFactor * decayShift);
     oscillator.start(now);
-    oscillator.stop(now + (tone === "open" ? 0.26 : 0.07) * lengthFactor);
+    oscillator.stop(now + (tone === "open" ? 0.27 : 0.075) * lengthFactor * decayShift);
     return;
   }
 
   if (type === "fx") {
     oscillator.type = tone === "impact" ? "sine" : "sawtooth";
-    oscillator.frequency.setValueAtTime(tone === "impact" ? 92 : 260, now);
-    oscillator.frequency.exponentialRampToValueAtTime(tone === "impact" ? 42 : 1900, now + 0.35 * lengthFactor);
+    oscillator.frequency.setValueAtTime((tone === "impact" ? 92 : tone === "zap" ? 1260 : 260) * pitchShift, now);
+    oscillator.frequency.exponentialRampToValueAtTime((tone === "impact" ? 42 : tone === "downlift" ? 180 : 1900) * pitchShift, now + 0.35 * lengthFactor);
     filter.type = tone === "impact" ? "lowpass" : "bandpass";
-    filter.frequency.value = tone === "impact" ? 560 : 850;
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38 * lengthFactor);
+    filter.frequency.value = (tone === "impact" ? 560 : 850) * filterShift;
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38 * lengthFactor * decayShift);
     oscillator.start(now);
-    oscillator.stop(now + 0.4 * lengthFactor);
+    oscillator.stop(now + 0.42 * lengthFactor * decayShift);
     return;
   }
 
-  oscillator.type = type === "bass" ? "sawtooth" : "triangle";
-  oscillator.frequency.value = type === "bass" ? (tone === "acid" ? 118 : tone === "sub" ? 54 : 82) : (tone === "pad" ? 260 : 380);
+  oscillator.type = type === "bass" ? (tone === "sub" ? "sine" : "sawtooth") : (type === "piano" ? "triangle" : "triangle");
+  oscillator.frequency.value = type === "bass"
+    ? (tone === "acid" ? 118 : tone === "sub" ? 54 : 82) * pitchShift
+    : (type === "piano" ? (tone === "bright" ? 520 : tone === "warm" ? 300 : 390) : tone === "pad" ? 260 : 380) * pitchShift;
   filter.type = "lowpass";
-  filter.frequency.value = type === "bass" ? (tone === "acid" ? 1100 : 420) : 1600;
-  gain.gain.exponentialRampToValueAtTime(0.001, now + (type === "bass" ? 0.26 : 0.36) * lengthFactor);
+  filter.frequency.value = type === "bass" ? (tone === "acid" ? 1100 : 420) * filterShift : (type === "piano" ? 2200 : 1600) * filterShift;
+  gain.gain.exponentialRampToValueAtTime(0.001, now + (type === "bass" ? 0.26 : type === "piano" ? 0.48 : 0.36) * lengthFactor * decayShift);
   oscillator.start(now);
-  oscillator.stop(now + (type === "bass" ? 0.28 : 0.38) * lengthFactor);
+  oscillator.stop(now + (type === "bass" ? 0.28 : type === "piano" ? 0.5 : 0.38) * lengthFactor * decayShift);
 }
 
 async function ensureAudioContext() {
