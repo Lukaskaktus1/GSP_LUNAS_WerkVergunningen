@@ -52,6 +52,7 @@
 .fa-database::before,
 .fa-server::before { content: "▦"; }
 .fa-desktop::before { content: "▭"; }
+.fa-music::before { content: "\266B"; }
 .fa-ellipsis-vertical::before { content: "⋮"; }
 .fa-users::before { content: "◎"; }
 .fa-pen-ruler::before { content: "⌁"; }

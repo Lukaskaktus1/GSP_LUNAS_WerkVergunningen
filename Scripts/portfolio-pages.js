@@ -63,6 +63,30 @@
         });
     }
 
+    function setupBeatForgeNavigation() {
+        const navList = document.querySelector(".sidebar .nav-list");
+
+        if (!navList || navList.querySelector("[data-nav-beatforge]")) {
+            return;
+        }
+
+        const item = document.createElement("li");
+        item.className = "nav-item";
+        item.dataset.navBeatforge = "true";
+        item.innerHTML = `
+            <a href="BeatForge-Studio/index.html" class="nav-link">
+                <span class="nav-icon"><i class="fa-solid fa-music"></i></span>
+                <span class="nav-text">BeatForge Studio</span>
+            </a>
+        `;
+
+        const gspLink = [...navList.querySelectorAll(".nav-link")]
+            .find((link) => link.getAttribute("href") === "/GSP/index.php");
+        const gspItem = gspLink?.closest(".nav-item");
+
+        navList.insertBefore(item, gspItem || null);
+    }
+
     function projectBadge(project) {
         return `<span class="badge ${app.statusClass(project.status)}">${app.statusLabel(project.status)}</span>`;
     }
@@ -146,6 +170,7 @@
 
                 <footer class="project-card__footer">
                     <span class="muted">Laatst gewijzigd: ${app.formatDate(project.latestDate)}</span>
+                    ${project.url ? `<a class="secondary-btn" href="${escapeHtml(project.url)}">Studio openen</a>` : ""}
                     <a class="secondary-btn" href="Logboek.html?project=${project.id}">Logboek bekijken</a>
                 </footer>
             </article>
@@ -525,6 +550,7 @@
         const projects = app.buildProjects(entries);
         const page = pageName();
 
+        setupBeatForgeNavigation();
         setupHeaderSearch();
 
         if (page === "index.html" || page === "") {
