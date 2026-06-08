@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeatForge Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="studio-shell">
+    <header class="topbar">
+      <section class="brand-block" aria-label="Projectinformatie">
+        <div class="brand-mark">BF</div>
+        <div>
+          <h1>BeatForge Studio</h1>
+          <p id="statusText">Klaar</p>
+          <div class="project-meta" aria-label="Projectstatus">
+            <span>Pattern A</span>
+            <span id="stepCountMeta">16 steps</span>
+            <span>8 tracks</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="transport" aria-label="Transport">
+        <button class="icon-button play" id="playButton" type="button" title="Play">
+          <span aria-hidden="true">&gt;</span>
+          <span class="button-text">Play</span>
+        </button>
+        <button class="icon-button stop" id="stopButton" type="button" title="Stop">
+          <span aria-hidden="true">[]</span>
+          <span class="button-text">Stop</span>
+        </button>
+        <label class="bpm-control" for="bpmInput">
+          <span>BPM</span>
+          <input id="bpmInput" type="number" value="120" min="60" max="220">
+        </label>
+        <label class="bpm-control" for="swingInput">
+          <span>Swing</span>
+          <input id="swingInput" type="number" value="0" min="0" max="65">
+        </label>
+        <button class="icon-button theme-toggle" id="themeButton" type="button" title="Light palette">
+          <span aria-hidden="true">○</span>
+          <span class="button-text">Light</span>
+        </button>
+      </section>
+
+      <section class="project-actions" aria-label="Projectacties">
+        <label class="file-action" for="sampleUpload">
+          <span aria-hidden="true">+</span>
+          Sample
+        </label>
+        <input id="sampleUpload" type="file" accept="audio/*" multiple>
+        <button id="fillButton" type="button">Starter beat</button>
+        <button id="randomTrackButton" type="button">Variatie</button>
+        <button id="shiftLeftButton" type="button">&lt; Step</button>
+        <button id="shiftRightButton" type="button">Step &gt;</button>
+        <button id="clearTrackButton" type="button">Track leeg</button>
+        <button id="resetButton" type="button">Reset</button>
+        <button id="saveButton" type="button">Save</button>
+        <button id="loadButton" type="button">Load</button>
+        <button class="disabled-action" type="button" disabled>Export</button>
+      </section>
+    </header>
+
+    <section class="timeline-strip" aria-label="Timeline">
+      <div class="timeline-label">Pattern A</div>
+      <div class="timeline-steps" id="timelineSteps"></div>
+    </section>
+
+    <section class="control-deck" aria-label="Studio overzicht">
+      <article class="deck-card selected-track-card">
+        <span class="deck-label">Geselecteerde track</span>
+        <strong id="selectedTrackName">Track 1</strong>
+        <span id="activeStepCount">0 actieve steps</span>
+      </article>
+
+      <article class="deck-card density-card">
+        <label class="range-control" for="densityInput">
+          <span>Variatie dichtheid</span>
+          <output id="densityValue" for="densityInput">42%</output>
+        </label>
+        <input id="densityInput" type="range" min="10" max="90" value="42">
+      </article>
+
+      <article class="deck-card depth-card">
+        <span class="deck-label">Step diepte</span>
+        <strong id="stepDepthValue">100%</strong>
+        <span id="modifierStatus">Geen modifier actief</span>
+      </article>
+
+      <article class="deck-card meter-card">
+        <span class="deck-label">Master meter</span>
+        <div class="master-meter" id="masterMeter" aria-hidden="true"></div>
+      </article>
+    </section>
+
+    <section class="workspace">
+      <details class="sample-browser side-panel" aria-label="Sample browser" open>
+        <summary class="panel-heading collapsible-heading">
+          <h2>Samples</h2>
+          <span><span id="sampleCount">0</span> sounds</span>
+        </summary>
+        <div class="panel-content">
+          <div class="panel-toolbar">
+            <span>Library</span>
+            <span>Drag ready</span>
+          </div>
+          <p class="hint">Sleep een sample naar een vakje, of kies een track en klik op Use.</p>
+          <label class="panel-field" for="categoryFilter">
+            <span>Categorie</span>
+            <select id="categoryFilter">
+              <option value="all">Alle sounds</option>
+              <option value="kick">Kicks</option>
+              <option value="snare">Snares</option>
+              <option value="clap">Claps</option>
+              <option value="hat">Hi-hats</option>
+              <option value="bass">Bass</option>
+              <option value="melody">Melody</option>
+              <option value="fx">FX</option>
+            </select>
+          </label>
+          <div class="track-picker" id="trackPicker"></div>
+          <section class="mini-menu" aria-label="Sound toevoegen">
+            <h3>Sound toevoegen</h3>
+            <input id="manualSoundName" type="text" placeholder="Naam">
+            <select id="manualSoundType">
+              <option value="kick">Kick</option>
+              <option value="snare">Snare</option>
+              <option value="clap">Clap</option>
+              <option value="hat">Hi-hat</option>
+              <option value="bass">Bass</option>
+              <option value="melody">Melody</option>
+              <option value="fx">FX</option>
+            </select>
+            <button id="addSoundButton" type="button">Toevoegen</button>
+          </section>
+          <ul class="sample-list" id="sampleList"></ul>
+        </div>
+      </details>
+
+      <section class="sequencer-panel" aria-label="Step sequencer">
+        <div class="panel-heading sequencer-heading">
+          <div>
+            <h2>Step Sequencer</h2>
+            <p>Shift sleept een rij, Ctrl wijzigt diepte, Alt wijzigt lengte</p>
+          </div>
+          <div class="sequencer-actions">
+            <button id="addStepButton" type="button">+ Stap</button>
+            <button id="removeStepButton" type="button">- Stap</button>
+            <button id="accentButton" type="button">Accent</button>
+            <div class="step-readout" id="stepReadout">Step 01</div>
+          </div>
+        </div>
+        <div class="step-header" id="stepHeader"></div>
+        <div class="grid-wrap">
+          <div class="track-labels" id="trackLabels"></div>
+          <div class="step-grid" id="stepGrid"></div>
+        </div>
+      </section>
+
+      <details class="mixer-panel side-panel" aria-label="Mixer" open>
+        <summary class="panel-heading collapsible-heading">
+          <h2>Mixer</h2>
+          <span>8 ch</span>
+        </summary>
+        <div class="panel-content">
+          <div class="panel-toolbar">
+            <span>Volumes</span>
+            <span>Mute ready</span>
+          </div>
+          <section class="mini-menu" aria-label="Mixer tools">
+            <h3>Mixer tools</h3>
+            <button id="normalizeButton" type="button">Normalize</button>
+            <button id="unmuteAllButton" type="button">Alles aan</button>
+          </section>
+          <div class="mixer-list" id="mixerList"></div>
+        </div>
+      </details>
+    </section>
+
+    <footer class="studio-footer">
+      <p>Alle rechten voorbehouden naar Jonas De Meersman</p>
+      <a href="../Projecten.html">Portfolio site</a>
+      <span>Shift: rij vullen tijdens slepen</span>
+      <span>Ctrl: step-diepte groter/kleiner</span>
+      <span>Alt: lengte van een step aanpassen</span>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
