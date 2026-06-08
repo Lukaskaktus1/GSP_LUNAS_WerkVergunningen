@@ -339,9 +339,9 @@ if (!is_array($aanvraag)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aanvraag bekijken - Werkvergunning Portaal</title>
-    <link rel="stylesheet" href="../CSS/overzicht.css">
-    <link rel="stylesheet" href="../CSS/aanvraag_bekijken.css">
-    <link rel="stylesheet" href="../CSS/local-icons.css">
+    <link rel="stylesheet" href="../CSS/overzicht.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/aanvraag_bekijken.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
 </head>
 <body>
 <header class="header">

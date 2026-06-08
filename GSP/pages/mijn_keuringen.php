@@ -48,9 +48,9 @@ function terugNaarOverzichtKeuringen(): string
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mijn keuringen - Werkvergunning Portaal</title>
-    <link rel="stylesheet" href="../CSS/overzicht.css">
-    <link rel="stylesheet" href="../CSS/mijn_keuringen.css">
-    <link rel="stylesheet" href="../CSS/local-icons.css">
+    <link rel="stylesheet" href="../CSS/overzicht.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/mijn_keuringen.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
 </head>
 <body>
 <header class="header">

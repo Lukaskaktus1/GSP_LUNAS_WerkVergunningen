@@ -14,9 +14,11 @@ $reviewNotification = latestReviewNotification(getDbConnection());
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Overzicht - Werkvergunning Portaal</title>
-    <link rel="stylesheet" href="../CSS/overzicht.css">
-    <link rel="stylesheet" href="../CSS/overzicht_ta.css">
-    <link rel="stylesheet" href="../CSS/local-icons.css">
+    <link rel="stylesheet" href="../CSS/overzicht.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/overzicht_ta.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
+    <?= gspInlineCss(['overzicht.css', 'overzicht_ta.css', 'local-icons.css']) ?>
+    <?= gspOverviewCriticalCss() ?>
 </head>
 <body>
 <header class="header">

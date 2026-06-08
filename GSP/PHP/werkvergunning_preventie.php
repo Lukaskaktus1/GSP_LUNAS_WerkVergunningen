@@ -33,9 +33,9 @@ $overzichtPagina = match ($role) {
     <meta property="og:title" content="Werkvergunning Preventie – GTI Beveren">
     <meta property="og:description" content="Preventie werkvergunning - Vul deze werkvergunning in voor preventiemaatregelen en risicobeperkingen.">
     <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
-    <link rel="stylesheet" href="../CSS/werkvergunning-base.css">
-    <link rel="stylesheet" href="../CSS/werkvergunning_preventie.css">
-    <link rel="stylesheet" href="../CSS/local-icons.css">
+    <link rel="stylesheet" href="../CSS/werkvergunning-base.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/werkvergunning_preventie.css?v=20260608">
+    <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
 </head>
 <body
     data-user-role="<?= e($role) ?>"
