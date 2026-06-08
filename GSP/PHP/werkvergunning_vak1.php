@@ -117,9 +117,9 @@ $overzichtPagina = match ($role) {
 
             <h3 class="subsection-title">I.1. WERKBESCHRIJVING</h3>
             <p class="form-subtitle">Geef een duidelijke, gedetailleerde beschrijving van de werkzaamheden.</p>
+            <p class="field-note">Vermeld lokaal, machinenummer, exacte plaats, taak, risico's en genoeg info zodat de controleur meteen begrijpt wat er zal gebeuren.</p>
             <div class="form-group">
-                <textarea id="vak1_werkbeschrijving" name="vak1_werkbeschrijving" rows="8" placeholder="Lokaal, machine nummer, exacte plaats, taak, risico's en genoeg info zodat de controleur meteen begrijpt wat er zal gebeuren..." required></textarea>
-                <p class="field-note">Vermeld minstens lokaal, machine of installatie, nummer indien aanwezig, en wat er precies wordt uitgevoerd.</p>
+                <textarea id="vak1_werkbeschrijving" name="vak1_werkbeschrijving" rows="8" required></textarea>
             </div>
 
             <div class="form-group">
