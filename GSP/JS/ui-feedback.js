@@ -93,6 +93,33 @@
         });
     };
 
+    function clearSubmittedAanvraagDraft() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('submitted') !== '1') return;
+
+        const prefixes = ['vak', 'visited_', 'aanvrager_', 'uitvoerder_', 'firma', 'medewerkers', 'voertuigen_attesten', 'werktijd_', 'vermoedelijke_duur', 'geldig_tot', 'werkzaamheden', 'vca', 'afd_', 'admin_test'];
+        const keysToRemove = [];
+
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (!key) continue;
+
+            if (key === 'aanvraag_submit_pending' || key === 'aanvraag_session_id' || prefixes.some(function (prefix) { return key.indexOf(prefix) === 0; })) {
+                keysToRemove.push(key);
+            }
+        }
+
+        keysToRemove.forEach(function (key) {
+            sessionStorage.removeItem(key);
+        });
+
+        if (window.history && typeof window.history.replaceState === 'function') {
+            params.delete('submitted');
+            const query = params.toString();
+            window.history.replaceState({}, document.title, window.location.pathname + (query ? '?' + query : ''));
+        }
+    }
+
     document.addEventListener('invalid', function (event) {
         const field = event.target;
         if (!(field instanceof HTMLElement)) return;
@@ -133,6 +160,8 @@
     }, true);
 
     document.addEventListener('DOMContentLoaded', function () {
+        clearSubmittedAanvraagDraft();
+
         document.querySelectorAll('[data-app-flash]').forEach(function (flash) {
             showAppPopup({
                 type: flash.dataset.type || 'info',

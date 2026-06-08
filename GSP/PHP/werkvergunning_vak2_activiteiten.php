@@ -255,12 +255,12 @@ $overzichtPagina = match ($role) {
                     </div>
                 </div>
                 <div class="info-box">
-                    <p><strong>Voor voertuigen moet altijd de nummerplaat ingevuld worden.</strong> Bij kraan, heftruck, hoogtewerker, schaarlift en verreiker is ook de attestdatum verplicht.</p>
+                    <p><strong>Voor voertuigen moet altijd de nummerplaat ingevuld worden.</strong> Alleen bij machines met een ruitje is ook een certificaatdatum verplicht.</p>
                 </div>
 
                 <div class="form-group voertuigen-section" hidden>
                     <label>Voertuigen en nummerplaten</label>
-                    <p class="field-note">Voeg per aangeduid voertuig apart toe welke nummerplaat erbij hoort. Voertuigen met attest staan zo duidelijk apart.</p>
+                    <p class="field-note">Aangeduide voertuigen worden automatisch ingevuld. Vul daarna enkel de nummerplaat in, en bij machines met een ruitje ook de certificaatdatum.</p>
                     <div class="dynamic-table" id="voertuigen_table" data-storage-key="voertuigen_attesten">
                         <div class="dynamic-row" data-row>
                             <div class="form-group">
@@ -274,7 +274,7 @@ $overzichtPagina = match ($role) {
                                 <input type="text" data-field="nummerplaat" required>
                             </div>
                             <div class="form-group">
-                                <label>Attest geldig tot</label>
+                                <label>Certificaat geldig tot</label>
                                 <input type="date" data-field="attest_geldig_tot" data-optional="true">
                             </div>
                             <button class="remove-row" type="button" aria-label="Voertuig verwijderen">-</button>

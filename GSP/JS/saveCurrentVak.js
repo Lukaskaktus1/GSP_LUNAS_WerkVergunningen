@@ -456,17 +456,17 @@ function initVoertuigAttestenVisibility() {
     if (!section || !table) return;
 
     const vehicleCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"][id^="vervoer_"]:not(#vervoer_geen)'));
-    const attestCheckboxIds = ['vervoer_kraan', 'vervoer_heftruck', 'vervoer_hoogtewerker', 'vervoer_schaarlift', 'vervoer_verreiker'];
 
     function selectedVehicleOptions() {
         return vehicleCheckboxes.filter(function (checkbox) {
             return checkbox instanceof HTMLInputElement && checkbox.checked && !checkbox.disabled;
         }).map(function (checkbox) {
             const label = document.querySelector('label[for="' + checkbox.id.replace(/"/g, '\\"') + '"]');
+            const item = checkbox.closest('.checkbox-item');
             return {
                 value: checkbox.value,
                 label: label ? label.textContent.trim() : checkbox.id.replace(/^vervoer_/, ''),
-                attest: attestCheckboxIds.includes(checkbox.id)
+                attest: !!(item && item.querySelector('.icon-diamond'))
             };
         });
     }
@@ -495,6 +495,74 @@ function initVoertuigAttestenVisibility() {
         });
     }
 
+    function optionForValue(options, value) {
+        return options.find(function (option) {
+            return option.value === value;
+        }) || null;
+    }
+
+    function updateRowAttestState(row, options) {
+        const select = row ? row.querySelector('select[data-field="voertuig_type"]') : null;
+        const attestField = row ? row.querySelector('[data-field="attest_geldig_tot"]') : null;
+        const attestGroup = attestField ? attestField.closest('.form-group') : null;
+        const selected = select ? optionForValue(options, select.value) : null;
+        const needsAttest = !!(selected && selected.attest);
+
+        if (!attestField || !attestGroup) return;
+
+        attestGroup.hidden = !needsAttest;
+        attestGroup.classList.toggle('is-required', needsAttest);
+        attestField.required = needsAttest;
+        attestField.disabled = !needsAttest;
+
+        if (!needsAttest) {
+            attestField.value = '';
+        }
+    }
+
+    function syncVehicleRows() {
+        const options = selectedVehicleOptions();
+        const allowedValues = options.map(function (option) { return option.value; });
+        const rowsByVehicle = {};
+
+        Array.from(table.querySelectorAll('[data-row]')).forEach(function (row) {
+            const select = row.querySelector('select[data-field="voertuig_type"]');
+            const type = select ? select.value || select.dataset.pendingValue || '' : '';
+
+            if (type && !allowedValues.includes(type)) {
+                row.remove();
+                return;
+            }
+
+            if (type && allowedValues.includes(type) && !rowsByVehicle[type]) {
+                rowsByVehicle[type] = row;
+            }
+        });
+
+        options.forEach(function (option) {
+            if (rowsByVehicle[option.value]) return;
+
+            const emptyRow = Array.from(table.querySelectorAll('[data-row]')).find(function (row) {
+                const select = row.querySelector('select[data-field="voertuig_type"]');
+                const numberPlate = row.querySelector('[data-field="nummerplaat"]')?.value.trim() || '';
+                const certificate = row.querySelector('[data-field="attest_geldig_tot"]')?.value.trim() || '';
+                return select && !select.value && !select.dataset.pendingValue && !numberPlate && !certificate;
+            });
+
+            const row = emptyRow || createDynamicRow(table, {});
+            if (!row) return;
+
+            if (!emptyRow) {
+                table.appendChild(row);
+            }
+
+            const select = row.querySelector('select[data-field="voertuig_type"]');
+            if (select) {
+                select.dataset.pendingValue = option.value;
+            }
+        });
+    }
+
     function updateVisibility() {
         const visible = hasVehicle();
         section.hidden = !visible;
@@ -514,7 +582,11 @@ function initVoertuigAttestenVisibility() {
                 const row = createDynamicRow(table, {});
                 if (row) table.appendChild(row);
             }
+            syncVehicleRows();
             syncVehicleSelects();
+            table.querySelectorAll('[data-row]').forEach(function (row) {
+                updateRowAttestState(row, selectedVehicleOptions());
+            });
         }
     }
 
@@ -540,11 +612,18 @@ function initVehicleRowAttestToggle() {
         const selected = select.options[select.selectedIndex];
         const row = select.closest('[data-row]');
         const attestField = row ? row.querySelector('[data-field="attest_geldig_tot"]') : null;
+        const attestGroup = attestField ? attestField.closest('.form-group') : null;
         const needsAttest = selected && selected.dataset.attest === 'true';
 
-        if (attestField) {
+        if (attestField && attestGroup) {
+            attestGroup.hidden = !needsAttest;
             attestField.required = needsAttest;
-            attestField.closest('.form-group')?.classList.toggle('is-required', needsAttest);
+            attestField.disabled = !needsAttest;
+            attestGroup.classList.toggle('is-required', needsAttest);
+
+            if (!needsAttest) {
+                attestField.value = '';
+            }
         }
     });
 }
@@ -828,6 +907,8 @@ function clearAanvraagDraftData() {
     });
 }
 
+const gspClearAanvraagDraftData = clearAanvraagDraftData;
+
 function initStorageGroupsForPage() {
     // Vak 2 activiteiten en stoffen
     assignStorageGroup('input[type="checkbox"][id^="koud_"]', 'vak2_act_koud');
@@ -957,6 +1038,8 @@ function saveAdminTestAanvraag(data) {
     sessionStorage.setItem('admin_test_edit_id', entry.id);
 }
 
+const gspSaveAdminTestAanvraag = saveAdminTestAanvraag;
+
 function collectAllAanvraagData() {
     const fields = {};
     const lists = {
@@ -1006,6 +1089,8 @@ function collectAllAanvraagData() {
     return { fields: fields, lists: lists, tables: tables, signatures: signatures };
 }
 
+const gspCollectAllAanvraagData = collectAllAanvraagData;
+
 function bindAanvraagSubmitForm(formId) {
     const form = document.getElementById(formId);
     if (!form) {
@@ -1021,15 +1106,24 @@ function bindAanvraagSubmitForm(formId) {
 
         saveCurrentVak();
 
+        const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.dataset.originalText = submitButton.textContent || '';
+            if (submitButton.textContent) {
+                submitButton.textContent = 'Werkvergunning wordt ingediend...';
+            }
+        }
+
         const hiddenInput = form.querySelector('input[name="aanvraag_data"]');
         if (hiddenInput) {
-            hiddenInput.value = JSON.stringify(collectAllAanvraagData());
+            hiddenInput.value = JSON.stringify(gspCollectAllAanvraagData());
         }
 
         if (typeof isAdminTestMode === 'function' && isAdminTestMode()) {
-            const aanvraagData = collectAllAanvraagData();
-            saveAdminTestAanvraag(aanvraagData);
-            clearAanvraagDraftData();
+            const aanvraagData = gspCollectAllAanvraagData();
+            gspSaveAdminTestAanvraag(aanvraagData);
+            gspClearAanvraagDraftData();
             sessionStorage.removeItem('admin_test_edit_id');
 
             if (typeof window.showAppPopup === 'function') {
@@ -1047,6 +1141,7 @@ function bindAanvraagSubmitForm(formId) {
             return;
         }
 
+        sessionStorage.setItem('aanvraag_submit_pending', 'true');
         form.submit();
     });
 }
