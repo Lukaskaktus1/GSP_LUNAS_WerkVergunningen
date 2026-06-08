@@ -75,6 +75,7 @@ $overzichtPagina = match ($role) {
             <!-- Vak V -->
             <div class="form-section">
                 <h2 class="section-title">Vak V. OPDRACHTGEVER EN AFDELING</h2>
+                <p class="step-help">Duid bijkomende vergunningen of toelatingen aan die nodig zijn bovenop deze werkvergunning.</p>
                 
                 <!-- ANDERE VERGUNNINGEN -->
                 <div class="form-section">

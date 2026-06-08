@@ -59,6 +59,7 @@ $overzichtPagina = match ($role) {
             <!-- Vak III -->
             <div class="form-section">
                 <h2 class="section-title">Vak III. OPDRACHTGEVER/TA:</h2>
+                <p class="step-help">Noteer aandachtspunten die belangrijk zijn voor planning en organisatie, zoals andere werken in de buurt, toegang of parkeerafspraken.</p>
                 
                 <h3 class="subsection-title">AANDACHTSPUNTEN OPDRACHTGEVER:</h3>
                 

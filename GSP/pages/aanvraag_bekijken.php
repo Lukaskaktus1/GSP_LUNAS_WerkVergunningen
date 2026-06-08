@@ -8,7 +8,7 @@ require_once __DIR__ . '/../config/db.php';
 $aanvraagId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $userId = (int) ($_SESSION['user_id'] ?? 0);
 $role = (string) ($_SESSION['rol'] ?? '');
-$magAllesZien = in_array($role, ['directeur', 'ta', 'admin'], true);
+$magAllesZien = in_array($role, ['leerkracht', 'directeur', 'ta', 'admin'], true);
 $foutmelding = null;
 
 $aanvraag = null;
@@ -24,8 +24,10 @@ $medewerkers = [];
 $voertuigAttesten = [];
 $vak6Logs = [];
 $vak7Afsluiting = null;
+$beoordelingen = [];
 $magVak6 = false;
 $magVak7 = false;
+$magKeuren = false;
 $flash = null;
 
 function terugNaarVorigePagina(bool $magAllesZien): string
@@ -43,6 +45,14 @@ function toonWaarde(?string $waarde, string $leeg = 'Niet ingevuld'): string
     $waarde = trim((string) $waarde);
 
     return $waarde === '' ? $leeg : $waarde;
+}
+
+function afdelingLabel(?string $waarde): string
+{
+    $waarde = trim((string) $waarde);
+    $afdelingen = gspAfdelingen();
+
+    return $afdelingen[$waarde] ?? toonWaarde($waarde);
 }
 
 function volledigeNaam(?string $voornaam, ?string $naam, string $leeg = 'Niet ingevuld'): string
@@ -259,8 +269,12 @@ try {
     }
 
     if (databaseTableExists($pdo, 'vergunning_voertuig_attest')) {
+        $voertuigTypeSql = databaseColumnExists($pdo, 'vergunning_voertuig_attest', 'voertuig_type')
+            ? "CASE WHEN voertuig_type IS NULL OR voertuig_type = '' THEN '' ELSE CONCAT('Voertuig ', voertuig_type, ': ') END"
+            : "''";
         $stmtVoertuigen = $pdo->prepare("
             SELECT CONCAT(
+                {$voertuigTypeSql},
                 COALESCE(nummerplaat, ''),
                 CASE WHEN attest_geldig_tot IS NULL THEN '' ELSE CONCAT(' - attest geldig tot ', attest_geldig_tot) END
             )
@@ -294,8 +308,21 @@ try {
         }
     }
 
+    if (databaseTableExists($pdo, 'werkvergunning_beoordeling')) {
+        $stmtBeoordeling = $pdo->prepare('
+            SELECT beoordelaar_rol, actie, naam, opmerking, created_at
+            FROM werkvergunning_beoordeling
+            WHERE vergunning_id = :id
+            ORDER BY created_at DESC
+        ');
+        $stmtBeoordeling->execute(['id' => $aanvraagId]);
+        $beoordelingen = array_filter($stmtBeoordeling->fetchAll(), 'is_array');
+    }
+
     $magVak6 = magVergunningVak6($aanvraag, $userId);
     $magVak7 = magVergunningVak7($aanvraag, $userId, $pdo);
+    $magKeuren = magVergunningKeuren($pdo, $aanvraag, $userId, $role)
+        && (int) ($aanvraag['eigenaar_user_id'] ?? 0) !== $userId;
     $flash = getFlashMessage();
 } catch (Throwable $exception) {
     error_log('aanvraag_bekijken failed: ' . $exception->getMessage());
@@ -465,10 +492,16 @@ if (!is_array($aanvraag)) {
                         (string) ($aanvraag['eigenaar_email'] ?? 'Niet ingevuld')
                     )],
                     ['label' => 'Telefoon aanvrager', 'value' => toonWaarde((string) ($aanvraag['aanvrager_telefoon'] ?? ''))],
-                    ['label' => 'Afdeling / locatie', 'value' => toonWaarde((string) ($aanvraag['afdeling_tekst'] ?? ''))],
+                    ['label' => 'Afdeling / vak', 'value' => afdelingLabel((string) ($aanvraag['afdeling_tekst'] ?? ''))],
                     ['label' => 'EX-zone', 'value' => toonJaNee(isset($aanvraag['ex_zone']) ? (string) $aanvraag['ex_zone'] : null)],
                     ['label' => 'Werkbeschrijving', 'value' => toonWaarde((string) ($aanvraag['werkbeschrijving'] ?? '')), 'full' => true],
                 ]); ?>
+                <?php if (!empty($aanvraag['vak1_foto_data'])): ?>
+                    <div class="detail-field full">
+                        <label>Foto werkplek of machine</label>
+                        <img class="aanvraag-photo" src="<?= e((string) $aanvraag['vak1_foto_data']) ?>" alt="Foto werkplek of machine">
+                    </div>
+                <?php endif; ?>
             </div>
         </section>
 
@@ -478,6 +511,7 @@ if (!is_array($aanvraag)) {
                 <?php renderDetailGrid([
                     ['label' => 'Wie voert de werken uit?', 'value' => uitvoerderTypeTekst($aanvraag)],
                     ['label' => 'Uitvoerende organisatie', 'value' => uitvoerendeOrganisatie($aanvraag)],
+                    ['label' => 'Klas', 'value' => toonWaarde((string) ($aanvraag['vak2_klas'] ?? ''), 'Niet van toepassing')],
                     ['label' => 'Verantwoordelijke uitvoerder', 'value' => volledigeNaam(
                         (string) ($aanvraag['uitvoerder_voornaam'] ?? ''),
                         (string) ($aanvraag['uitvoerder_naam'] ?? '')
@@ -603,20 +637,53 @@ if (!is_array($aanvraag)) {
             </section>
         <?php endif; ?>
 
-        <?php if ($magAllesZien && in_array((string) ($aanvraag['status'] ?? ''), ['ingediend', 'in_beoordeling'], true)): ?>
+        <?php if ($beoordelingen !== []): ?>
+            <section class="applications-section">
+                <h2 class="section-title">Beoordeling</h2>
+                <div class="applications-container">
+                    <div class="detail-grid">
+                        <?php foreach ($beoordelingen as $beoordeling): ?>
+                            <div class="detail-field">
+                                <label>Actie</label>
+                                <div class="readonly-box"><?= e((string) ($beoordeling['actie'] ?? '')) ?></div>
+                            </div>
+                            <div class="detail-field">
+                                <label>Beoordeeld door</label>
+                                <div class="readonly-box"><?= e((string) ($beoordeling['naam'] ?? '')) ?> (<?= e((string) ($beoordeling['beoordelaar_rol'] ?? '')) ?>)</div>
+                            </div>
+                            <div class="detail-field">
+                                <label>Moment</label>
+                                <div class="readonly-box"><?= e((string) ($beoordeling['created_at'] ?? '')) ?></div>
+                            </div>
+                            <div class="detail-field">
+                                <label>Opmerking</label>
+                                <div class="readonly-box"><?= e(toonWaarde((string) ($beoordeling['opmerking'] ?? ''))) ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </section>
+        <?php endif; ?>
+
+        <?php if ($magKeuren && in_array((string) ($aanvraag['status'] ?? ''), ['ingediend', 'in_beoordeling'], true)): ?>
             <section class="applications-section">
                 <h2 class="section-title">Keuring</h2>
                 <div class="applications-container">
-                    <p>Keuring voor aanvraag <?= e((string) ($aanvraag['vergunning_nummer'] ?? '')) ?>.</p>
+                    <p>Controleer de volledige aanvraag. De gegevens hierboven zijn alleen-lezen; de officiële goedkeuring gebeurt hier met uw handtekening.</p>
                     <div class="approval-panel">
                         <form method="POST" action="aanvraag_keuren.php">
                             <input type="hidden" name="id" value="<?= (int) $aanvraagId ?>">
                             <input type="hidden" name="actie" value="afkeuren">
+                            <textarea name="opmerking" rows="3" placeholder="Reden of opmerking bij afkeuring"></textarea>
                             <button class="approval-btn reject" type="submit">Afkeuren</button>
                         </form>
-                        <form method="POST" action="aanvraag_keuren.php">
+                        <form method="POST" action="aanvraag_keuren.php" class="approval-signature-form">
                             <input type="hidden" name="id" value="<?= (int) $aanvraagId ?>">
                             <input type="hidden" name="actie" value="goedkeuren">
+                            <label for="beoordelaar_handtekening_canvas">Handtekening beoordelaar</label>
+                            <canvas id="beoordelaar_handtekening_canvas" class="approval-signature-canvas"></canvas>
+                            <input type="hidden" id="beoordelaar_handtekening" name="beoordelaar_handtekening" required>
+                            <textarea name="opmerking" rows="3" placeholder="Opmerking bij goedkeuring"></textarea>
                             <button class="approval-btn approve" type="submit">Goedkeuren</button>
                         </form>
                     </div>
@@ -627,7 +694,86 @@ if (!is_array($aanvraag)) {
 </main>
 <script src="../JS/ui-feedback.js"></script>
 <script>
+function initApprovalSignature() {
+    const canvas = document.getElementById('beoordelaar_handtekening_canvas');
+    const hidden = document.getElementById('beoordelaar_handtekening');
+    if (!canvas || !hidden) return;
+
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = 150;
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#111827';
+    }
+
+    function point(event) {
+        const source = event.touches && event.touches[0] ? event.touches[0] : event;
+        const rect = canvas.getBoundingClientRect();
+        return { x: source.clientX - rect.left, y: source.clientY - rect.top };
+    }
+
+    function start(event) {
+        event.preventDefault();
+        drawing = true;
+        const current = point(event);
+        lastX = current.x;
+        lastY = current.y;
+    }
+
+    function move(event) {
+        if (!drawing) return;
+        event.preventDefault();
+        const current = point(event);
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(current.x, current.y);
+        ctx.stroke();
+        lastX = current.x;
+        lastY = current.y;
+        hidden.value = canvas.toDataURL();
+    }
+
+    function stop() {
+        if (!drawing) return;
+        drawing = false;
+        hidden.value = canvas.toDataURL();
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    canvas.addEventListener('mouseup', stop);
+    canvas.addEventListener('mouseleave', stop);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove', move, { passive: false });
+    canvas.addEventListener('touchend', stop);
+
+    const form = canvas.closest('form');
+    if (form) {
+        form.addEventListener('submit', function (event) {
+            if (hidden.value) return;
+            event.preventDefault();
+            if (typeof window.showAppPopup === 'function') {
+                window.showAppPopup({
+                    type: 'error',
+                    title: 'Handtekening ontbreekt',
+                    message: 'Teken eerst uw handtekening voor u de aanvraag officieel goedkeurt.',
+                    solution: 'De vergunning kan pas goedgekeurd worden na ondertekening door leerkracht, TA of admin.'
+                });
+            }
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    initApprovalSignature();
     const table = document.getElementById('vak6_edit_table');
     const addButton = document.getElementById('vak6_add_row');
     if (!table || !addButton) return;

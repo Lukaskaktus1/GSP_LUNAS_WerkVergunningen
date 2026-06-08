@@ -124,7 +124,7 @@ function statusLabel(string $status): string
                         <?php foreach ($aanvragen as $aanvraag): ?>
                             <?php
                             $status = (string) $aanvraag['status'];
-                            $magVerwijderen = !in_array($status, ['goedgekeurd', 'gesloten', 'afgerond', 'in_uitvoering'], true);
+                            $magActieAanvragen = !in_array($status, ['gesloten', 'afgerond', 'in_uitvoering'], true);
                             $magVak6 = in_array($status, ['goedgekeurd', 'in_uitvoering'], true);
                             $magVak7 = false;
 
@@ -176,11 +176,20 @@ function statusLabel(string $status): string
                                             </button>
                                         <?php endif; ?>
 
-                                        <?php if ($magVerwijderen): ?>
-                                            <form action="aanvraag_verwijderen.php" method="POST" data-confirm-title="Aanvraag verwijderen" data-confirm-message="Weet u zeker dat u deze aanvraag wilt verwijderen?" data-confirm-solution="Verwijder alleen aanvragen die niet meer nodig zijn. Goedgekeurde of gesloten aanvragen blijven beschermd.">
+                                        <?php if ($magActieAanvragen): ?>
+                                            <form action="aanvraag_actie_aanvragen.php" method="POST" data-confirm-title="Aanpassing aanvragen" data-confirm-message="Wilt u vragen om deze aanvraag opnieuw te mogen aanpassen?" data-confirm-solution="Een leerkracht, TA of admin krijgt hiervan een melding.">
                                                 <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
+                                                <input type="hidden" name="actie" value="aanpassen">
+                                                <button type="submit" class="small-btn">
+                                                    Aanpassen aanvragen
+                                                </button>
+                                            </form>
+
+                                            <form action="aanvraag_actie_aanvragen.php" method="POST" data-confirm-title="Verwijdering aanvragen" data-confirm-message="Wilt u vragen om deze aanvraag te verwijderen?" data-confirm-solution="Een leerkracht, TA of admin krijgt hiervan een melding.">
+                                                <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
+                                                <input type="hidden" name="actie" value="verwijderen">
                                                 <button type="submit" class="small-btn delete-btn">
-                                                    Verwijderen
+                                                    Verwijderen aanvragen
                                                 </button>
                                             </form>
                                         <?php endif; ?>

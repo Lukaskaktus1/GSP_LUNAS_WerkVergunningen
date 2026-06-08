@@ -74,6 +74,7 @@ $overzichtPagina = match ($role) {
 
             <!-- II.5 CHEMICALIEN -->
             <div class="form-section">
+                <p class="step-help">Duid de gevarenpictogrammen aan van producten die tijdens het werk gebruikt worden. Kies GEEN wanneer er geen chemicaliën of gevaarlijke producten nodig zijn.</p>
                 <div class="section-header-row">
                     <h3 class="subsection-title subsection-title-no-margin">II.5. CHEMICALIEN NODIG BIJ DE UITVOERING VAN HET WERK</h3>
                     <div class="checkbox-item geen-checkbox">

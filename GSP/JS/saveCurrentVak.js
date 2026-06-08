@@ -392,7 +392,11 @@ function createDynamicRow(table, values) {
     const row = template.cloneNode(true);
     row.hidden = false;
     row.querySelectorAll('[data-field]').forEach(function (field) {
-        field.value = values && values[field.dataset.field] ? values[field.dataset.field] : '';
+        const value = values && values[field.dataset.field] ? values[field.dataset.field] : '';
+        field.value = value;
+        if (field instanceof HTMLSelectElement && value && field.value !== value) {
+            field.dataset.pendingValue = value;
+        }
         field.disabled = false;
     });
 
@@ -435,7 +439,11 @@ function normalizeDynamicTable(tableId, storageKey) {
         const row = template.cloneNode(true);
         row.hidden = false;
         row.querySelectorAll('[data-field]').forEach(function (field) {
-            field.value = rowValues && rowValues[field.dataset.field] ? rowValues[field.dataset.field] : '';
+            const value = rowValues && rowValues[field.dataset.field] ? rowValues[field.dataset.field] : '';
+            field.value = value;
+            if (field instanceof HTMLSelectElement && value && field.value !== value) {
+                field.dataset.pendingValue = value;
+            }
             field.disabled = false;
         });
         table.appendChild(row);
@@ -447,40 +455,71 @@ function initVoertuigAttestenVisibility() {
     const table = document.getElementById('voertuigen_table');
     if (!section || !table) return;
 
-    const attestCheckboxIds = [
-        'vervoer_kraan',
-        'vervoer_heftruck',
-        'vervoer_hoogtewerker',
-        'vervoer_schaarlift',
-        'vervoer_verreiker'
-    ];
+    const vehicleCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"][id^="vervoer_"]:not(#vervoer_geen)'));
+    const attestCheckboxIds = ['vervoer_kraan', 'vervoer_heftruck', 'vervoer_hoogtewerker', 'vervoer_schaarlift', 'vervoer_verreiker'];
 
-    function hasAttestVehicle() {
-        return attestCheckboxIds.some(function (id) {
-            const checkbox = document.getElementById(id);
+    function selectedVehicleOptions() {
+        return vehicleCheckboxes.filter(function (checkbox) {
+            return checkbox instanceof HTMLInputElement && checkbox.checked && !checkbox.disabled;
+        }).map(function (checkbox) {
+            const label = document.querySelector('label[for="' + checkbox.id.replace(/"/g, '\\"') + '"]');
+            return {
+                value: checkbox.value,
+                label: label ? label.textContent.trim() : checkbox.id.replace(/^vervoer_/, ''),
+                attest: attestCheckboxIds.includes(checkbox.id)
+            };
+        });
+    }
+
+    function hasVehicle() {
+        return vehicleCheckboxes.some(function (checkbox) {
             return checkbox instanceof HTMLInputElement && checkbox.checked && !checkbox.disabled;
         });
     }
 
+    function syncVehicleSelects() {
+        const options = selectedVehicleOptions();
+        table.querySelectorAll('select[data-field="voertuig_type"]').forEach(function (select) {
+            const current = select.value || select.dataset.pendingValue || '';
+            select.innerHTML = '<option value="" disabled selected hidden>Kies voertuig</option>';
+            options.forEach(function (option) {
+                const item = document.createElement('option');
+                item.value = option.value;
+                item.textContent = option.attest ? option.label + ' (attest vereist)' : option.label;
+                item.dataset.attest = option.attest ? 'true' : 'false';
+                select.appendChild(item);
+            });
+            select.value = options.some(function (option) { return option.value === current; }) ? current : '';
+            delete select.dataset.pendingValue;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    }
+
     function updateVisibility() {
-        const visible = hasAttestVehicle();
+        const visible = hasVehicle();
         section.hidden = !visible;
 
         section.querySelectorAll('input, button').forEach(function (field) {
+            field.disabled = !visible;
+        });
+        section.querySelectorAll('select').forEach(function (field) {
             field.disabled = !visible;
         });
 
         if (!visible) {
             table.innerHTML = '';
             sessionStorage.removeItem('voertuigen_attesten');
+        } else {
+            if (table.querySelectorAll('[data-row]').length === 0) {
+                const row = createDynamicRow(table, {});
+                if (row) table.appendChild(row);
+            }
+            syncVehicleSelects();
         }
     }
 
-    attestCheckboxIds.forEach(function (id) {
-        const checkbox = document.getElementById(id);
-        if (checkbox) {
-            checkbox.addEventListener('change', updateVisibility);
-        }
+    vehicleCheckboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', updateVisibility);
     });
 
     const geenCheckbox = document.getElementById('vervoer_geen');
@@ -491,6 +530,90 @@ function initVoertuigAttestenVisibility() {
     updateVisibility();
 }
 
+function initVehicleRowAttestToggle() {
+    document.addEventListener('change', function (event) {
+        const select = event.target;
+        if (!(select instanceof HTMLSelectElement) || select.dataset.field !== 'voertuig_type') {
+            return;
+        }
+
+        const selected = select.options[select.selectedIndex];
+        const row = select.closest('[data-row]');
+        const attestField = row ? row.querySelector('[data-field="attest_geldig_tot"]') : null;
+        const needsAttest = selected && selected.dataset.attest === 'true';
+
+        if (attestField) {
+            attestField.required = needsAttest;
+            attestField.closest('.form-group')?.classList.toggle('is-required', needsAttest);
+        }
+    });
+}
+
+function initVak1PhotoInput() {
+    const input = document.getElementById('vak1_foto');
+    const hidden = document.getElementById('vak1_foto_data');
+    const preview = document.getElementById('vak1_foto_preview');
+
+    if (!input || !hidden) return;
+
+    const stored = sessionStorage.getItem('vak1_foto_data');
+    if (stored) {
+        hidden.value = stored;
+        if (preview) {
+            preview.src = stored;
+            preview.hidden = false;
+        }
+    }
+
+    input.addEventListener('change', function () {
+        const file = input.files && input.files[0] ? input.files[0] : null;
+        if (!file) {
+            hidden.value = '';
+            sessionStorage.removeItem('vak1_foto_data');
+            if (preview) preview.hidden = true;
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            input.value = '';
+            if (typeof window.showAppPopup === 'function') {
+                window.showAppPopup({
+                    type: 'error',
+                    title: 'Geen geldige foto',
+                    message: 'Kies een afbeeldingsbestand.',
+                    solution: 'Gebruik bijvoorbeeld een JPG, PNG of foto van uw toestel.'
+                });
+            }
+            return;
+        }
+
+        if (file.size > 1800 * 1024) {
+            input.value = '';
+            if (typeof window.showAppPopup === 'function') {
+                window.showAppPopup({
+                    type: 'error',
+                    title: 'Foto te groot',
+                    message: 'Kies een foto kleiner dan 1,8 MB.',
+                    solution: 'Maak eventueel een nieuwe foto op lagere resolutie of gebruik een kleinere uitsnede.'
+                });
+            }
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function () {
+            const value = String(reader.result || '');
+            hidden.value = value;
+            sessionStorage.setItem('vak1_foto_data', value);
+            if (preview) {
+                preview.src = value;
+                preview.hidden = false;
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
 function attachDynamicRowHandlers() {
     document.querySelectorAll('[data-add-row]').forEach(function (button) {
         button.addEventListener('click', function () {
@@ -498,7 +621,12 @@ function attachDynamicRowHandlers() {
             if (!table) return;
 
             const row = createDynamicRow(table, {});
-            if (row) table.appendChild(row);
+            if (row) {
+                table.appendChild(row);
+                if (button.dataset.addRow === 'voertuigen_table') {
+                    initVoertuigAttestenVisibility();
+                }
+            }
         });
     });
 
@@ -520,7 +648,37 @@ function attachDynamicRowHandlers() {
 }
 
 function attachSchoolToggle() {
-    /* Vak I gebruikt geen school/firma meer; keuze staat in Vak II. */
+    const schoolRadio = document.getElementById('vak2_doel_school');
+    const externeRadio = document.getElementById('vak2_doel_externe');
+    const schoolGroup = document.getElementById('vak2_school_group');
+    const klasGroup = document.getElementById('vak2_klas_group');
+    const firmaGroup = document.getElementById('vak2_firma_group');
+    const klasInput = document.getElementById('vak2_klas');
+    const firmaInput = document.getElementById('vak2_firma');
+
+    if (!schoolRadio || !externeRadio) {
+        return;
+    }
+
+    function update() {
+        const school = schoolRadio.checked;
+        if (schoolGroup) schoolGroup.hidden = !school;
+        if (klasGroup) klasGroup.hidden = !school;
+        if (firmaGroup) firmaGroup.hidden = school;
+
+        if (klasInput) {
+            klasInput.required = school;
+            klasInput.disabled = !school;
+        }
+        if (firmaInput) {
+            firmaInput.required = !school && externeRadio.checked;
+            firmaInput.disabled = school;
+        }
+    }
+
+    schoolRadio.addEventListener('change', update);
+    externeRadio.addEventListener('change', update);
+    update();
 }
 
 function attachExclusiveCheckPairs() {
@@ -1002,6 +1160,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initStorageGroupsForPage();
     loadCurrentVakData();
     initVoertuigAttestenVisibility();
+    initVehicleRowAttestToggle();
+    initVak1PhotoInput();
     initWerkvergunningNummer();
     attachDynamicRowHandlers();
     attachSchoolToggle();

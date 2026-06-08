@@ -842,15 +842,32 @@ body::before {
 }
 
 .field-note,
+.step-help,
 .validation-message {
     color: #64748b;
     font-size: 13px;
+}
+
+.step-help {
+    margin: -6px 0 16px;
+    max-width: 760px;
 }
 
 .validation-message {
     color: #b42318;
     font-weight: 700;
     margin-top: 10px;
+}
+
+.photo-preview {
+    display: block;
+    width: min(100%, 360px);
+    max-height: 240px;
+    object-fit: contain;
+    margin-top: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.32);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.78);
 }
 
 .vak-progress-bar {

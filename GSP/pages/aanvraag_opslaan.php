@@ -191,6 +191,12 @@ try {
         redirect('../PHP/werkvergunning_vak2.php');
     }
 
+    if ($isSchool && fieldValue($fields, 'vak2_klas') === null) {
+        $pdo->rollBack();
+        setFlashMessage('error', 'Klas is verplicht wanneer leerlingen van school de werken uitvoeren.');
+        redirect('../PHP/werkvergunning_vak2.php');
+    }
+
     if (!$isSchool && fieldValue($fields, 'vak2_firma') === null && fieldValue($fields, 'firma_naam') === null) {
         $pdo->rollBack();
         setFlashMessage('error', 'Firma is verplicht wanneer een externe firma de werken uitvoert.');
@@ -317,7 +323,8 @@ try {
         'uitvoerder_voornaam' => fieldValue($fields, 'uitvoerder_voornaam'),
         'uitvoerder_naam' => fieldValue($fields, 'uitvoerder_naam'),
         'vak2_doel' => $vak2Doel ?? ($isSchool ? 'school' : 'externe'),
-        'vak2_klas' => null,
+        'vak2_klas' => fieldValue($fields, 'vak2_klas'),
+        'vak1_foto_data' => fieldValue($fields, 'vak1_foto_data'),
         'vak4_voornaam' => fieldValue($fields, 'vak4_voornaam'),
         'vak4_naam' => fieldValue($fields, 'vak4_naam'),
         'vak4_geen_andere_werk' => fieldValue($fields, 'afd_geen') === '1' ? 1 : 0,
@@ -430,10 +437,17 @@ try {
     }
 
     if (databaseTableExists($pdo, 'vergunning_voertuig_attest')) {
-        $voertuigStmt = $pdo->prepare('
-            INSERT INTO vergunning_voertuig_attest (vergunning_id, nummerplaat, attest_geldig_tot)
-            VALUES (:vergunning_id, :nummerplaat, :attest_geldig_tot)
-        ');
+        $voertuigColumns = ['vergunning_id', 'nummerplaat', 'attest_geldig_tot'];
+        $voertuigValues = [':vergunning_id', ':nummerplaat', ':attest_geldig_tot'];
+
+        if (databaseColumnExists($pdo, 'vergunning_voertuig_attest', 'voertuig_type')) {
+            $voertuigColumns[] = 'voertuig_type';
+            $voertuigValues[] = ':voertuig_type';
+        }
+
+        $voertuigStmt = $pdo->prepare(
+            'INSERT INTO vergunning_voertuig_attest (' . implode(', ', $voertuigColumns) . ') VALUES (' . implode(', ', $voertuigValues) . ')'
+        );
 
         foreach (listValues($lists, 'voertuigen_attesten') as $voertuig) {
             if (!is_array($voertuig)) {
@@ -442,16 +456,29 @@ try {
 
             $nummerplaat = trim((string) ($voertuig['nummerplaat'] ?? ''));
             $attestGeldigTot = trim((string) ($voertuig['attest_geldig_tot'] ?? ''));
+            $voertuigType = trim((string) ($voertuig['voertuig_type'] ?? ''));
 
-            if ($nummerplaat === '' && $attestGeldigTot === '') {
+            if ($nummerplaat === '' && $attestGeldigTot === '' && $voertuigType === '') {
                 continue;
             }
 
-            $voertuigStmt->execute([
+            if ($nummerplaat === '' || $voertuigType === '') {
+                $pdo->rollBack();
+                setFlashMessage('error', 'Vul per voertuig het voertuigtype en de nummerplaat in.');
+                redirect('../PHP/werkvergunning_vak2_activiteiten.php');
+            }
+
+            $voertuigParams = [
                 'vergunning_id' => $vergunningId,
                 'nummerplaat' => $nummerplaat,
                 'attest_geldig_tot' => $attestGeldigTot === '' ? null : $attestGeldigTot,
-            ]);
+            ];
+
+            if (in_array(':voertuig_type', $voertuigValues, true)) {
+                $voertuigParams['voertuig_type'] = $voertuigType;
+            }
+
+            $voertuigStmt->execute($voertuigParams);
         }
     }
 

@@ -9,6 +9,8 @@ if (isset($_SESSION['user_id'])) {
 }
 
 $flash = getFlashMessage();
+$afdelingen = gspAfdelingen();
+$klassen = gspKlassen();
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -30,7 +32,7 @@ $flash = getFlashMessage();
     <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
     
     <link rel="stylesheet" href="CSS/style.css">
-    <link rel="stylesheet" href="CSS/register.css">
+    <link rel="stylesheet" href="CSS/register.css?v=2">
     <link rel="stylesheet" href="CSS/local-icons.css">
 </head>
 <body>
@@ -63,6 +65,42 @@ $flash = getFlashMessage();
                 <div class="form-group">
                     <label for="email">E-mailadres</label>
                     <input type="email" id="email" name="email" placeholder="naam@voorbeeld.be" autocomplete="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="rol">Ik registreer als</label>
+                    <select id="rol" name="rol" required>
+                        <option value="leerling">Leerling</option>
+                        <option value="leerkracht">Leerkracht</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="leerling_klas_group">
+                    <label for="klas">Klas</label>
+                    <input type="text" id="klas" name="klas" placeholder="bijv. 6ADB">
+                </div>
+
+                <div class="form-group" id="leerkracht_klassen_group" hidden>
+                    <label>Klassen en vakken</label>
+                    <p class="register-note">Voeg elke klas toe waaraan u les geeft, met het bijhorende vak.</p>
+                    <div class="register-dynamic-table" id="leerkracht_klassen">
+                        <div class="register-dynamic-row" data-register-row>
+                            <select name="leerkracht_klas[]">
+                                <option value="" disabled selected hidden>Kies klas</option>
+                                <?php foreach ($klassen as $waarde => $label): ?>
+                                    <option value="<?= e($waarde) ?>"><?= e($label) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select name="leerkracht_vak[]">
+                                <option value="" disabled selected hidden>Kies vak</option>
+                                <?php foreach ($afdelingen as $waarde => $label): ?>
+                                    <option value="<?= e($waarde) ?>"><?= e($label) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="button" class="register-row-remove" aria-label="Klas verwijderen">-</button>
+                        </div>
+                    </div>
+                    <button type="button" class="register-add-row" id="leerkracht_klas_toevoegen">+ Klas toevoegen</button>
                 </div>
 
                 <div class="form-group">

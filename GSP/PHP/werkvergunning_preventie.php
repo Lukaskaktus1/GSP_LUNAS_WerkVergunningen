@@ -75,7 +75,8 @@ $overzichtPagina = match ($role) {
 
             <div class="form-section">
                 <h3 class="subsection-title">PREVENTIEMAATREGELEN (Hourekening met de preventiehiërarchie: VERMIJDEN / VERVANGEN / AF SCHERMEN / PBM's / INSTRUCTIES!)</h3>
-                
+                <p class="step-help">Kies de maatregelen die echt nodig zijn op basis van de risicoanalyse. Alles wat u hier selecteert, komt in het overzicht voor de beoordelaar.</p>
+
                 <div class="preventie-grid">
                     <!-- HUID -->
                     <div class="preventie-category">

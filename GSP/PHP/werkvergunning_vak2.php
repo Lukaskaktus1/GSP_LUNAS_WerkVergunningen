@@ -7,6 +7,7 @@ require_once __DIR__ . '/../auth/auth.php';
 $role = (string) ($_SESSION['rol'] ?? '');
 $voornaam = trim((string) ($_SESSION['voornaam'] ?? ''));
 $achternaam = trim((string) ($_SESSION['naam'] ?? ''));
+$klas = trim((string) ($_SESSION['klas'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -53,6 +54,7 @@ $achternaam = trim((string) ($_SESSION['naam'] ?? ''));
 
         <div class="form-section">
             <h2 class="section-title">Vak II. Uitvoering, planning en medewerkers</h2>
+            <p class="step-help">Leg hier vast wie de werken uitvoert, wanneer ze plaatsvinden en wie verantwoordelijk is op de werkplek.</p>
 
             <div class="form-group">
                 <label>Wie voert de werken uit?</label>
@@ -73,13 +75,20 @@ $achternaam = trim((string) ($_SESSION['naam'] ?? ''));
                     <label for="vak2_school_uitvoerder">Uitvoerende organisatie</label>
                     <input type="text" id="vak2_school_uitvoerder" name="vak2_school_uitvoerder" value="GTI Beveren" readonly data-preserve-value="true">
                 </div>
+                <div class="form-group" id="vak2_klas_group" hidden>
+                    <label for="vak2_klas">Klas</label>
+                    <input type="text" id="vak2_klas" name="vak2_klas" value="<?= e($klas) ?>" placeholder="bijv. 6ADB" data-preserve-value="<?= $klas !== '' ? 'true' : 'false' ?>">
+                    <p class="field-note">Voor leerlingen wordt deze klas gebruikt om de juiste leerkracht te verwittigen.</p>
+                </div>
                 <div class="form-group" id="vak2_firma_group" hidden>
                     <label for="vak2_firma">Naam externe firma</label>
                     <input type="text" id="vak2_firma" name="vak2_firma" placeholder="Naam van de firma">
+                    <p class="field-note">Externe werken worden opgevolgd door TA of admin.</p>
                 </div>
             </div>
 
             <h3 class="subsection-title">Verantwoordelijke uitvoerder</h3>
+            <p class="step-help">Dit is de persoon die op de werkplek aanspreekbaar is tijdens de uitvoering.</p>
             <div class="form-row">
                 <div class="form-group">
                     <label for="uitvoerder_voornaam">Voornaam</label>

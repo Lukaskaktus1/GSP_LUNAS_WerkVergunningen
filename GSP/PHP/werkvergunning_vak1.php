@@ -9,6 +9,7 @@ $voornaam = trim((string) ($_SESSION['voornaam'] ?? ''));
 $achternaam = trim((string) ($_SESSION['naam'] ?? ''));
 $telefoon = (string) ($_SESSION['telefoon'] ?? '');
 $email = (string) ($_SESSION['email'] ?? '');
+$afdelingen = gspAfdelingen();
 
 $overzichtPagina = match ($role) {
     'leerling' => '../pages/overzicht_leerling.php',
@@ -88,11 +89,18 @@ $overzichtPagina = match ($role) {
                 </div>
                 <div class="form-group">
                     <label for="vak1_afdeling">Afdeling</label>
-                    <input type="text" id="vak1_afdeling" name="vak1_afdeling" required>
+                    <select id="vak1_afdeling" name="vak1_afdeling" required>
+                        <option value="" disabled selected hidden>Kies afdeling</option>
+                        <?php foreach ($afdelingen as $waarde => $label): ?>
+                            <option value="<?= e($waarde) ?>"><?= e($label) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p class="field-note">Kies het vak of de afdeling waarvoor de werken gebeuren. Dit kan later nog aangepast worden indien nodig.</p>
                 </div>
             </div>
 
             <h3 class="subsection-title">I.2. EXPLOSIEVE ATMOSFEER (Ex-Zone)</h3>
+            <p class="step-help">Duid dit alleen aan wanneer de werken kunnen gebeuren in een zone met gas, stof of dampen die ontvlambaar kunnen zijn.</p>
             <div class="form-group">
                 <label>Werkzaamheden in explosieve atmosfeer (gas/stof)</label>
                 <div class="checkbox-group">
@@ -110,7 +118,16 @@ $overzichtPagina = match ($role) {
             <h3 class="subsection-title">I.1. WERKBESCHRIJVING</h3>
             <p class="form-subtitle">Geef een duidelijke, gedetailleerde beschrijving van de werkzaamheden.</p>
             <div class="form-group">
-                <textarea id="vak1_werkbeschrijving" name="vak1_werkbeschrijving" rows="8" placeholder="Beschrijf hier de werkzaamheden..." required></textarea>
+                <textarea id="vak1_werkbeschrijving" name="vak1_werkbeschrijving" rows="8" placeholder="Lokaal, machine nummer, exacte plaats, taak, risico's en genoeg info zodat de controleur meteen begrijpt wat er zal gebeuren..." required></textarea>
+                <p class="field-note">Vermeld minstens lokaal, machine of installatie, nummer indien aanwezig, en wat er precies wordt uitgevoerd.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="vak1_foto">Foto van werkplek of machine</label>
+                <input type="file" id="vak1_foto" name="vak1_foto" accept="image/*" data-optional="true">
+                <input type="hidden" id="vak1_foto_data" name="vak1_foto_data" data-optional="true">
+                <p class="field-note">Voeg indien nuttig een foto toe van de machine, het lokaal of de plaats waar de werken gebeuren.</p>
+                <img id="vak1_foto_preview" class="photo-preview" alt="Voorbeeld foto werkplek" hidden>
             </div>
         </div>
 

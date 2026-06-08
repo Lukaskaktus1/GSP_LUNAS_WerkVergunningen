@@ -3,3 +3,83 @@
 .applications-container {
     min-height: auto;
 }
+
+.user-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.user-management-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-management-table th,
+.user-management-table td {
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.user-management-table tbody tr {
+    border-top: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.user-management-table select {
+    min-width: 145px;
+    padding: 9px 11px;
+    border: 1px solid rgba(148, 163, 184, 0.36);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.86);
+    color: #1f2937;
+    font-weight: 700;
+}
+
+.user-action-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+button.user-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    border: 0 !important;
+    border-radius: 10px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 800;
+    line-height: 1;
+    padding: 10px 14px;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+button.user-action-btn:hover:not(:disabled),
+button.user-action-btn:focus-visible:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16);
+    outline: none;
+}
+
+button.user-action-btn.save {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #2563eb, #0891b2) !important;
+}
+
+button.user-action-btn.delete {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #dc2626, #b42318) !important;
+}
+
+button.user-action-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+    filter: grayscale(0.25);
+}
+
+.user-action-stack form {
+    margin: 0;
+}

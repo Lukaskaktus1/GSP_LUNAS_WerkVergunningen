@@ -11,6 +11,11 @@ function refreshSessionProfileFromDatabase(PDO $pdo, int $userId): void
     try {
         $userFallbackSelect = '';
         $userFallbackColumns = optionalTableColumns($pdo, 'users', ['voornaam', 'naam', 'telefoon']);
+        $profileExtraColumns = [];
+
+        if (databaseTableExists($pdo, 'user_profiel')) {
+            $profileExtraColumns = optionalTableColumns($pdo, 'user_profiel', ['klas', 'vak']);
+        }
 
         if ($userFallbackColumns !== []) {
             $parts = [];
@@ -28,6 +33,7 @@ function refreshSessionProfileFromDatabase(PDO $pdo, int $userId): void
                     p.voornaam AS profiel_voornaam,
                     p.{$lastNameColumn} AS profiel_naam,
                     p.telefoon AS profiel_telefoon
+                    " . ($profileExtraColumns !== [] ? ', p.' . implode(', p.', $profileExtraColumns) : '') . "
                     {$userFallbackSelect}
                 FROM users u
                 LEFT JOIN user_profiel p ON p.user_id = u.id
@@ -67,6 +73,11 @@ function refreshSessionProfileFromDatabase(PDO $pdo, int $userId): void
         }
         if (!empty($row['email'])) {
             $_SESSION['email'] = (string) $row['email'];
+        }
+        foreach (['klas', 'vak'] as $extraProfileField) {
+            if (!empty($row[$extraProfileField])) {
+                $_SESSION[$extraProfileField] = (string) $row[$extraProfileField];
+            }
         }
     } catch (Throwable $exception) {
         error_log('refreshSessionProfileFromDatabase failed: ' . $exception->getMessage());
@@ -126,7 +137,53 @@ function magVergunningBekijken(array $aanvraag, int $userId, string $role): bool
         return true;
     }
 
+    if ($role === 'leerkracht') {
+        if ((int) ($aanvraag['eigenaar_user_id'] ?? 0) === $userId) {
+            return true;
+        }
+
+        try {
+            $pdo = getDbConnection();
+            return (string) ($aanvraag['vak2_doel'] ?? '') === 'school'
+                && leerkrachtMagKlasBeheren($pdo, $userId, (string) ($aanvraag['vak2_klas'] ?? ''));
+        } catch (Throwable $exception) {
+            error_log('magVergunningBekijken teacher check failed: ' . $exception->getMessage());
+        }
+    }
+
     return (int) ($aanvraag['eigenaar_user_id'] ?? 0) === $userId;
+}
+
+function magVergunningKeuren(PDO $pdo, array $aanvraag, int $userId, string $role): bool
+{
+    if (in_array($role, ['directeur', 'ta', 'admin'], true)) {
+        return true;
+    }
+
+    return $role === 'leerkracht'
+        && (string) ($aanvraag['vak2_doel'] ?? '') === 'school'
+        && leerkrachtMagKlasBeheren($pdo, $userId, (string) ($aanvraag['vak2_klas'] ?? ''));
+}
+
+function ensureWerkvergunningBeoordelingTable(PDO $pdo): void
+{
+    $pdo->exec(<<<'SQL'
+        CREATE TABLE IF NOT EXISTS werkvergunning_beoordeling (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            vergunning_id INT NOT NULL,
+            beoordelaar_user_id INT NOT NULL,
+            beoordelaar_rol VARCHAR(40) NOT NULL,
+            actie VARCHAR(40) NOT NULL,
+            naam VARCHAR(150) NULL,
+            handtekening LONGTEXT NULL,
+            opmerking TEXT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_werkvergunning_beoordeling_vergunning (vergunning_id),
+            CONSTRAINT fk_werkvergunning_beoordeling_vergunning
+                FOREIGN KEY (vergunning_id) REFERENCES werkvergunning(id)
+                ON DELETE CASCADE
+        )
+    SQL);
 }
 
 function magVergunningBewerken(array $aanvraag, int $userId): bool

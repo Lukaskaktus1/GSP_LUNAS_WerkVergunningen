@@ -5,18 +5,49 @@ declare(strict_types=1);
 require_once __DIR__ . '/../auth/auth.php';
 require_once __DIR__ . '/../config/db.php';
 
-requireRole(['directeur', 'ta', 'admin']);
+requireRole(['leerkracht', 'directeur', 'ta', 'admin']);
 
 $pdo = getDbConnection();
+$role = (string) ($_SESSION['rol'] ?? '');
+$userId = (int) ($_SESSION['user_id'] ?? 0);
+
+$params = [];
+$where = "status IN ('ingediend', 'in_beoordeling')";
+$hasVak2Klas = databaseColumnExists($pdo, 'werkvergunning', 'vak2_klas');
+
+if ($role === 'leerkracht') {
+    if (!$hasVak2Klas) {
+        $where .= ' AND 1 = 0';
+    } else {
+        $klassen = array_values(array_unique(array_filter(array_map(
+            static fn (array $row): string => normalizeKlasNaam((string) ($row['klas'] ?? '')),
+            userKlasVakProfielen($pdo, $userId)
+        ))));
+
+        if ($klassen === []) {
+            $where .= ' AND 1 = 0';
+        } else {
+            $placeholders = [];
+            foreach ($klassen as $index => $klas) {
+                $key = 'klas_' . $index;
+                $placeholders[] = ':' . $key;
+                $params[$key] = $klas;
+            }
+            $where .= " AND vak2_doel = 'school' AND LOWER(COALESCE(vak2_klas, '')) IN (" . implode(', ', $placeholders) . ')';
+        }
+    }
+}
+
+$vak2KlasSelect = $hasVak2Klas ? 'vak2_klas' : "NULL AS vak2_klas";
 
 $stmt = $pdo->prepare("
-    SELECT id, vergunning_nummer, eigenaar_email, eigenaar_rol, werkbeschrijving, datum_werken, status, created_at
+    SELECT id, vergunning_nummer, eigenaar_email, eigenaar_rol, werkbeschrijving, datum_werken, {$vak2KlasSelect}, status, created_at
     FROM werkvergunning
-    WHERE status IN ('ingediend', 'in_beoordeling')
+    WHERE {$where}
     ORDER BY created_at ASC
 ");
 
-$stmt->execute();
+$stmt->execute($params);
 $aanvragen = $stmt->fetchAll();
 $flash = getFlashMessage();
 
@@ -35,6 +66,7 @@ function terugNaarOverzicht(): string
 
     return match ($role) {
         'ta' => 'overzicht_ta.php',
+        'leerkracht' => 'overzicht_leerkracht.php',
         'directeur' => 'overzicht_directeur.php',
         'admin' => 'overzicht_admin.php',
         default => 'overzicht_leerling.php',
@@ -109,6 +141,7 @@ function terugNaarOverzicht(): string
                                 <th>Rol</th>
                                 <th>Werkbeschrijving</th>
                                 <th>Datum werken</th>
+                                <th>Klas</th>
                                 <th>Status</th>
                                 <th>Aangemaakt</th>
                                 <th>Acties</th>
@@ -122,6 +155,7 @@ function terugNaarOverzicht(): string
                                     <td><?= e((string) ($aanvraag['eigenaar_rol'] ?? '')) ?></td>
                                     <td><?= e((string) $aanvraag['werkbeschrijving']) ?></td>
                                     <td><?= e((string) ($aanvraag['datum_werken'] ?? '')) ?></td>
+                                    <td><?= e((string) ($aanvraag['vak2_klas'] ?? '')) ?></td>
                                     <td>
                                         <span class="status-badge">
                                             <?= e(statusLabelKeuring((string) $aanvraag['status'])) ?>
@@ -136,22 +170,6 @@ function terugNaarOverzicht(): string
                                             >
                                                 Bekijken
                                             </button>
-
-                                            <form action="aanvraag_keuren.php" method="POST" data-confirm-title="Aanvraag goedkeuren" data-confirm-message="Weet u zeker dat u deze aanvraag wilt goedkeuren?" data-confirm-solution="Controleer eerst of de risico's en maatregelen volledig genoeg zijn. Na bevestigen wordt de aanvraag goedgekeurd.">
-                                                <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
-                                                <input type="hidden" name="actie" value="goedkeuren">
-                                                <button type="submit" class="small-btn approve-btn">
-                                                    Goedkeuren
-                                                </button>
-                                            </form>
-
-                                            <form action="aanvraag_keuren.php" method="POST" data-confirm-title="Aanvraag afkeuren" data-confirm-message="Weet u zeker dat u deze aanvraag wilt afkeuren?" data-confirm-solution="Gebruik dit alleen wanneer de aanvraag niet veilig of niet volledig genoeg is. De aanvrager ziet daarna dat de aanvraag afgekeurd is.">
-                                                <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
-                                                <input type="hidden" name="actie" value="afkeuren">
-                                                <button type="submit" class="small-btn reject-btn">
-                                                    Afkeuren
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>

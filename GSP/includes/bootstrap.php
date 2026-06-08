@@ -62,17 +62,178 @@ function flashDialogMarkup(?array $flash): string
 
 function latestReviewNotification(PDO $pdo): ?array
 {
-    $stmt = $pdo->query("
-        SELECT id, vergunning_nummer, eigenaar_email, eigenaar_rol, werkbeschrijving, created_at
-        FROM werkvergunning
-        WHERE status IN ('ingediend', 'in_beoordeling')
-        ORDER BY created_at DESC
+    $role = (string) ($_SESSION['rol'] ?? '');
+    $userId = (int) ($_SESSION['user_id'] ?? 0);
+    $params = [];
+    $where = "w.status IN ('ingediend', 'in_beoordeling')";
+
+    if ($role === 'leerkracht') {
+        if (!databaseColumnExists($pdo, 'werkvergunning', 'vak2_klas')) {
+            return null;
+        }
+
+        $teacherKlassen = userKlasVakProfielen($pdo, $userId);
+        $klassen = array_values(array_unique(array_filter(array_map(
+            static fn (array $row): string => strtolower(trim((string) ($row['klas'] ?? ''))),
+            $teacherKlassen
+        ))));
+
+        if ($klassen === []) {
+            return null;
+        }
+
+        $placeholders = [];
+        foreach ($klassen as $index => $klas) {
+            $key = 'klas_' . $index;
+            $placeholders[] = ':' . $key;
+            $params[$key] = $klas;
+        }
+
+        $where .= " AND w.vak2_doel = 'school' AND LOWER(COALESCE(w.vak2_klas, '')) IN (" . implode(', ', $placeholders) . ')';
+    } elseif (!in_array($role, ['directeur', 'ta', 'admin'], true)) {
+        return null;
+    }
+
+    $stmt = $pdo->prepare("
+        SELECT w.id, w.vergunning_nummer, w.eigenaar_email, w.eigenaar_rol, w.werkbeschrijving, w.created_at
+        FROM werkvergunning w
+        WHERE {$where}
+        ORDER BY w.created_at DESC
         LIMIT 1
     ");
+
+    $stmt->execute($params);
 
     $aanvraag = $stmt->fetch();
 
     return is_array($aanvraag) ? $aanvraag : null;
+}
+
+function gspAfdelingen(): array
+{
+    return [
+        'auto' => 'Auto',
+        'mechanica' => 'Mechanica',
+        'lassen' => 'Lassen',
+        'hout' => 'Hout',
+        'elektriciteit' => 'Elektriciteit',
+        'eerste_graad' => 'Eerste graad',
+    ];
+}
+
+function gspKlassen(): array
+{
+    $klassen = [];
+
+    foreach (['1A', '1B', '1C', '1D', '2A', '2B', '2C', '2D'] as $klas) {
+        $klassen[$klas] = $klas;
+    }
+
+    $bovenbouw = [
+        'AUTO' => 'Auto',
+        'MECH' => 'Mechanica',
+        'LAS' => 'Lassen',
+        'HOUT' => 'Hout',
+        'ELEK' => 'Elektriciteit',
+        'ADB' => 'Applicatie- en databeheer',
+    ];
+
+    foreach ([3, 4, 5, 6, 7] as $jaar) {
+        foreach ($bovenbouw as $richtingCode => $richtingLabel) {
+            if ($jaar === 7 && $richtingCode === 'ADB') {
+                continue;
+            }
+
+            $code = (string) $jaar . $richtingCode;
+            $klassen[$code] = $code . ' - ' . $richtingLabel;
+        }
+    }
+
+    return $klassen;
+}
+
+function normalizeKlasNaam(string $klas): string
+{
+    return strtolower(trim($klas));
+}
+
+function userKlasVakProfielen(PDO $pdo, int $userId): array
+{
+    if ($userId <= 0) {
+        return [];
+    }
+
+    $rows = [];
+
+    if (
+        databaseTableExists($pdo, 'user_klas_vak')
+        && databaseColumnExists($pdo, 'user_klas_vak', 'user_id')
+    ) {
+        $stmt = $pdo->prepare('
+            SELECT klas, vak
+            FROM user_klas_vak
+            WHERE user_id = :user_id
+            ORDER BY id ASC
+        ');
+        $stmt->execute(['user_id' => $userId]);
+        $rows = array_merge($rows, array_filter($stmt->fetchAll(), 'is_array'));
+    }
+
+    if (
+        databaseTableExists($pdo, 'user_profiel')
+        && databaseColumnExists($pdo, 'user_profiel', 'user_id')
+    ) {
+        $select = [];
+        foreach (['klas', 'vak'] as $column) {
+            if (databaseColumnExists($pdo, 'user_profiel', $column)) {
+                $select[] = $column;
+            }
+        }
+
+        if ($select !== []) {
+            $stmt = $pdo->prepare('SELECT ' . implode(', ', $select) . ' FROM user_profiel WHERE user_id = :user_id LIMIT 1');
+            $stmt->execute(['user_id' => $userId]);
+            $profile = $stmt->fetch();
+
+            if (is_array($profile)) {
+                $rows[] = [
+                    'klas' => (string) ($profile['klas'] ?? ''),
+                    'vak' => (string) ($profile['vak'] ?? ''),
+                ];
+            }
+        }
+    }
+
+    $clean = [];
+    foreach ($rows as $row) {
+        $klas = trim((string) ($row['klas'] ?? ''));
+        $vak = trim((string) ($row['vak'] ?? ''));
+
+        if ($klas === '' && $vak === '') {
+            continue;
+        }
+
+        $clean[] = ['klas' => $klas, 'vak' => $vak];
+    }
+
+    return $clean;
+}
+
+function leerkrachtMagKlasBeheren(PDO $pdo, int $teacherId, string $klas): bool
+{
+    $klas = normalizeKlasNaam($klas);
+
+    if ($klas === '') {
+        return false;
+    }
+
+    foreach (userKlasVakProfielen($pdo, $teacherId) as $row) {
+        if (normalizeKlasNaam((string) ($row['klas'] ?? '')) === $klas) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function reviewNotificationMarkup(?array $aanvraag): string

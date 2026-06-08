@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../auth/auth.php';
 require_once __DIR__ . '/../config/db.php';
 
-requireRole(['directeur', 'ta', 'admin']);
+requireRole(['leerkracht', 'directeur', 'ta', 'admin']);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirect('keuringen.php');
@@ -13,6 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $aanvraagId = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 $actie = trim((string) ($_POST['actie'] ?? ''));
+$handtekening = trim((string) ($_POST['beoordelaar_handtekening'] ?? ''));
+$opmerking = trim((string) ($_POST['opmerking'] ?? ''));
 
 if (!$aanvraagId || !in_array($actie, ['goedkeuren', 'afkeuren'], true)) {
     setFlashMessage('error', 'Ongeldige keuring.');
@@ -26,8 +28,16 @@ try {
 
     $pdo->beginTransaction();
 
+    $optionalKeurColumns = [];
+    foreach (['vak2_doel', 'vak2_klas'] as $column) {
+        if (databaseColumnExists($pdo, 'werkvergunning', $column)) {
+            $optionalKeurColumns[] = $column;
+        }
+    }
+    $optionalKeurSelect = $optionalKeurColumns === [] ? '' : ', ' . implode(', ', $optionalKeurColumns);
+
     $stmt = $pdo->prepare("
-        SELECT id, vergunning_nummer, eigenaar_user_id, eigenaar_email, status
+        SELECT id, vergunning_nummer, eigenaar_user_id, eigenaar_email, status {$optionalKeurSelect}
         FROM werkvergunning
         WHERE id = :id
         LIMIT 1
@@ -51,6 +61,18 @@ try {
         redirect('keuringen.php');
     }
 
+    if (!magVergunningKeuren($pdo, $aanvraag, (int) ($_SESSION['user_id'] ?? 0), (string) ($_SESSION['rol'] ?? ''))) {
+        $pdo->rollBack();
+        setFlashMessage('error', 'U mag deze aanvraag niet keuren.');
+        redirect('keuringen.php');
+    }
+
+    if ($actie === 'goedkeuren' && $handtekening === '') {
+        $pdo->rollBack();
+        setFlashMessage('error', 'Een handtekening is verplicht om de werkvergunning goed te keuren.');
+        redirect('aanvraag_bekijken.php?id=' . $aanvraagId);
+    }
+
     $updateParts = ['status = :status'];
     if (databaseColumnExists($pdo, 'werkvergunning', 'updated_at')) {
         $updateParts[] = 'updated_at = NOW()';
@@ -65,6 +87,36 @@ try {
     $updateStmt->execute([
         'status' => $nieuweStatus,
         'id' => $aanvraagId,
+    ]);
+
+    ensureWerkvergunningBeoordelingTable($pdo);
+    $beoordelingStmt = $pdo->prepare('
+        INSERT INTO werkvergunning_beoordeling (
+            vergunning_id,
+            beoordelaar_user_id,
+            beoordelaar_rol,
+            actie,
+            naam,
+            handtekening,
+            opmerking
+        ) VALUES (
+            :vergunning_id,
+            :beoordelaar_user_id,
+            :beoordelaar_rol,
+            :actie,
+            :naam,
+            :handtekening,
+            :opmerking
+        )
+    ');
+    $beoordelingStmt->execute([
+        'vergunning_id' => $aanvraagId,
+        'beoordelaar_user_id' => (int) ($_SESSION['user_id'] ?? 0),
+        'beoordelaar_rol' => (string) ($_SESSION['rol'] ?? ''),
+        'actie' => $actie,
+        'naam' => currentUserDisplayName(),
+        'handtekening' => $actie === 'goedkeuren' ? $handtekening : null,
+        'opmerking' => $opmerking === '' ? null : $opmerking,
     ]);
 
     if ($actie === 'goedkeuren') {

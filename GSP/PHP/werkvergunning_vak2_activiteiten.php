@@ -58,6 +58,7 @@ $overzichtPagina = match ($role) {
 
             <!-- II.1 ACTIVITEITEN KOUD -->
             <div class="form-section">
+                <p class="step-help">Selecteer alleen wat echt van toepassing is. Deze keuzes bepalen welke risico's de beoordelaar extra nakijkt.</p>
                 <div class="section-header-row">
                     <h3 class="subsection-title subsection-title-no-margin">II.1. ACTIVITEITEN KOUD</h3>
                     <div class="checkbox-item geen-checkbox">
@@ -254,17 +255,23 @@ $overzichtPagina = match ($role) {
                     </div>
                 </div>
                 <div class="info-box">
-                    <p><strong>voor ◊ is een attest vereist!!!</strong></p>
+                    <p><strong>Voor voertuigen moet altijd de nummerplaat ingevuld worden.</strong> Bij kraan, heftruck, hoogtewerker, schaarlift en verreiker is ook de attestdatum verplicht.</p>
                 </div>
 
                 <div class="form-group voertuigen-section" hidden>
-                    <label>Voertuigen met attest</label>
-                    <p class="field-note">Voeg per voertuig de nummerplaat en attestdatum toe.</p>
+                    <label>Voertuigen en nummerplaten</label>
+                    <p class="field-note">Voeg per aangeduid voertuig apart toe welke nummerplaat erbij hoort. Voertuigen met attest staan zo duidelijk apart.</p>
                     <div class="dynamic-table" id="voertuigen_table" data-storage-key="voertuigen_attesten">
                         <div class="dynamic-row" data-row>
                             <div class="form-group">
+                                <label>Voertuig</label>
+                                <select data-field="voertuig_type" required>
+                                    <option value="" disabled selected hidden>Kies voertuig</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label>Nummerplaat</label>
-                                <input type="text" data-field="nummerplaat" data-optional="true">
+                                <input type="text" data-field="nummerplaat" required>
                             </div>
                             <div class="form-group">
                                 <label>Attest geldig tot</label>

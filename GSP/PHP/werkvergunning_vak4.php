@@ -44,6 +44,7 @@ $role = (string) ($_SESSION['rol'] ?? '');
 
         <div class="form-section">
             <h2 class="section-title">Vak IV. AFDELING</h2>
+            <p class="step-help">Vul in wie vanuit de afdeling bereikbaar is en of er andere werkzaamheden zijn die invloed kunnen hebben op de veiligheid.</p>
 
             <h3 class="subsection-title">Afdelingsverantwoordelijke</h3>
             <div class="form-row">

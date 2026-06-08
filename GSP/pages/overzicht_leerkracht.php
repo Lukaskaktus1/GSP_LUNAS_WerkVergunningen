@@ -3,7 +3,10 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../auth/auth.php';
+require_once __DIR__ . '/../config/db.php';
 requireRole(['leerkracht']);
+
+$reviewNotification = latestReviewNotification(getDbConnection());
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -59,6 +62,20 @@ requireRole(['leerkracht']);
                 <div class="action-card-title">Mijn aanvragen</div>
                 <div class="action-card-subtitle">Bekijk uw ingediende aanvragen</div>
             </div>
+            <div class="action-card" onclick="window.location.href='keuringen.php'">
+                <div class="action-card-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="action-card-title">Keuringen</div>
+                <div class="action-card-subtitle">Aanvragen van uw klassen nakijken</div>
+            </div>
+            <div class="action-card" onclick="window.location.href='admin_gebruikers.php'">
+                <div class="action-card-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <div class="action-card-title">Gebruikers</div>
+                <div class="action-card-subtitle">Accounts van uw klassen beheren</div>
+            </div>
             <div class="action-card" onclick="window.location.href='contact.php'">
                 <div class="action-card-icon">
                     <i class="fas fa-envelope"></i>
@@ -85,6 +102,7 @@ requireRole(['leerkracht']);
         </div>
     </section>
 </main>
+<?= reviewNotificationMarkup($reviewNotification) ?>
 <script src="../JS/ui-feedback.js"></script>
 </body>
 </html>
