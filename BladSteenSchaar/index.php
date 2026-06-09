@@ -45,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gameKlaar']) === 'tru
     <!-- Motion One: vanilla-JS animatie library -->
     <script src="https://cdn.jsdelivr.net/npm/motion@10/dist/motion.min.js"></script>
     <script src="script.js" defer></script>
+    <link rel="stylesheet" href="../CSS/legal-compliance.css">
+    <script src="../Scripts/legal-compliance.js" defer></script>
 </head>
 <body>
     <nav class="portfolio-menu" aria-label="Portfolio menu">
@@ -217,5 +219,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gameKlaar']) === 'tru
     <footer>
         <p>Blad Schaar Steen &copy; GTI Beveren 2025-2026 - gemaakt met JavaScript</p>
     </footer>
+<footer class="legal-footer" data-site-legal-footer>
+    <div class="legal-footer__inner">
+        <p>&copy; GTI Beveren 2025-2026 - GSP 6ADB</p>
+        <nav aria-label="Juridische links">
+            <a href="../cookiebeleid.html">Cookiebeleid</a>
+            <a href="../privacybeleid.html">Privacybeleid</a>
+            <a href="../algemene-voorwaarden.html">Algemene voorwaarden</a>
+        </nav>
+    </div>
+</footer>
+<section class="cookie-banner" id="siteCookieBanner" data-site-cookie-banner aria-label="Cookie melding">
+    <div>
+        <strong>Cookies op deze website</strong>
+        <p>We gebruiken noodzakelijke cookies voor de werking van de site. Analytics gebruiken we alleen na jouw toestemming. Lees meer in ons <a href="../cookiebeleid.html">cookiebeleid</a> en <a href="../privacybeleid.html">privacybeleid</a>.</p>
+    </div>
+    <div class="cookie-actions">
+        <button type="button" data-cookie-decline>Weigeren</button>
+        <button class="primary-action" type="button" data-cookie-accept>Accepteren</button>
+    </div>
+</section>
 </body>
 </html>

@@ -6,6 +6,83 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+function gspSiteRootRelativePrefix(): string
+{
+    $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+
+    if (preg_match('#/GSP/(pages|PHP)/#i', $scriptName) === 1) {
+        return '../..';
+    }
+
+    if (preg_match('#/GSP/#i', $scriptName) === 1 || substr($scriptName, -4) === '/GSP') {
+        return '..';
+    }
+
+    return '.';
+}
+
+function gspLegalComplianceHead(): string
+{
+    $prefix = gspSiteRootRelativePrefix();
+
+    return '<link rel="stylesheet" href="' . e($prefix . '/CSS/legal-compliance.css') . '">' . "\n"
+        . '<script src="' . e($prefix . '/Scripts/legal-compliance.js') . '" defer></script>';
+}
+
+function gspLegalComplianceBody(): string
+{
+    $prefix = gspSiteRootRelativePrefix();
+    $cookieUrl = e($prefix . '/cookiebeleid.html');
+    $privacyUrl = e($prefix . '/privacybeleid.html');
+    $termsUrl = e($prefix . '/algemene-voorwaarden.html');
+
+    return <<<HTML
+<footer class="legal-footer" data-site-legal-footer>
+    <div class="legal-footer__inner">
+        <p>&copy; GTI Beveren 2025-2026 - GSP 6ADB</p>
+        <nav aria-label="Juridische links">
+            <a href="{$cookieUrl}">Cookiebeleid</a>
+            <a href="{$privacyUrl}">Privacybeleid</a>
+            <a href="{$termsUrl}">Algemene voorwaarden</a>
+        </nav>
+    </div>
+</footer>
+<section class="cookie-banner" id="siteCookieBanner" data-site-cookie-banner aria-label="Cookie melding">
+    <div>
+        <strong>Cookies op deze website</strong>
+        <p>We gebruiken noodzakelijke cookies voor de werking van de site. Analytics gebruiken we alleen na jouw toestemming. Lees meer in ons <a href="{$cookieUrl}">cookiebeleid</a> en <a href="{$privacyUrl}">privacybeleid</a>.</p>
+    </div>
+    <div class="cookie-actions">
+        <button type="button" data-cookie-decline>Weigeren</button>
+        <button class="primary-action" type="button" data-cookie-accept>Accepteren</button>
+    </div>
+</section>
+HTML;
+}
+
+function gspInjectLegalCompliance(string $html): string
+{
+    if (
+        stripos($html, '<html') === false
+        || stripos($html, '</head>') === false
+        || stripos($html, '</body>') === false
+    ) {
+        return $html;
+    }
+
+    if (stripos($html, 'legal-compliance.css') === false) {
+        $html = preg_replace('/<\/head>/i', gspLegalComplianceHead() . "\n</head>", $html, 1) ?? $html;
+    }
+
+    if (stripos($html, 'data-site-legal-footer') === false) {
+        $html = preg_replace('/<\/body>/i', gspLegalComplianceBody() . "\n</body>", $html, 1) ?? $html;
+    }
+
+    return $html;
+}
+
+ob_start('gspInjectLegalCompliance');
+
 function redirect(string $path): never
 {
     header('Location: ' . $path);
