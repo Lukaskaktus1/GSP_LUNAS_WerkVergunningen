@@ -77,12 +77,12 @@ $klassen = gspKlassen();
                     </select>
                 </div>
 
-                <div class="form-group" id="leerling_klas_group">
+                <div class="form-group register-role-only" id="leerling_klas_group">
                     <label for="klas">Klas</label>
                     <input type="text" id="klas" name="klas" placeholder="bijv. 6ADB">
                 </div>
 
-                <div class="form-group" id="leerkracht_klassen_group" hidden>
+                <div class="form-group register-role-only" id="leerkracht_klassen_group" hidden style="display:none;">
                     <label>Klassen en vakken</label>
                     <p class="register-note">Voeg elke klas toe waaraan u les geeft, met het bijhorende vak.</p>
                     <div class="register-dynamic-table" id="leerkracht_klassen">
@@ -143,6 +143,6 @@ $klassen = gspKlassen();
         </div>
     </div>
 <script src="JS/ui-feedback.js"></script>
-    <script src="JS/register-validation.js"></script>
+    <script src="JS/register-validation.js?v=20260609"></script>
 </body>
 </html>

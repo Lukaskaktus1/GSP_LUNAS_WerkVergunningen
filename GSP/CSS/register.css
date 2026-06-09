@@ -63,6 +63,12 @@
     font-size: 0.82rem;
 }
 
+.login-form [hidden],
+.register-role-only[hidden],
+.register-role-only.is-hidden {
+    display: none !important;
+}
+
 .register-dynamic-table {
     display: grid;
     gap: 10px;

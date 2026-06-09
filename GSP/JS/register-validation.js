@@ -87,16 +87,30 @@
         function updateRoleFields() {
             const isTeacher = role && role.value === 'leerkracht';
 
-            if (leerlingKlasGroup) leerlingKlasGroup.hidden = isTeacher;
-            if (leerkrachtGroup) leerkrachtGroup.hidden = !isTeacher;
+            if (leerlingKlasGroup) {
+                leerlingKlasGroup.hidden = isTeacher;
+                leerlingKlasGroup.classList.toggle('is-hidden', isTeacher);
+                leerlingKlasGroup.style.display = isTeacher ? 'none' : '';
+            }
+            if (leerkrachtGroup) {
+                leerkrachtGroup.hidden = !isTeacher;
+                leerkrachtGroup.classList.toggle('is-hidden', !isTeacher);
+                leerkrachtGroup.style.display = isTeacher ? '' : 'none';
+            }
             if (leerlingKlas) {
                 leerlingKlas.required = !isTeacher;
                 leerlingKlas.disabled = isTeacher;
+                if (isTeacher) {
+                    leerlingKlas.value = '';
+                }
             }
             if (leerkrachtTable) {
                 leerkrachtTable.querySelectorAll('input, select').forEach(function (field) {
                     field.required = isTeacher;
                     field.disabled = !isTeacher;
+                    if (!isTeacher) {
+                        field.value = '';
+                    }
                 });
             }
 
@@ -173,6 +187,19 @@
                 });
 
                 (invalidField || password).focus();
+                return;
+            }
+
+            if (form.dataset.submitting === 'true') {
+                event.preventDefault();
+                return;
+            }
+
+            form.dataset.submitting = 'true';
+
+            if (submit) {
+                submit.disabled = true;
+                submit.textContent = 'Account wordt aangemaakt...';
             }
         });
 

@@ -72,13 +72,17 @@ try {
             : ($user['users_telefoon'] ?? ''));
     }
 
-    $isValidUser = is_array($user)
-        && (int) ($user['actief'] ?? 0) === 1
+    $passwordIsValid = is_array($user)
         && isset($user['wachtwoord_hash'])
         && password_verify($password, (string) $user['wachtwoord_hash']);
 
-    if (!$isValidUser) {
+    if (!$passwordIsValid) {
         setFlashMessage('error', 'Ongeldige inloggegevens.');
+        redirect('index.php');
+    }
+
+    if ((int) ($user['actief'] ?? 0) !== 1) {
+        setFlashMessage('error', 'Uw account is nog niet bevestigd. Controleer uw mailbox en klik op de bevestigingslink.');
         redirect('index.php');
     }
 

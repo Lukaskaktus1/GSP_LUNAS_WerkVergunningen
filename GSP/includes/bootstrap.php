@@ -555,3 +555,100 @@ function completePasswordReset(PDO $pdo, int $userId, string $token, string $pas
         $clearLegacy->execute(['id' => $userId]);
     }
 }
+
+function ensureAccountConfirmationTable(PDO $pdo): bool
+{
+    try {
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS account_bevestiging_token (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                token_hash VARCHAR(255) NOT NULL,
+                vervalt_op DATETIME NOT NULL,
+                gebruikt_op DATETIME NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY uq_account_bevestiging_token_hash (token_hash),
+                INDEX idx_account_bevestiging_token_user (user_id),
+                CONSTRAINT fk_account_bevestiging_token_user
+                    FOREIGN KEY (user_id) REFERENCES users(id)
+                    ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+
+        return true;
+    } catch (Throwable $exception) {
+        error_log('Account confirmation table failed: ' . $exception->getMessage());
+        return false;
+    }
+}
+
+function createAccountConfirmationToken(PDO $pdo, int $userId): ?string
+{
+    if (!ensureAccountConfirmationTable($pdo)) {
+        return null;
+    }
+
+    $token = bin2hex(random_bytes(32));
+
+    $deleteStmt = $pdo->prepare('DELETE FROM account_bevestiging_token WHERE user_id = :user_id');
+    $deleteStmt->execute(['user_id' => $userId]);
+
+    $insertStmt = $pdo->prepare('
+        INSERT INTO account_bevestiging_token (user_id, token_hash, vervalt_op)
+        VALUES (:user_id, :token_hash, DATE_ADD(NOW(), INTERVAL 48 HOUR))
+    ');
+    $insertStmt->execute([
+        'user_id' => $userId,
+        'token_hash' => hash('sha256', $token),
+    ]);
+
+    return $token;
+}
+
+function confirmAccountByToken(PDO $pdo, string $token): bool
+{
+    $token = trim($token);
+
+    if ($token === '' || !ensureAccountConfirmationTable($pdo)) {
+        return false;
+    }
+
+    $stmt = $pdo->prepare('
+        SELECT user_id
+        FROM account_bevestiging_token
+        WHERE token_hash = :token_hash
+          AND gebruikt_op IS NULL
+          AND vervalt_op >= NOW()
+        LIMIT 1
+    ');
+    $stmt->execute(['token_hash' => hash('sha256', $token)]);
+
+    $userId = (int) $stmt->fetchColumn();
+
+    if ($userId <= 0) {
+        return false;
+    }
+
+    $pdo->beginTransaction();
+
+    try {
+        $updateUser = $pdo->prepare('UPDATE users SET actief = 1 WHERE id = :id');
+        $updateUser->execute(['id' => $userId]);
+
+        $updateToken = $pdo->prepare('
+            UPDATE account_bevestiging_token
+            SET gebruikt_op = NOW()
+            WHERE token_hash = :token_hash
+        ');
+        $updateToken->execute(['token_hash' => hash('sha256', $token)]);
+
+        $pdo->commit();
+        return true;
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+
+        throw $exception;
+    }
+}
