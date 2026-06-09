@@ -45,6 +45,8 @@ function terugNaarOverzichtKeuringen(): string
 <!DOCTYPE html>
 <html lang="nl">
 <head>
+    <link rel="icon" type="image/png" sizes="32x32" href="../IMAGES/favicon-32.png?v=20260609">
+    <link rel="apple-touch-icon" sizes="180x180" href="../IMAGES/favicon-180.png?v=20260609">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mijn keuringen - Werkvergunning Portaal</title>
