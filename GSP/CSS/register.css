@@ -1,13 +1,29 @@
 /* Eigen stylesheet voor de registratiepagina. */
 
-.login-card {
-    border-top: 4px solid rgba(8, 145, 178, 0.72);
+.auth-register-page .login-container {
+    max-width: 760px;
+}
+
+.auth-register-page .login-card {
+    width: min(100%, 700px);
+}
+
+.auth-register-page .login-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.auth-register-page .auth-form-full,
+.auth-register-page .register-role-only,
+.auth-register-page .login-button {
+    grid-column: 1 / -1;
 }
 
 .password-criteria {
     display: grid;
-    gap: 4px;
-    margin: 6px 0 0;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+    margin: 8px 0 0;
     padding: 0;
     list-style: none;
     font-size: 0.78rem;
@@ -17,6 +33,10 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    min-height: 34px;
+    padding: 7px 8px;
+    border-radius: 8px;
+    background: #fff1f2;
     color: #b42318;
     font-weight: 700;
 }
@@ -34,6 +54,7 @@
 }
 
 .password-criteria li.is-valid {
+    background: #ecfdf3;
     color: #067647;
 }
 
@@ -58,7 +79,7 @@
 }
 
 .register-note {
-    margin: -2px 0 10px;
+    margin: -2px 0 12px;
     color: #64748b;
     font-size: 0.82rem;
 }
@@ -72,6 +93,10 @@
 .register-dynamic-table {
     display: grid;
     gap: 10px;
+    padding: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    border-radius: 8px;
+    background: rgba(248, 250, 252, 0.72);
 }
 
 .register-dynamic-row {
@@ -85,20 +110,39 @@
 .register-dynamic-row select,
 .login-form select {
     width: 100%;
+    min-height: 46px;
     padding: 12px 14px;
-    border: 1px solid rgba(148, 163, 184, 0.38);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.86);
-    color: #1f2937;
+    border: 1px solid rgba(148, 163, 184, 0.46);
+    border-radius: 8px;
+    background: rgba(248, 250, 252, 0.92);
+    color: #0f172a;
+    font-size: 0.95rem;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.register-dynamic-row select:focus,
+.login-form select:focus {
+    outline: none;
+    border-color: #2563eb;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 .register-row-remove,
 .register-add-row {
+    min-height: 42px;
     border: 0;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: 800;
     padding: 10px 12px;
+    transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.register-row-remove:hover,
+.register-add-row:hover {
+    filter: saturate(1.04);
+    transform: translateY(-1px);
 }
 
 .register-row-remove {
@@ -109,11 +153,37 @@
 .register-add-row {
     margin-top: 10px;
     color: #ffffff;
-    background: #1678fa;
+    background: #1d4ed8;
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.18);
 }
 
-@media (max-width: 560px) {
+@media (max-width: 760px) {
+    .auth-register-page .login-container {
+        width: min(350px, calc(100vw - 48px)) !important;
+        max-width: min(350px, calc(100vw - 48px)) !important;
+        min-width: 0;
+    }
+
+    .auth-register-page .login-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0;
+        padding-inline: 18px;
+    }
+
+    .auth-register-page .login-form,
     .register-dynamic-row {
+        grid-template-columns: 1fr;
+        min-width: 0;
+    }
+
+    .auth-register-page .form-group,
+    .auth-register-page input,
+    .auth-register-page select {
+        min-width: 0;
+    }
+
+    .password-criteria {
         grid-template-columns: 1fr;
     }
 }

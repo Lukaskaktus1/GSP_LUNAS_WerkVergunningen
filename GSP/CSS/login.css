@@ -1,5 +1,9 @@
 /* Eigen stylesheet voor de loginpagina. */
 
-.login-card {
-    border-top: 4px solid rgba(37, 99, 235, 0.72);
+.auth-login-page .login-card {
+    align-self: center;
+}
+
+.auth-login-page .login-form {
+    max-width: 390px;
 }

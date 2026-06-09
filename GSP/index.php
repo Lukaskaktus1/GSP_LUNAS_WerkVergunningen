@@ -39,18 +39,29 @@ $flash = getFlashMessage();
         <meta property="og:description" content="Login voor het werkvergunningen portaal. Leerlingen, leerkrachten en TA's kunnen hier inloggen.">
         <meta property="og:image" content="<?= e(appOrigin() . '/afbeeldingen/LogoADB_1.png') ?>">
         
-        <link rel="stylesheet" href="CSS/style.css?v=20260608">
-    <link rel="stylesheet" href="CSS/login.css?v=20260608">
+    <link rel="stylesheet" href="CSS/style.css?v=20260609">
+    <link rel="stylesheet" href="CSS/login.css?v=20260609">
         <link rel="stylesheet" href="CSS/local-icons.css?v=20260608">
 </head>
-    <body>
+    <body class="auth-page auth-login-page">
+        <header class="auth-header">
+            <div class="auth-header-left">
+                <span class="auth-header-icon" aria-hidden="true"></span>
+                <div>
+                    <h1>Werkvergunning Portaal</h1>
+                    <p>GTI Beveren</p>
+                </div>
+            </div>
+            <img src="IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="auth-header-logo">
+        </header>
+
         <div class="login-container">
             <div class="login-card">
                 <div class="icon-container">
                     <i class="far fa-file-lines"></i>
                 </div>
                 <h1>Werkvergunning Portaal</h1>
-                <p class="subtitle">Log in om uw werkvergunning aan te vragen</p>
+                <p class="subtitle">Meld u aan om werkvergunningen te beheren en op te volgen.</p>
                 <?= flashDialogMarkup($flash) ?>
 
                 <form class="login-form" action="login.php" method="POST">
@@ -70,16 +81,12 @@ $flash = getFlashMessage();
 
                     <button type="submit" class="login-button">Inloggen</button>
 
-                    <p style="text-align:center; margin-top:16px;">
+                    <p class="auth-switch">
                         Nog geen account?
                         <a href="register.php">Account aanmaken</a>
                     </p>
                     
                 </form>
-            </div>
-
-            <div class="logo-card">
-                <img src="IMAGES/logo-beveren.jpg" alt="Beveren Logo" class="beveren-logo">
             </div>
         </div>
 <script src="JS/ui-feedback.js"></script>
