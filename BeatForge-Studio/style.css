@@ -1116,14 +1116,57 @@ body.light-theme .step-cell:nth-child(4n + 1) {
 
 .piano-toolbar {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) 130px 130px;
+  grid-template-columns: minmax(180px, 1fr) 110px 130px minmax(190px, 0.8fr) minmax(220px, auto);
   gap: 10px;
   padding: 12px;
 }
 
+#midiImportInput {
+  display: none;
+}
+
+.inline-range {
+  display: grid;
+  grid-template-columns: 1fr 38px;
+  align-items: center;
+  gap: 8px;
+}
+
+.inline-range input {
+  width: 100%;
+}
+
+.inline-range output {
+  color: var(--accent-2);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-align: right;
+}
+
+.piano-tools {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr;
+  gap: 8px;
+}
+
+.piano-tools button {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.piano-tools button:hover {
+  border-color: var(--line-bright);
+  background: rgba(101, 184, 255, 0.14);
+}
+
 .piano-roll-shell {
   display: grid;
-  grid-template-columns: 86px 1fr;
+  grid-template-columns: 92px 1fr;
   min-height: 620px;
   overflow: auto;
 }
@@ -1148,6 +1191,10 @@ body.light-theme .step-cell:nth-child(4n + 1) {
   font-weight: 800;
 }
 
+.piano-key:hover {
+  color: var(--accent-dark);
+}
+
 .piano-key.sharp {
   background: #151a21;
   color: #f2f6ff;
@@ -1155,7 +1202,7 @@ body.light-theme .step-cell:nth-child(4n + 1) {
 
 .piano-roll-grid {
   display: grid;
-  min-width: 980px;
+  min-width: 1040px;
   background:
     linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
@@ -1170,6 +1217,7 @@ body.light-theme .piano-roll-grid {
 }
 
 .piano-cell {
+  position: relative;
   min-width: 32px;
   border: 0;
   border-right: 1px solid rgba(101, 112, 128, 0.26);
@@ -1179,6 +1227,7 @@ body.light-theme .piano-roll-grid {
   font-size: 0.62rem;
   font-weight: 900;
   text-align: left;
+  overflow: visible;
 }
 
 .piano-cell:nth-child(4n + 1) {
@@ -1186,13 +1235,40 @@ body.light-theme .piano-roll-grid {
 }
 
 .piano-cell.active {
-  border-radius: 4px;
-  background: linear-gradient(180deg, #c7f5b5, #7fd481);
-  box-shadow: inset 0 0 0 1px rgba(22, 88, 36, 0.26);
+  background: rgba(55, 214, 143, calc(0.09 + (var(--note-velocity, 0.82) * 0.1)));
 }
 
 .piano-cell.start {
+  z-index: 1;
   padding-left: 4px;
+  color: #07140d;
+}
+
+.piano-cell.start::after {
+  position: absolute;
+  z-index: -1;
+  inset: 4px 2px 4px 3px;
+  width: calc((var(--note-length, 1) * 100%) - 5px);
+  min-width: calc(100% - 5px);
+  max-width: calc((var(--note-length, 1) * 100%) - 5px);
+  border: 1px solid rgba(5, 64, 31, 0.24);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #d7fcb9, #6ed67f);
+  box-shadow: 0 8px 16px rgba(16, 118, 71, 0.22);
+  content: "";
+  pointer-events: none;
+}
+
+.piano-cell.start::before {
+  position: relative;
+  z-index: 1;
+  content: attr(data-label);
+  font-size: 0.58rem;
+  pointer-events: none;
+}
+
+.piano-cell.continue {
+  color: transparent;
 }
 
 .studio-footer {
@@ -1309,5 +1385,9 @@ body.light-theme .piano-roll-grid {
 
   .piano-toolbar {
     grid-template-columns: 1fr;
+  }
+
+  .piano-tools {
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }

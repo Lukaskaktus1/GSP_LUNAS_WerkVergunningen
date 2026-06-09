@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BeatForge Studio</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KRSDK8CF6V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KRSDK8CF6V');
+  </script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -65,7 +74,7 @@
       <button id="resetButton" type="button">Reset</button>
       <button id="saveButton" type="button">Opslaan</button>
       <button id="loadButton" type="button">Laden</button>
-      <button class="disabled-action" type="button" disabled>Export</button>
+      <button id="exportMidiButton" type="button">Export MIDI</button>
     </section>
 
     <section class="timeline-strip studio-view" aria-label="Timeline">
@@ -203,6 +212,8 @@
         </div>
         <div class="piano-actions">
           <button id="backToStudioButton" type="button">Terug naar Studio</button>
+          <button id="importMidiButton" type="button">Import MIDI</button>
+          <button id="exportPianoMidiButton" type="button">Export MIDI</button>
           <button id="playPianoButton" type="button">Play piano</button>
           <button id="clearPianoButton" type="button">Leegmaken</button>
           <button id="addPianoSoundButton" type="button">Toevoegen als sound</button>
@@ -210,6 +221,7 @@
       </header>
 
       <section class="piano-toolbar">
+        <input id="midiImportInput" type="file" accept=".mid,.midi,audio/midi,audio/x-midi">
         <label class="panel-field" for="pianoNameInput">
           <span>Naam</span>
           <input id="pianoNameInput" type="text" value="Piano loop">
@@ -222,6 +234,18 @@
           <span>Nootlengte</span>
           <input id="pianoLengthInput" type="number" min="1" max="8" value="2">
         </label>
+        <label class="panel-field" for="pianoVelocityInput">
+          <span>Velocity</span>
+          <div class="inline-range">
+            <input id="pianoVelocityInput" type="range" min="20" max="127" value="104">
+            <output id="pianoVelocityValue" for="pianoVelocityInput">104</output>
+          </div>
+        </label>
+        <div class="piano-tools" aria-label="Piano tools">
+          <button id="quantizePianoButton" type="button">Quantize</button>
+          <button id="octaveDownButton" type="button">- Oct</button>
+          <button id="octaveUpButton" type="button">+ Oct</button>
+        </div>
       </section>
 
       <section class="piano-roll-shell">

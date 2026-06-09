@@ -2,6 +2,8 @@ const TRACK_COUNT = 8;
 const STORAGE_KEY = "beatforge-pattern-v2";
 const MIN_STEPS = 8;
 const MAX_STEPS = 32;
+const MIDI_PPQ = 480;
+const MIDI_STEP_TICKS = MIDI_PPQ / 4;
 
 let STEP_COUNT = 16;
 
@@ -97,6 +99,16 @@ const pianoNotes = [
   "C4", "B3", "A#3", "A3", "G#3", "G3", "F#3", "F3", "E3", "D#3", "D3", "C#3", "C3"
 ];
 
+const drumMidiNotes = {
+  kick: 36,
+  snare: 38,
+  clap: 39,
+  hat: 42,
+  fx: 49,
+  recording: 46,
+  uploaded: 45
+};
+
 const state = {
   audioContext: null,
   isPlaying: false,
@@ -113,7 +125,8 @@ const state = {
   skipNextClick: false,
   mediaRecorder: null,
   recordedChunks: [],
-  pianoNotes: []
+  pianoNotes: [],
+  pianoVelocity: 104
 };
 
 const elements = {
@@ -136,6 +149,7 @@ const elements = {
   backToStudioButton: document.getElementById("backToStudioButton"),
   saveButton: document.getElementById("saveButton"),
   loadButton: document.getElementById("loadButton"),
+  exportMidiButton: document.getElementById("exportMidiButton"),
   bpmInput: document.getElementById("bpmInput"),
   swingInput: document.getElementById("swingInput"),
   densityInput: document.getElementById("densityInput"),
@@ -171,11 +185,19 @@ const elements = {
   pianoNameInput: document.getElementById("pianoNameInput"),
   pianoStepsInput: document.getElementById("pianoStepsInput"),
   pianoLengthInput: document.getElementById("pianoLengthInput"),
+  pianoVelocityInput: document.getElementById("pianoVelocityInput"),
+  pianoVelocityValue: document.getElementById("pianoVelocityValue"),
+  midiImportInput: document.getElementById("midiImportInput"),
   pianoKeys: document.getElementById("pianoKeys"),
   pianoRollGrid: document.getElementById("pianoRollGrid"),
+  importMidiButton: document.getElementById("importMidiButton"),
+  exportPianoMidiButton: document.getElementById("exportPianoMidiButton"),
   playPianoButton: document.getElementById("playPianoButton"),
   clearPianoButton: document.getElementById("clearPianoButton"),
-  addPianoSoundButton: document.getElementById("addPianoSoundButton")
+  addPianoSoundButton: document.getElementById("addPianoSoundButton"),
+  quantizePianoButton: document.getElementById("quantizePianoButton"),
+  octaveDownButton: document.getElementById("octaveDownButton"),
+  octaveUpButton: document.getElementById("octaveUpButton")
 };
 
 function initializeStudio() {
@@ -220,6 +242,7 @@ function bindEvents() {
   elements.backToStudioButton.addEventListener("click", showStudioView);
   elements.saveButton.addEventListener("click", savePattern);
   elements.loadButton.addEventListener("click", loadPattern);
+  elements.exportMidiButton.addEventListener("click", exportStudioMidi);
   elements.bpmInput.addEventListener("change", clampBpm);
   elements.swingInput.addEventListener("change", clampSwing);
   elements.densityInput.addEventListener("input", updateDensityReadout);
@@ -233,9 +256,16 @@ function bindEvents() {
   elements.stopRecordButton.addEventListener("click", stopRecording);
   elements.pianoStepsInput.addEventListener("change", renderPianoRoll);
   elements.pianoLengthInput.addEventListener("change", clampPianoLength);
+  elements.pianoVelocityInput.addEventListener("input", updatePianoVelocity);
+  elements.importMidiButton.addEventListener("click", () => elements.midiImportInput.click());
+  elements.midiImportInput.addEventListener("change", importMidiToPianoRoll);
+  elements.exportPianoMidiButton.addEventListener("click", exportPianoRollMidi);
   elements.playPianoButton.addEventListener("click", playPianoPattern);
   elements.clearPianoButton.addEventListener("click", clearPianoPattern);
   elements.addPianoSoundButton.addEventListener("click", addPianoSound);
+  elements.quantizePianoButton.addEventListener("click", quantizePianoRoll);
+  elements.octaveDownButton.addEventListener("click", () => transposePianoRoll(-12));
+  elements.octaveUpButton.addEventListener("click", () => transposePianoRoll(12));
   window.addEventListener("mouseup", endGestures);
   window.addEventListener("keydown", (event) => updateModifierStatus(null, event));
   window.addEventListener("keyup", (event) => updateModifierStatus(null, event));
@@ -253,6 +283,7 @@ function renderEverything() {
   renderMixer();
   renderPianoRoll();
   updateDensityReadout();
+  updatePianoVelocity();
   updateStudioOverview();
   updatePlaybackHighlight();
 }
@@ -823,13 +854,30 @@ function renderPianoRoll() {
     for (let step = 0; step < steps; step += 1) {
       const cell = document.createElement("button");
       const noteInfo = getPianoNoteAt(note, step);
-      cell.className = `piano-cell${noteInfo ? " active" : ""}${noteInfo?.start === step ? " start" : ""}`;
+      const isStart = noteInfo?.start === step;
+      cell.className = [
+        "piano-cell",
+        noteInfo ? "active" : "",
+        isStart ? "start" : "",
+        noteInfo && !isStart ? "continue" : ""
+      ].filter(Boolean).join(" ");
       cell.type = "button";
       cell.dataset.note = note;
       cell.dataset.step = step;
-      cell.textContent = noteInfo?.start === step ? note : "";
+      if (noteInfo) {
+        cell.dataset.label = isStart ? note : "";
+        cell.style.setProperty("--note-length", noteInfo.length);
+        cell.style.setProperty("--note-velocity", noteInfo.velocity || 0.82);
+        cell.title = `${note} - step ${noteInfo.start + 1}, lengte ${noteInfo.length}, velocity ${Math.round((noteInfo.velocity || 0.82) * 127)}`;
+      } else {
+        cell.title = `${note} - step ${step + 1}`;
+      }
       cell.addEventListener("mousedown", (event) => beginPianoGesture(event, note, step));
       cell.addEventListener("mouseenter", (event) => continuePianoGesture(event, note, step));
+      cell.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+        removePianoNoteAt(note, step);
+      });
       cell.addEventListener("click", (event) => {
         if (state.skipNextClick) {
           state.skipNextClick = false;
@@ -844,13 +892,26 @@ function renderPianoRoll() {
 
 function beginPianoGesture(event, note, step) {
   event.preventDefault();
+  if (event.button === 2) {
+    state.pianoGesture = { note, mode: "erase" };
+    removePianoNoteAt(note, step);
+    state.skipNextClick = true;
+    return;
+  }
   state.pianoGesture = { note, start: step };
   state.skipNextClick = true;
   addOrUpdatePianoNote(note, step, clampPianoLength());
 }
 
 function continuePianoGesture(event, note, step) {
-  if (!state.pianoGesture || event.buttons !== 1 || state.pianoGesture.note !== note) {
+  if (!state.pianoGesture || state.pianoGesture.note !== note) {
+    return;
+  }
+  if (state.pianoGesture.mode === "erase" && event.buttons === 2) {
+    removePianoNoteAt(note, step);
+    return;
+  }
+  if (event.buttons !== 1) {
     return;
   }
   const length = Math.max(1, Math.abs(step - state.pianoGesture.start) + 1);
@@ -870,8 +931,16 @@ function addOrRemovePianoNote(note, step, length) {
 
 function addOrUpdatePianoNote(note, start, length) {
   const steps = clampPianoSteps();
-  state.pianoNotes = state.pianoNotes.filter((item) => !(item.note === note && item.start === start));
-  state.pianoNotes.push({ note, start, length: Math.min(length, steps - start), velocity: 0.86 });
+  const safeLength = Math.max(1, Math.min(length, steps - start));
+  const velocity = clampPianoVelocity() / 127;
+  state.pianoNotes = state.pianoNotes.filter((item) => {
+    if (item.note !== note) return true;
+    const itemEnd = item.start + item.length;
+    const nextEnd = start + safeLength;
+    return itemEnd <= start || item.start >= nextEnd;
+  });
+  state.pianoNotes.push({ note, start, length: safeLength, velocity });
+  state.pianoNotes.sort(sortPianoNotes);
   renderPianoRoll();
 }
 
@@ -879,10 +948,57 @@ function getPianoNoteAt(note, step) {
   return state.pianoNotes.find((item) => item.note === note && step >= item.start && step < item.start + item.length);
 }
 
+function removePianoNoteAt(note, step) {
+  const before = state.pianoNotes.length;
+  state.pianoNotes = state.pianoNotes.filter((item) => !(item.note === note && step >= item.start && step < item.start + item.length));
+  if (state.pianoNotes.length !== before) {
+    renderPianoRoll();
+    setStatus(`${note} verwijderd`);
+  }
+}
+
 function clearPianoPattern() {
   state.pianoNotes = [];
   renderPianoRoll();
   setStatus("Piano roll leeggemaakt");
+}
+
+function quantizePianoRoll() {
+  if (!state.pianoNotes.length) {
+    setStatus("Geen piano notes om te quantizen");
+    return;
+  }
+  const steps = clampPianoSteps();
+  const merged = new Map();
+  state.pianoNotes.forEach((note) => {
+    const start = clampNumber(Math.round(note.start), 0, steps - 1);
+    const length = clampNumber(Math.round(note.length) || 1, 1, steps - start);
+    const key = `${note.note}-${start}`;
+    const current = merged.get(key);
+    if (!current || note.velocity > current.velocity) {
+      merged.set(key, { ...note, start, length });
+    }
+  });
+  state.pianoNotes = Array.from(merged.values()).sort(sortPianoNotes);
+  renderPianoRoll();
+  setStatus("Piano roll gequantized");
+}
+
+function transposePianoRoll(semitones) {
+  if (!state.pianoNotes.length) {
+    setStatus("Geen piano notes om te verschuiven");
+    return;
+  }
+  const transposed = state.pianoNotes
+    .map((note) => ({ ...note, note: midiToNote(noteToMidi(note.note) + semitones) }))
+    .filter((note) => pianoNotes.includes(note.note));
+  if (!transposed.length) {
+    setStatus("Octave shift valt buiten de piano roll");
+    return;
+  }
+  state.pianoNotes = transposed.sort(sortPianoNotes);
+  renderPianoRoll();
+  setStatus(semitones > 0 ? "Piano roll octave omhoog" : "Piano roll octave omlaag");
 }
 
 async function playPianoPattern() {
@@ -918,6 +1034,324 @@ function addPianoSound() {
   renderSampleList();
   showStudioView();
   setStatus(`${name} toegevoegd aan Piano sounds`);
+}
+
+function exportStudioMidi() {
+  const eventsByTrack = state.tracks.map((track, trackIndex) => {
+    const sample = getSampleById(track.sampleId);
+    const events = [];
+    if (!sample || track.muted) {
+      return { name: `Track ${trackIndex + 1}`, events };
+    }
+
+    for (let step = 0; step < STEP_COUNT; step += 1) {
+      if (!state.pattern[trackIndex][step]) {
+        continue;
+      }
+      const stepTick = step * MIDI_STEP_TICKS;
+      const lengthTicks = Math.max(1, Math.round((state.lengths[trackIndex][step] || 1) * MIDI_STEP_TICKS));
+      if (sample.type === "piano" && sample.pianoNotes?.length) {
+        sample.pianoNotes.forEach((note) => {
+          addMidiNote(events, {
+            tick: stepTick + Math.round(note.start * MIDI_STEP_TICKS),
+            length: Math.max(1, Math.round(note.length * MIDI_STEP_TICKS)),
+            note: noteToMidi(note.note),
+            velocity: Math.round((note.velocity || 0.82) * track.volume * 127),
+            channel: 0
+          });
+        });
+      } else {
+        addMidiNote(events, {
+          tick: stepTick,
+          length: lengthTicks,
+          note: getMidiNoteForSample(sample, trackIndex),
+          velocity: Math.round(track.volume * 112),
+          channel: getMidiChannelForSample(sample, trackIndex)
+        });
+      }
+    }
+    return { name: sample.name || `Track ${trackIndex + 1}`, events };
+  });
+
+  const usedTracks = eventsByTrack.filter((track) => track.events.length);
+  if (!usedTracks.length) {
+    setStatus("Geen actieve steps om als MIDI te exporteren");
+    return;
+  }
+
+  downloadMidiFile(`beatforge-${Date.now()}.mid`, [
+    createTempoTrack(clampBpm()),
+    ...usedTracks.map((track) => createMidiTrack(track.name, track.events))
+  ]);
+  setStatus("Studio pattern als MIDI geexporteerd");
+}
+
+function exportPianoRollMidi() {
+  if (!state.pianoNotes.length) {
+    setStatus("Maak eerst minstens een piano noot");
+    return;
+  }
+  const events = [];
+  state.pianoNotes.forEach((note) => {
+    addMidiNote(events, {
+      tick: Math.round(note.start * MIDI_STEP_TICKS),
+      length: Math.max(1, Math.round(note.length * MIDI_STEP_TICKS)),
+      note: noteToMidi(note.note),
+      velocity: Math.round((note.velocity || 0.82) * 127),
+      channel: 0
+    });
+  });
+  const name = elements.pianoNameInput.value.trim() || "Piano loop";
+  downloadMidiFile(`${sanitizeFileName(name)}.mid`, [
+    createTempoTrack(clampBpm()),
+    createMidiTrack(name, events)
+  ]);
+  setStatus("Piano roll als MIDI geexporteerd");
+}
+
+async function importMidiToPianoRoll(event) {
+  const file = event.target.files?.[0];
+  if (!file) {
+    return;
+  }
+  try {
+    const parsed = parseMidiFile(await file.arrayBuffer());
+    const imported = parsed.notes
+      .map((note) => {
+        const start = Math.round(note.tick / MIDI_STEP_TICKS);
+        const length = Math.max(1, Math.round(note.length / MIDI_STEP_TICKS));
+        return {
+          note: midiToNote(note.note),
+          start,
+          length,
+          velocity: clampNumber(note.velocity / 127, 0.16, 1)
+        };
+      })
+      .filter((note) => pianoNotes.includes(note.note) && note.start < MAX_STEPS)
+      .map((note) => ({ ...note, length: Math.min(note.length, MAX_STEPS - note.start) }));
+
+    if (!imported.length) {
+      setStatus("Geen bruikbare MIDI notes gevonden voor deze piano roll");
+      return;
+    }
+
+    const neededSteps = clampNumber(Math.max(...imported.map((note) => note.start + note.length)), MIN_STEPS, MAX_STEPS);
+    elements.pianoStepsInput.value = neededSteps;
+    state.pianoNotes = imported
+      .filter((note) => note.start < neededSteps)
+      .map((note) => ({ ...note, length: Math.min(note.length, neededSteps - note.start) }))
+      .sort(sortPianoNotes);
+    elements.pianoNameInput.value = file.name.replace(/\.[^/.]+$/, "") || "Imported MIDI";
+    renderPianoRoll();
+    setStatus(`${state.pianoNotes.length} MIDI notes geimporteerd`);
+  } catch (error) {
+    setStatus("MIDI bestand kon niet gelezen worden");
+  } finally {
+    event.target.value = "";
+  }
+}
+
+function addMidiNote(events, { tick, length, note, velocity, channel }) {
+  const safeVelocity = clampNumber(Math.round(velocity), 1, 127);
+  const safeNote = clampNumber(Math.round(note), 0, 127);
+  const safeChannel = clampNumber(Math.round(channel), 0, 15);
+  events.push({ tick, bytes: [0x90 | safeChannel, safeNote, safeVelocity] });
+  events.push({ tick: tick + Math.max(1, length), bytes: [0x80 | safeChannel, safeNote, 0] });
+}
+
+function createTempoTrack(bpm) {
+  const tempo = Math.round(60000000 / bpm);
+  return createMidiTrack("Tempo", [
+    { tick: 0, bytes: [0xff, 0x51, 0x03, (tempo >> 16) & 0xff, (tempo >> 8) & 0xff, tempo & 0xff] },
+    { tick: 0, bytes: [0xff, 0x58, 0x04, 0x04, 0x02, 0x18, 0x08] }
+  ]);
+}
+
+function createMidiTrack(name, events) {
+  const sorted = [
+    { tick: 0, bytes: createTrackNameEvent(name) },
+    ...events
+  ].sort((a, b) => a.tick - b.tick || getMidiEventPriority(a.bytes) - getMidiEventPriority(b.bytes));
+  const data = [];
+  let lastTick = 0;
+  sorted.forEach((event) => {
+    writeVarLength(data, Math.max(0, event.tick - lastTick));
+    data.push(...event.bytes);
+    lastTick = event.tick;
+  });
+  writeVarLength(data, 0);
+  data.push(0xff, 0x2f, 0x00);
+  return createChunk("MTrk", data);
+}
+
+function createTrackNameEvent(name) {
+  const bytes = Array.from(new TextEncoder().encode(name.slice(0, 48)));
+  return [0xff, 0x03, bytes.length, ...bytes];
+}
+
+function downloadMidiFile(filename, trackChunks) {
+  const header = createChunk("MThd", [0x00, 0x00, 0x00, 0x01, 0x00, trackChunks.length, (MIDI_PPQ >> 8) & 0xff, MIDI_PPQ & 0xff]);
+  const blob = new Blob([new Uint8Array([...header, ...trackChunks.flat()])], { type: "audio/midi" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(link.href);
+}
+
+function createChunk(type, data) {
+  const typeBytes = Array.from(type).map((char) => char.charCodeAt(0));
+  const length = data.length;
+  return [
+    ...typeBytes,
+    (length >> 24) & 0xff,
+    (length >> 16) & 0xff,
+    (length >> 8) & 0xff,
+    length & 0xff,
+    ...data
+  ];
+}
+
+function writeVarLength(target, value) {
+  let buffer = value & 0x7f;
+  while ((value >>= 7)) {
+    buffer <<= 8;
+    buffer |= ((value & 0x7f) | 0x80);
+  }
+  while (true) {
+    target.push(buffer & 0xff);
+    if (buffer & 0x80) buffer >>= 8;
+    else break;
+  }
+}
+
+function parseMidiFile(arrayBuffer) {
+  const view = new DataView(arrayBuffer);
+  let offset = 0;
+  const notes = [];
+
+  const readText = (length) => {
+    let value = "";
+    for (let index = 0; index < length; index += 1) {
+      value += String.fromCharCode(view.getUint8(offset + index));
+    }
+    offset += length;
+    return value;
+  };
+  const readUint32 = () => {
+    const value = view.getUint32(offset);
+    offset += 4;
+    return value;
+  };
+  const readUint16 = () => {
+    const value = view.getUint16(offset);
+    offset += 2;
+    return value;
+  };
+
+  if (readText(4) !== "MThd") {
+    throw new Error("Not a MIDI file");
+  }
+  const headerLength = readUint32();
+  offset += 2;
+  const trackCount = readUint16();
+  const division = readUint16();
+  offset += Math.max(0, headerLength - 6);
+  const ticksPerQuarter = division > 0 ? division : MIDI_PPQ;
+
+  for (let trackIndex = 0; trackIndex < trackCount && offset < view.byteLength; trackIndex += 1) {
+    if (readText(4) !== "MTrk") {
+      throw new Error("Invalid MIDI track");
+    }
+    const trackEnd = offset + readUint32();
+    parseMidiTrack(view, offset, trackEnd, ticksPerQuarter, notes);
+    offset = trackEnd;
+  }
+  return { notes, ticksPerQuarter };
+}
+
+function parseMidiTrack(view, startOffset, endOffset, ticksPerQuarter, notes) {
+  let offset = startOffset;
+  let tick = 0;
+  let runningStatus = null;
+  const activeNotes = new Map();
+  const scaleTicks = MIDI_PPQ / ticksPerQuarter;
+
+  const readVar = () => {
+    let value = 0;
+    let byte = 0;
+    do {
+      byte = view.getUint8(offset++);
+      value = (value << 7) | (byte & 0x7f);
+    } while (byte & 0x80);
+    return value;
+  };
+
+  while (offset < endOffset) {
+    tick += readVar();
+    let status = view.getUint8(offset++);
+    if (status < 0x80) {
+      offset -= 1;
+      status = runningStatus;
+    } else if (status < 0xf0) {
+      runningStatus = status;
+    }
+
+    if (status === 0xff) {
+      offset += 1;
+      const length = readVar();
+      offset += length;
+      continue;
+    }
+    if (status === 0xf0 || status === 0xf7) {
+      const length = readVar();
+      offset += length;
+      continue;
+    }
+
+    const command = status & 0xf0;
+    const channel = status & 0x0f;
+    const note = view.getUint8(offset++);
+    const velocity = command === 0xc0 || command === 0xd0 ? 0 : view.getUint8(offset++);
+
+    if (command === 0x90 && velocity > 0) {
+      activeNotes.set(`${channel}-${note}`, { tick, note, velocity, channel });
+    } else if (command === 0x80 || command === 0x90) {
+      const key = `${channel}-${note}`;
+      const started = activeNotes.get(key);
+      if (started) {
+        notes.push({
+          tick: Math.round(started.tick * scaleTicks),
+          length: Math.max(1, Math.round((tick - started.tick) * scaleTicks)),
+          note,
+          velocity: started.velocity,
+          channel
+        });
+        activeNotes.delete(key);
+      }
+    }
+  }
+}
+
+function getMidiEventPriority(bytes) {
+  if ((bytes[0] & 0xf0) === 0x80) return 0;
+  if ((bytes[0] & 0xf0) === 0x90) return 1;
+  return -1;
+}
+
+function getMidiNoteForSample(sample, trackIndex) {
+  if (sample.type === "bass") return 36 + (trackIndex % 4) * 2;
+  if (sample.type === "melody" || sample.type === "piano") return 60 + (trackIndex % 5) * 2;
+  return drumMidiNotes[sample.type] || 48 + trackIndex;
+}
+
+function getMidiChannelForSample(sample, trackIndex) {
+  if (["kick", "snare", "clap", "hat", "fx", "recording", "uploaded"].includes(sample.type)) {
+    return 9;
+  }
+  return trackIndex % 8;
 }
 
 async function previewSample(sampleId) {
@@ -1464,6 +1898,18 @@ function clampPianoLength() {
   return length;
 }
 
+function clampPianoVelocity() {
+  const velocity = clampNumber(Number(elements.pianoVelocityInput.value) || 104, 20, 127);
+  elements.pianoVelocityInput.value = velocity;
+  elements.pianoVelocityValue.textContent = velocity;
+  state.pianoVelocity = velocity;
+  return velocity;
+}
+
+function updatePianoVelocity() {
+  clampPianoVelocity();
+}
+
 function getCell(track, step) {
   return elements.stepGrid.querySelector(`[data-track="${track}"][data-step="${step}"]`);
 }
@@ -1523,12 +1969,33 @@ function typeLabel(type) {
 }
 
 function noteToFrequency(note) {
+  return 440 * Math.pow(2, (noteToMidi(note) - 69) / 12);
+}
+
+function noteToMidi(note) {
   const noteNames = { C: 0, "C#": 1, D: 2, "D#": 3, E: 4, F: 5, "F#": 6, G: 7, "G#": 8, A: 9, "A#": 10, B: 11 };
   const match = note.match(/^([A-G]#?)(\d)$/);
+  if (!match) {
+    return 60;
+  }
   const semitone = noteNames[match[1]];
   const octave = Number(match[2]);
-  const midi = (octave + 1) * 12 + semitone;
-  return 440 * Math.pow(2, (midi - 69) / 12);
+  return (octave + 1) * 12 + semitone;
+}
+
+function midiToNote(midi) {
+  const names = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  const safeMidi = clampNumber(Math.round(midi), 0, 127);
+  return `${names[safeMidi % 12]}${Math.floor(safeMidi / 12) - 1}`;
+}
+
+function sortPianoNotes(a, b) {
+  return a.start - b.start || pianoNotes.indexOf(a.note) - pianoNotes.indexOf(b.note);
+}
+
+function sanitizeFileName(value) {
+  const clean = value.trim().replace(/[\\/:*?"<>|]+/g, "-").replace(/\s+/g, "-").toLowerCase();
+  return clean || "beatforge-midi";
 }
 
 function clampNumber(value, min, max) {
