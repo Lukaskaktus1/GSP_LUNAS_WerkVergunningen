@@ -27,14 +27,14 @@ $overzichtPagina = match ($role) {
     <meta name="keywords" content="preventie werkvergunning, risicobepaling, GTI Beveren, veiligheid">
     <meta name="author" content="Lukas Vandenweyer, Jonas De Meersman">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_preventie.php">
+    <link rel="canonical" href="<?= e(appBaseUrl() . '/PHP/werkvergunning_preventie.php') ?>">
     
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_preventie.php">
+    <meta property="og:url" content="<?= e(appBaseUrl() . '/PHP/werkvergunning_preventie.php') ?>">
     <meta property="og:title" content="Werkvergunning Preventie – GTI Beveren">
     <meta property="og:description" content="Preventie werkvergunning - Vul deze werkvergunning in voor preventiemaatregelen en risicobeperkingen.">
-    <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
+    <meta property="og:image" content="<?= e(appOrigin() . '/afbeeldingen/LogoADB_1.png') ?>">
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css?v=20260608">
     <link rel="stylesheet" href="../CSS/werkvergunning_preventie.css?v=20260608">
     <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">

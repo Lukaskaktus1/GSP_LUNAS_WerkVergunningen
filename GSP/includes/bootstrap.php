@@ -389,25 +389,33 @@ function optionalTableColumns(PDO $pdo, string $table, array $wantedColumns): ar
 
 function sendPortalMail(string $to, string $subject, string $message): bool
 {
+    $mailHost = preg_replace('/[^a-z0-9.-]/i', '', (string) ($_SERVER['HTTP_HOST'] ?? 'localhost'));
+    $fromAddress = 'noreply@' . ($mailHost !== '' ? $mailHost : 'localhost');
     $headers = [
-        'From: Werkvergunning Portaal <noreply@adbvandenweyer2205.be>',
-        'Reply-To: noreply@adbvandenweyer2205.be',
+        'From: Werkvergunning Portaal <' . $fromAddress . '>',
+        'Reply-To: ' . $fromAddress,
         'Content-Type: text/plain; charset=UTF-8',
     ];
 
     return mail($to, $subject, $message, implode("\r\n", $headers));
 }
 
-function appBaseUrl(): string
+function appOrigin(): string
 {
     $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
     $scheme = $https ? 'https' : 'http';
     $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
+
+    return rtrim($scheme . '://' . $host, '/');
+}
+
+function appBaseUrl(): string
+{
     $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/GSP/index.php'));
     $gspPosition = strpos($scriptName, '/GSP/');
     $basePath = $gspPosition === false ? '/GSP' : substr($scriptName, 0, $gspPosition + 4);
 
-    return rtrim($scheme . '://' . $host . $basePath, '/');
+    return rtrim(appOrigin() . $basePath, '/');
 }
 
 function gspRelativeAssetPrefix(): string

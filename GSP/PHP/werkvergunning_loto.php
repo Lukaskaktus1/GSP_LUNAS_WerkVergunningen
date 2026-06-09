@@ -27,14 +27,14 @@ $overzichtPagina = match ($role) {
     <meta name="keywords" content="LOTO werkvergunning, lock out tag out, GTI Beveren, veiligheid">
     <meta name="author" content="Lukas Vandenweyer, Jonas De Meersman">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_loto.php">
+    <link rel="canonical" href="<?= e(appBaseUrl() . '/PHP/werkvergunning_loto.php') ?>">
     
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_loto.php">
+    <meta property="og:url" content="<?= e(appBaseUrl() . '/PHP/werkvergunning_loto.php') ?>">
     <meta property="og:title" content="Werkvergunning LOTO – GTI Beveren">
     <meta property="og:description" content="LOTO (Lock Out Tag Out) werkvergunning - Vul deze speciale werkvergunning in voor veilige procedures.">
-    <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
+    <meta property="og:image" content="<?= e(appOrigin() . '/afbeeldingen/LogoADB_1.png') ?>">
 </head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

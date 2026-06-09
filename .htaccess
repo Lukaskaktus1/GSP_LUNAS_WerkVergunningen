@@ -21,9 +21,8 @@
     RewriteRule ^(config|auth|\.env|\.git)/ - [F,L]
     RewriteRule ^\.ht [F,L]
 
-    # CSS-map is hoofdlettergevoelig op Linux-hosting.
+    # GSP CSS-map is hoofdlettergevoelig op Linux-hosting.
     RewriteRule ^GSP/css/(.*)$ GSP/CSS/$1 [L,NC]
-    RewriteRule ^css/(.*)$ GSP/CSS/$1 [L,NC]
 </IfModule>
 
 # Gzip Compression

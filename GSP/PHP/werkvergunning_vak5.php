@@ -27,14 +27,14 @@ $overzichtPagina = match ($role) {
     <meta name="keywords" content="werkvergunning vak 5, GTI Beveren formulier, digitale werkvergunning">
     <meta name="author" content="Lukas Vandenweyer, Jonas De Meersman">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_vak5.php">
+    <link rel="canonical" href="<?= e(appBaseUrl() . '/PHP/werkvergunning_vak5.php') ?>">
     
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://adbvandenweyer2205.be/GSP/PHP/werkvergunning_vak5.php">
+    <meta property="og:url" content="<?= e(appBaseUrl() . '/PHP/werkvergunning_vak5.php') ?>">
     <meta property="og:title" content="Werkvergunning Vak 5 – GTI Beveren">
     <meta property="og:description" content="Werkvergunning formulier Vak 5 - Vul de vijfde sectie van je werkvergunning in.">
-    <meta property="og:image" content="https://adbvandenweyer2205.be/afbeeldingen/LogoADB_1.png">
+    <meta property="og:image" content="<?= e(appOrigin() . '/afbeeldingen/LogoADB_1.png') ?>">
 </head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
