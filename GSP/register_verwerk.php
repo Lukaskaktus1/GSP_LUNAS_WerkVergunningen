@@ -21,6 +21,7 @@ $leerkrachtKlassen = is_array($_POST['leerkracht_klas'] ?? null) ? $_POST['leerk
 $leerkrachtVakken = is_array($_POST['leerkracht_vak'] ?? null) ? $_POST['leerkracht_vak'] : [];
 $toegelatenKlassen = array_keys(gspKlassen());
 $toegelatenVakken = array_keys(gspAfdelingen());
+$leerkrachtKlasVakken = [];
 
 if (!in_array($rol, ['leerling', 'leerkracht'], true)) {
     setFlashMessage('error', 'Kies of u registreert als leerling of leerkracht.');
@@ -38,23 +39,31 @@ if ($rol === 'leerling' && $klas === '') {
 }
 
 if ($rol === 'leerkracht') {
-    $heeftKlasVak = false;
     foreach ($leerkrachtKlassen as $index => $teacherClass) {
         $teacherClass = trim((string) $teacherClass);
         $teacherSubject = trim((string) ($leerkrachtVakken[$index] ?? ''));
 
-        if ($teacherClass !== '' && (!in_array($teacherClass, $toegelatenKlassen, true) || !in_array($teacherSubject, $toegelatenVakken, true))) {
+        if ($teacherClass === '' && $teacherSubject === '') {
+            continue;
+        }
+
+        if ($teacherClass === '' || $teacherSubject === ''
+            || !in_array($teacherClass, $toegelatenKlassen, true)
+            || !in_array($teacherSubject, $toegelatenVakken, true)
+        ) {
             setFlashMessage('error', 'Kies een geldige klas en een geldig vak uit de lijst.');
             redirect('register.php');
         }
 
-        if ($teacherClass !== '' && $teacherSubject !== '') {
-            $heeftKlasVak = true;
-            break;
-        }
+        $leerkrachtKlasVakken[$teacherClass . '|' . $teacherSubject] = [
+            'klas' => $teacherClass,
+            'vak' => $teacherSubject,
+        ];
     }
 
-    if (!$heeftKlasVak) {
+    $leerkrachtKlasVakken = array_values($leerkrachtKlasVakken);
+
+    if ($leerkrachtKlasVakken === []) {
         setFlashMessage('error', 'Vul minstens een klas en vak in als leerkracht.');
         redirect('register.php');
     }
@@ -123,7 +132,7 @@ try {
             'email' => $email,
             'wachtwoord_hash' => $passwordHash,
             'rol' => $rol,
-            'actief' => 1,
+            'actief' => 0,
         ]);
 
         $userId = (int) $pdo->lastInsertId();
@@ -153,10 +162,10 @@ try {
         ];
 
         if (in_array('klas', $profileColumns, true)) {
-            $profileParams['klas'] = $rol === 'leerling' ? $klas : trim((string) ($leerkrachtKlassen[0] ?? ''));
+            $profileParams['klas'] = $rol === 'leerling' ? $klas : $leerkrachtKlasVakken[0]['klas'];
         }
         if (in_array('vak', $profileColumns, true)) {
-            $profileParams['vak'] = $rol === 'leerkracht' ? trim((string) ($leerkrachtVakken[0] ?? '')) : null;
+            $profileParams['vak'] = $rol === 'leerkracht' ? $leerkrachtKlasVakken[0]['vak'] : null;
         }
 
         $insertProfileStmt->execute($profileParams);
@@ -184,19 +193,12 @@ try {
                 'klas' => $klas,
                 'vak' => null,
             ]);
-        } else {
-            foreach ($leerkrachtKlassen as $index => $teacherClass) {
-                $teacherClass = trim((string) $teacherClass);
-                $teacherSubject = trim((string) ($leerkrachtVakken[$index] ?? ''));
-
-                if ($teacherClass === '' || $teacherSubject === '') {
-                    continue;
-                }
-
+        } elseif ($rol === 'leerkracht') {
+            foreach ($leerkrachtKlasVakken as $klasVak) {
                 $insertClassStmt->execute([
                     'user_id' => $userId,
-                    'klas' => $teacherClass,
-                    'vak' => $teacherSubject,
+                    'klas' => $klasVak['klas'],
+                    'vak' => $klasVak['vak'],
                 ]);
             }
         }
@@ -210,14 +212,25 @@ try {
         throw $transactionException;
     }
 
+    $confirmationToken = createAccountConfirmationToken($pdo, $userId);
+
+    if ($confirmationToken === null) {
+        setFlashMessage('error', 'Account aangemaakt, maar de bevestigingsmail kon niet worden voorbereid. Contacteer de beheerder.');
+        redirect('index.php');
+    }
+
+    $confirmationLink = appBaseUrl() . '/account_bevestigen.php?token=' . urlencode($confirmationToken);
+
     $message = "Hallo {$voornaam},\n\n"
-        . "Je account voor het Werkvergunning Portaal is aangemaakt.\n"
-        . "Je kan nu inloggen met dit e-mailadres: {$email}\n\n"
+        . "Je account voor het Werkvergunning Portaal is aangemaakt, maar is nog niet actief.\n"
+        . "Bevestig je e-mailadres via deze link:\n{$confirmationLink}\n\n"
+        . "Deze link blijft 48 uur geldig.\n\n"
+        . "Pas na bevestiging kan je inloggen met dit e-mailadres: {$email}\n\n"
         . "Met vriendelijke groeten,\nGTI Beveren";
 
-    sendPortalMail($email, 'Bevestiging account Werkvergunning Portaal', $message);
+    sendPortalMail($email, 'Bevestig uw account Werkvergunning Portaal', $message);
 
-    setFlashMessage('success', 'Account succesvol aangemaakt. Er is een bevestigingsmail verstuurd en u kunt nu inloggen.');
+    setFlashMessage('success', 'Account aangemaakt. Controleer uw mailbox en klik op de bevestigingslink voordat u inlogt.');
     redirect('index.php');
 
 } catch (Throwable $exception) {

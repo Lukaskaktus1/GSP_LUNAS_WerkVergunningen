@@ -12,11 +12,15 @@ requireRole(['leerling']);
     <link rel="apple-touch-icon" sizes="180x180" href="../IMAGES/favicon-180.png?v=20260609">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="gsp-role-label" content="<?= e(getCurrentUserRoleLabel()) ?>">
     <title>Overzicht - Werkvergunning Portaal</title>
     <link rel="stylesheet" href="../CSS/overzicht.css?v=20260608">
     <link rel="stylesheet" href="../CSS/overzicht_leerling.css?v=20260608">
+    
     <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">
-    <?= gspInlineCss(['overzicht.css', 'overzicht_leerling.css', 'local-icons.css']) ?>
+    <link rel="stylesheet" href="../CSS/user-menu.css?v=20260609">
+    <?= gspInlineCss(['overzicht.css', 'overzicht_leerling.css', 'local-icons.css', 'user-menu.css']) ?>
     <?= gspOverviewCriticalCss() ?>
 </head>
 <body>
@@ -89,6 +93,8 @@ requireRole(['leerling']);
         </div>
     </section>
 </main>
+
 <script src="../JS/ui-feedback.js"></script>
+<script src="../JS/user-menu.js?v=20260609"></script>
 </body>
 </html>

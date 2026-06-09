@@ -118,5 +118,34 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', createUserMenu);
+    function enhanceRoleBadges() {
+        var roleMeta = document.querySelector('meta[name="gsp-role-label"]');
+        var roleLabel = roleMeta ? roleMeta.getAttribute('content') || '' : '';
+
+        if (!roleLabel) {
+            return;
+        }
+
+        document.querySelectorAll('.role-badge').forEach(function (badge) {
+            if (badge.querySelector('.role-label')) {
+                return;
+            }
+
+            var separator = document.createElement('span');
+            separator.className = 'role-separator';
+            separator.textContent = ' - ';
+
+            var role = document.createElement('span');
+            role.className = 'role-label';
+            role.textContent = roleLabel;
+
+            badge.appendChild(separator);
+            badge.appendChild(role);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        enhanceRoleBadges();
+        createUserMenu();
+    });
 })();
