@@ -85,7 +85,9 @@
       </label>
       <input id="sampleUpload" type="file" accept="audio/*" multiple>
       <button id="fillButton" class="primary-action" type="button">Starter beat</button>
+      <button id="instantKitButton" type="button">Nieuwe kit</button>
       <button id="randomTrackButton" type="button">Variatie</button>
+      <button id="songModeButton" type="button">Song 64</button>
       <button id="shiftLeftButton" type="button">&lt; Step</button>
       <button id="shiftRightButton" type="button">Step &gt;</button>
       <button id="clearTrackButton" type="button">Track leeg</button>
@@ -145,12 +147,27 @@
               <option value="hat">Hi-hats</option>
               <option value="bass">Bass</option>
               <option value="melody">Melody</option>
+              <option value="loop">Loops</option>
+              <option value="fill">Fills</option>
               <option value="fx">FX</option>
+              <option value="vocal">Vocals</option>
               <option value="piano">Piano</option>
               <option value="recording">Recordings</option>
               <option value="uploaded">Uploads</option>
+              <option value="favorites">Favorieten</option>
             </select>
           </label>
+          <label class="panel-field" for="sampleSearchInput">
+            <span>Zoeken</span>
+            <input id="sampleSearchInput" type="search" placeholder="Kick, 128BPM, Chroma...">
+          </label>
+          <label class="panel-field" for="packFilter">
+            <span>Pack</span>
+            <select id="packFilter">
+              <option value="all">Alle packs</option>
+            </select>
+          </label>
+          <button class="library-open-button" id="openSampleLibraryButton" type="button">Open volledige library</button>
           <div class="track-picker" id="trackPicker"></div>
           <section class="mini-menu" aria-label="Sound toevoegen">
             <h3>Sound toevoegen</h3>
@@ -162,7 +179,10 @@
               <option value="hat">Hi-hat</option>
               <option value="bass">Bass</option>
               <option value="melody">Melody</option>
+              <option value="loop">Loop</option>
+              <option value="fill">Fill</option>
               <option value="fx">FX</option>
+              <option value="vocal">Vocal</option>
               <option value="piano">Piano</option>
             </select>
             <button id="addSoundButton" type="button">Toevoegen</button>
@@ -196,6 +216,8 @@
           <div class="sequencer-actions">
             <button id="addStepButton" type="button">+ Stap</button>
             <button id="removeStepButton" type="button">- Stap</button>
+            <button id="addBarButton" type="button">+ 8</button>
+            <button id="removeBarButton" type="button">- 8</button>
             <button id="accentButton" type="button">Accent</button>
           </div>
         </div>
@@ -246,7 +268,7 @@
         </label>
         <label class="panel-field" for="pianoStepsInput">
           <span>Steps</span>
-          <input id="pianoStepsInput" type="number" min="8" max="32" value="16">
+          <input id="pianoStepsInput" type="number" min="8" max="128" value="16">
         </label>
         <label class="panel-field" for="pianoLengthInput">
           <span>Nootlengte</span>
@@ -261,6 +283,7 @@
         </label>
         <div class="piano-tools" aria-label="Piano tools">
           <button id="quantizePianoButton" type="button">Quantize</button>
+          <button id="humanizePianoButton" type="button">Humanize</button>
           <button id="octaveDownButton" type="button">- Oct</button>
           <button id="octaveUpButton" type="button">+ Oct</button>
         </div>
@@ -291,6 +314,19 @@
     <div class="cookie-actions">
       <button id="declineCookiesButton" type="button">Weigeren</button>
       <button id="acceptCookiesButton" class="primary-action" type="button">Accepteren</button>
+    </div>
+  </section>
+
+  <section class="sample-library-modal hidden" id="sampleLibraryModal" aria-label="Sample library">
+    <div class="sample-library-panel">
+      <header class="sample-library-header">
+        <div>
+          <span class="deck-label">Sample Library</span>
+          <h2>Stickz packs en eigen sounds</h2>
+        </div>
+        <button id="closeSampleLibraryButton" type="button">Sluiten</button>
+      </header>
+      <div class="sample-library-grid" id="sampleLibraryGrid"></div>
     </div>
   </section>
 

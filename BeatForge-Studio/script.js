@@ -1,8 +1,9 @@
 const TRACK_COUNT = 8;
 const STORAGE_KEY = "beatforge-pattern-v2";
 const ANALYTICS_CONSENT_KEY = "beatforge-analytics-consent";
+const FAVORITES_KEY = "beatforge-favorite-samples";
 const MIN_STEPS = 8;
-const MAX_STEPS = 32;
+const MAX_STEPS = 128;
 const MIDI_PPQ = 480;
 const MIDI_STEP_TICKS = MIDI_PPQ / 4;
 
@@ -16,10 +17,14 @@ const categoryConfig = [
   ["hat", "Hi-hats"],
   ["bass", "Bass"],
   ["melody", "Melody"],
+  ["loop", "Loops"],
+  ["fill", "Fills"],
   ["fx", "FX"],
+  ["vocal", "Vocals"],
   ["piano", "Piano"],
   ["recording", "Recordings"],
-  ["uploaded", "Uploads"]
+  ["uploaded", "Uploads"],
+  ["favorites", "Favorieten"]
 ];
 
 const soundBlueprints = {
@@ -127,7 +132,11 @@ const state = {
   mediaRecorder: null,
   recordedChunks: [],
   pianoNotes: [],
-  pianoVelocity: 104
+  pianoVelocity: 104,
+  favoriteSamples: new Set(),
+  packSamplesLoaded: false,
+  selectedPack: "all",
+  sampleSearch: ""
 };
 
 const elements = {
@@ -135,13 +144,17 @@ const elements = {
   stopButton: document.getElementById("stopButton"),
   resetButton: document.getElementById("resetButton"),
   fillButton: document.getElementById("fillButton"),
+  instantKitButton: document.getElementById("instantKitButton"),
   randomTrackButton: document.getElementById("randomTrackButton"),
+  songModeButton: document.getElementById("songModeButton"),
   shiftLeftButton: document.getElementById("shiftLeftButton"),
   shiftRightButton: document.getElementById("shiftRightButton"),
   clearTrackButton: document.getElementById("clearTrackButton"),
   accentButton: document.getElementById("accentButton"),
   addStepButton: document.getElementById("addStepButton"),
   removeStepButton: document.getElementById("removeStepButton"),
+  addBarButton: document.getElementById("addBarButton"),
+  removeBarButton: document.getElementById("removeBarButton"),
   normalizeButton: document.getElementById("normalizeButton"),
   unmuteAllButton: document.getElementById("unmuteAllButton"),
   themeButton: document.getElementById("themeButton"),
@@ -157,6 +170,9 @@ const elements = {
   densityValue: document.getElementById("densityValue"),
   categoryFilter: document.getElementById("categoryFilter"),
   categoryTabs: document.getElementById("categoryTabs"),
+  sampleSearchInput: document.getElementById("sampleSearchInput"),
+  packFilter: document.getElementById("packFilter"),
+  openSampleLibraryButton: document.getElementById("openSampleLibraryButton"),
   manualSoundName: document.getElementById("manualSoundName"),
   manualSoundType: document.getElementById("manualSoundType"),
   addSoundButton: document.getElementById("addSoundButton"),
@@ -197,14 +213,19 @@ const elements = {
   clearPianoButton: document.getElementById("clearPianoButton"),
   addPianoSoundButton: document.getElementById("addPianoSoundButton"),
   quantizePianoButton: document.getElementById("quantizePianoButton"),
+  humanizePianoButton: document.getElementById("humanizePianoButton"),
   octaveDownButton: document.getElementById("octaveDownButton"),
   octaveUpButton: document.getElementById("octaveUpButton"),
   cookieBanner: document.getElementById("cookieBanner"),
   acceptCookiesButton: document.getElementById("acceptCookiesButton"),
-  declineCookiesButton: document.getElementById("declineCookiesButton")
+  declineCookiesButton: document.getElementById("declineCookiesButton"),
+  sampleLibraryModal: document.getElementById("sampleLibraryModal"),
+  sampleLibraryGrid: document.getElementById("sampleLibraryGrid"),
+  closeSampleLibraryButton: document.getElementById("closeSampleLibraryButton")
 };
 
 function initializeStudio() {
+  state.favoriteSamples = loadFavoriteSamples();
   state.samples = defaultSamples.map((sample, index) => ({
     ...sample,
     id: `default-${index}`,
@@ -224,6 +245,7 @@ function initializeStudio() {
   applyGridSizing();
   renderEverything();
   setStatus("Klaar");
+  loadStickzSamples();
 }
 
 function bindEvents() {
@@ -231,13 +253,17 @@ function bindEvents() {
   elements.stopButton.addEventListener("click", stopPlayback);
   elements.resetButton.addEventListener("click", resetPattern);
   elements.fillButton.addEventListener("click", fillStarterBeat);
+  elements.instantKitButton.addEventListener("click", buildInstantKit);
   elements.randomTrackButton.addEventListener("click", randomizeSelectedTrack);
+  elements.songModeButton.addEventListener("click", buildSongLength);
   elements.shiftLeftButton.addEventListener("click", () => shiftSelectedTrack(-1));
   elements.shiftRightButton.addEventListener("click", () => shiftSelectedTrack(1));
   elements.clearTrackButton.addEventListener("click", clearSelectedTrack);
   elements.accentButton.addEventListener("click", accentCurrentStep);
   elements.addStepButton.addEventListener("click", () => resizeSteps(STEP_COUNT + 1));
   elements.removeStepButton.addEventListener("click", () => resizeSteps(STEP_COUNT - 1));
+  elements.addBarButton.addEventListener("click", () => resizeSteps(STEP_COUNT + 8));
+  elements.removeBarButton.addEventListener("click", () => resizeSteps(STEP_COUNT - 8));
   elements.normalizeButton.addEventListener("click", normalizeMixer);
   elements.unmuteAllButton.addEventListener("click", unmuteAllTracks);
   elements.themeButton.addEventListener("click", toggleTheme);
@@ -253,6 +279,25 @@ function bindEvents() {
   elements.categoryFilter.addEventListener("change", () => {
     renderCategoryTabs();
     renderSampleList();
+    renderSampleLibrary();
+  });
+  elements.sampleSearchInput.addEventListener("input", () => {
+    state.sampleSearch = elements.sampleSearchInput.value.trim().toLowerCase();
+    renderSampleList();
+    renderSampleLibrary();
+  });
+  elements.packFilter.addEventListener("change", () => {
+    state.selectedPack = elements.packFilter.value;
+    renderCategoryTabs();
+    renderSampleList();
+    renderSampleLibrary();
+  });
+  elements.openSampleLibraryButton.addEventListener("click", openSampleLibrary);
+  elements.closeSampleLibraryButton.addEventListener("click", closeSampleLibrary);
+  elements.sampleLibraryModal.addEventListener("click", (event) => {
+    if (event.target === elements.sampleLibraryModal) {
+      closeSampleLibrary();
+    }
   });
   elements.addSoundButton.addEventListener("click", addManualSound);
   elements.sampleUpload.addEventListener("change", handleSampleUpload);
@@ -268,6 +313,7 @@ function bindEvents() {
   elements.clearPianoButton.addEventListener("click", clearPianoPattern);
   elements.addPianoSoundButton.addEventListener("click", addPianoSound);
   elements.quantizePianoButton.addEventListener("click", quantizePianoRoll);
+  elements.humanizePianoButton.addEventListener("click", humanizePianoRoll);
   elements.octaveDownButton.addEventListener("click", () => transposePianoRoll(-12));
   elements.octaveUpButton.addEventListener("click", () => transposePianoRoll(12));
   elements.acceptCookiesButton.addEventListener("click", acceptAnalyticsCookies);
@@ -282,8 +328,10 @@ function renderEverything() {
   renderTimeline();
   renderStepHeader();
   renderCategoryTabs();
+  renderPackFilter();
   renderTrackPicker();
   renderSampleList();
+  renderSampleLibrary();
   renderTrackLabels();
   renderStepGrid();
   renderMixer();
@@ -337,7 +385,7 @@ function renderCategoryTabs() {
   elements.categoryTabs.innerHTML = "";
   const selected = elements.categoryFilter.value;
   categoryConfig.forEach(([value, label]) => {
-    const count = value === "all" ? state.samples.length : state.samples.filter((sample) => sample.type === value).length;
+    const count = getFilteredSamples({ category: value, ignoreSearch: true, ignorePack: true }).length;
     const button = document.createElement("button");
     button.className = `category-tab${selected === value ? " active" : ""}`;
     button.type = "button";
@@ -351,53 +399,102 @@ function renderCategoryTabs() {
   });
 }
 
+function renderPackFilter() {
+  const current = elements.packFilter.value || "all";
+  const packs = Array.from(new Set(state.samples.map((sample) => sample.pack || sample.source || "Default"))).sort();
+  elements.packFilter.innerHTML = '<option value="all">Alle packs</option>';
+  packs.forEach((pack) => {
+    const option = document.createElement("option");
+    option.value = pack;
+    option.textContent = pack === "default" ? "BeatForge synths" : pack;
+    elements.packFilter.appendChild(option);
+  });
+  elements.packFilter.value = packs.includes(current) ? current : "all";
+  state.selectedPack = elements.packFilter.value;
+}
+
 function renderSampleList() {
   elements.sampleList.innerHTML = "";
-  const category = elements.categoryFilter.value;
-  const samples = category === "all" ? state.samples : state.samples.filter((sample) => sample.type === category);
+  const samples = getFilteredSamples();
   elements.sampleCount.textContent = samples.length;
 
-  samples.forEach((sample) => {
-    const item = document.createElement("li");
-    item.className = "sample-item";
-    item.draggable = true;
-    item.dataset.sampleId = sample.id;
+  samples.slice(0, 90).forEach((sample) => {
+    elements.sampleList.appendChild(createSampleListItem(sample));
+  });
 
-    const details = document.createElement("div");
-    details.className = "sample-meta";
-    details.innerHTML = `
-      <div class="sample-topline">
-        <span class="sample-name">${escapeHtml(sample.name)}</span>
-        <span class="sample-type">${escapeHtml(typeLabel(sample.type))}</span>
-      </div>
-      <span class="sample-path">${escapeHtml(getSampleSubtitle(sample))}</span>
-    `;
-    details.appendChild(createWaveformElement(sample));
+  if (samples.length > 90) {
+    const more = document.createElement("li");
+    more.className = "sample-item";
+    more.innerHTML = `<span class="sample-path">${samples.length - 90} extra sounds in de volledige library</span>`;
+    elements.sampleList.appendChild(more);
+  }
+}
 
-    const actions = document.createElement("div");
-    actions.className = "sample-actions";
-    actions.append(createSampleButton("Beluister", "preview-button", () => previewSample(sample.id)));
-    actions.append(createSampleButton("Gebruik", "", () => assignSampleToTrack(sample.id, state.selectedTrack)));
+function renderSampleLibrary() {
+  if (!elements.sampleLibraryGrid) {
+    return;
+  }
+  elements.sampleLibraryGrid.innerHTML = "";
+  getFilteredSamples().forEach((sample) => {
+    elements.sampleLibraryGrid.appendChild(createSampleListItem(sample));
+  });
+}
 
-    if (canDeleteSample(sample)) {
-      actions.append(createSampleButton("Verwijder", "delete-button", () => deleteSample(sample.id)));
-    }
+function createSampleListItem(sample) {
+  const item = document.createElement("li");
+  item.className = `sample-item${state.favoriteSamples.has(sample.id) ? " favorite" : ""}`;
+  item.draggable = true;
+  item.dataset.sampleId = sample.id;
 
-    item.addEventListener("dragstart", (event) => {
-      event.dataTransfer.setData("text/plain", sample.id);
-      event.dataTransfer.effectAllowed = "copy";
-      item.classList.add("dragging");
-      state.dragPaint = null;
-      setStatus(`${sample.name} wordt gesleept`);
-    });
-    item.addEventListener("dragend", () => {
-      item.classList.remove("dragging");
-      clearDropTargets();
-      state.dragPaint = null;
-    });
+  const details = document.createElement("div");
+  details.className = "sample-meta";
+  details.innerHTML = `
+    <div class="sample-topline">
+      <span class="sample-name">${escapeHtml(sample.name)}</span>
+      <span class="sample-type">${escapeHtml(typeLabel(sample.type))}</span>
+    </div>
+    <span class="sample-path">${escapeHtml(getSampleSubtitle(sample))}</span>
+    <div class="sample-tags">${getSampleTags(sample).map((tag) => `<span class="sample-tag">${escapeHtml(tag)}</span>`).join("")}</div>
+  `;
+  details.appendChild(createWaveformElement(sample));
 
-    item.append(details, actions);
-    elements.sampleList.appendChild(item);
+  const actions = document.createElement("div");
+  actions.className = "sample-actions";
+  actions.append(createSampleButton("Play", "preview-button", () => previewSample(sample.id)));
+  actions.append(createSampleButton("Gebruik", "", () => assignSampleToTrack(sample.id, state.selectedTrack)));
+  actions.append(createSampleButton(state.favoriteSamples.has(sample.id) ? "Favoriet" : "Ster", `favorite-button${state.favoriteSamples.has(sample.id) ? " active" : ""}`, () => toggleFavoriteSample(sample.id)));
+
+  if (canDeleteSample(sample)) {
+    actions.append(createSampleButton("Verwijder", "delete-button", () => deleteSample(sample.id)));
+  }
+
+  item.addEventListener("dragstart", (event) => {
+    event.dataTransfer.setData("text/plain", sample.id);
+    event.dataTransfer.effectAllowed = "copy";
+    item.classList.add("dragging");
+    state.dragPaint = null;
+    setStatus(`${sample.name} wordt gesleept`);
+  });
+  item.addEventListener("dragend", () => {
+    item.classList.remove("dragging");
+    clearDropTargets();
+    state.dragPaint = null;
+  });
+
+  item.append(details, actions);
+  return item;
+}
+
+function getFilteredSamples(options = {}) {
+  const category = options.category || elements.categoryFilter.value;
+  const search = options.ignoreSearch ? "" : state.sampleSearch;
+  const pack = options.ignorePack ? "all" : state.selectedPack;
+  return state.samples.filter((sample) => {
+    const categoryMatch = category === "all"
+      || (category === "favorites" ? state.favoriteSamples.has(sample.id) : sample.type === category);
+    const packMatch = pack === "all" || (sample.pack || sample.source || "Default") === pack;
+    const haystack = `${sample.name} ${sample.type} ${sample.pack || ""} ${sample.bpm || ""} ${sample.key || ""} ${(sample.tags || []).join(" ")}`.toLowerCase();
+    return categoryMatch && packMatch && (!search || haystack.includes(search));
   });
 }
 
@@ -423,6 +520,87 @@ function createWaveformElement(sample) {
     waveform.appendChild(bar);
   }
   return waveform;
+}
+
+async function loadStickzSamples() {
+  try {
+    const response = await fetch("samples/stickz-manifest.json");
+    if (!response.ok) {
+      throw new Error("Manifest missing");
+    }
+    const samples = await response.json();
+    const existingIds = new Set(state.samples.map((sample) => sample.id));
+    samples.forEach((sample, index) => {
+      if (existingIds.has(sample.id)) {
+        return;
+      }
+      state.samples.push({
+        ...sample,
+        id: sample.id || `stickz-${index}`,
+        tone: sample.type,
+        source: "stickz",
+        buffer: null,
+        loadFailed: false
+      });
+    });
+    state.packSamplesLoaded = true;
+    renderPackFilter();
+    renderCategoryTabs();
+    renderSampleList();
+    renderSampleLibrary();
+    if (!state.pattern.some((row) => row.some(Boolean))) {
+      buildInstantKit(true);
+    }
+    setStatus(`${samples.length} echte Stickz samples geladen`);
+  } catch (error) {
+    setStatus("Stickz sample library kon niet geladen worden");
+  }
+}
+
+function getSampleTags(sample) {
+  return [
+    sample.pack,
+    sample.bpm ? `${sample.bpm} BPM` : "",
+    sample.key ? `Key ${sample.key}` : "",
+    sample.source === "stickz" ? "Stickz" : ""
+  ].filter(Boolean).slice(0, 4);
+}
+
+function toggleFavoriteSample(sampleId) {
+  if (state.favoriteSamples.has(sampleId)) {
+    state.favoriteSamples.delete(sampleId);
+  } else {
+    state.favoriteSamples.add(sampleId);
+  }
+  saveFavoriteSamples();
+  renderCategoryTabs();
+  renderSampleList();
+  renderSampleLibrary();
+}
+
+function loadFavoriteSamples() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(FAVORITES_KEY) || "[]"));
+  } catch (error) {
+    return new Set();
+  }
+}
+
+function saveFavoriteSamples() {
+  try {
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(Array.from(state.favoriteSamples)));
+  } catch (error) {
+    setStatus("Favorieten konden niet opgeslagen worden");
+  }
+}
+
+function openSampleLibrary() {
+  renderSampleLibrary();
+  elements.sampleLibraryModal.classList.remove("hidden");
+}
+
+function closeSampleLibrary() {
+  elements.sampleLibraryModal.classList.add("hidden");
 }
 
 function renderTrackPicker() {
@@ -991,6 +1169,19 @@ function quantizePianoRoll() {
   setStatus("Piano roll gequantized");
 }
 
+function humanizePianoRoll() {
+  if (!state.pianoNotes.length) {
+    setStatus("Geen piano notes om te humanizen");
+    return;
+  }
+  state.pianoNotes = state.pianoNotes.map((note) => ({
+    ...note,
+    velocity: clampNumber((note.velocity || 0.82) + (Math.random() - 0.5) * 0.18, 0.25, 1)
+  }));
+  renderPianoRoll();
+  setStatus("Piano roll velocity gehumanized");
+}
+
 function transposePianoRoll(semitones) {
   if (!state.pianoNotes.length) {
     setStatus("Geen piano notes om te verschuiven");
@@ -1204,8 +1395,9 @@ function downloadMidiFile(filename, trackChunks) {
   link.download = filename;
   document.body.appendChild(link);
   link.click();
+  const objectUrl = link.href;
   link.remove();
-  URL.revokeObjectURL(link.href);
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 }
 
 function createChunk(type, data) {
@@ -1432,11 +1624,15 @@ async function playSample(sample, volume, lengthFactor, startTime) {
     const source = state.audioContext.createBufferSource();
     const gain = state.audioContext.createGain();
     source.buffer = sample.buffer;
-    source.playbackRate.value = 1 / lengthFactor;
+    source.playbackRate.value = sample.source === "stickz" ? 1 : 1 / lengthFactor;
     gain.gain.value = volume;
     source.connect(gain);
     gain.connect(state.audioContext.destination);
     source.start(startTime);
+    if (sample.source === "stickz" && ["loop", "fill", "vocal"].includes(sample.type)) {
+      const maxDuration = Math.max(0.08, (getStepDuration(0) / 1000) * lengthFactor);
+      source.stop(startTime + Math.min(sample.buffer.duration, maxDuration));
+    }
     return;
   }
 
@@ -1579,17 +1775,69 @@ function fillStarterBeat() {
     else if (type === "clap") steps = [6, 14];
     else if (type === "hat") steps = [2, 4, 6, 8, 10, 12, 14];
     else if (type === "bass") steps = [0, 3, 7, 10, 14];
-    else if (type === "melody" || type === "piano") steps = [2, 6, 10, 15];
-    else if (type === "fx") steps = [0, 15];
-    steps.filter((step) => step < STEP_COUNT).forEach((step) => {
-      state.pattern[trackIndex][step] = true;
-      state.lengths[trackIndex][step] = type === "bass" || type === "piano" ? 1.5 : 1;
-    });
+    else if (type === "melody" || type === "piano" || type === "loop") steps = [0, 8];
+    else if (type === "fill") steps = [STEP_COUNT - 4];
+    else if (type === "fx" || type === "vocal") steps = [0, Math.max(0, STEP_COUNT - 1)];
+    for (let offset = 0; offset < STEP_COUNT; offset += 16) {
+      steps.map((step) => step + offset).filter((step) => step < STEP_COUNT).forEach((step) => {
+        state.pattern[trackIndex][step] = true;
+        state.lengths[trackIndex][step] = type === "bass" || type === "piano" || type === "loop" ? 2 : 1;
+      });
+    }
   });
   renderStepGrid();
   renderTrackLabels();
   updateStudioOverview();
   setStatus("Starter beat geplaatst");
+}
+
+function buildInstantKit(quiet = false) {
+  const starterTypes = ["kick", "snare", "clap", "hat", "hat", "bass", "loop", "fx"];
+  starterTypes.forEach((type, index) => {
+    const pool = state.samples.filter((sample) => sample.type === type && sample.source === "stickz");
+    const fallback = state.samples.filter((sample) => sample.type === type);
+    const sample = randomFrom(pool.length ? pool : fallback);
+    if (sample) {
+      state.tracks[index].sampleId = sample.id;
+      state.tracks[index].volume = type === "loop" ? 0.65 : 0.82;
+      state.tracks[index].muted = false;
+    }
+  });
+  fillStarterBeat();
+  renderTrackPicker();
+  renderMixer();
+  if (!quiet) {
+    setStatus("Nieuwe kit met echte samples geladen");
+  }
+}
+
+function buildSongLength() {
+  resizeSteps(64, true);
+  buildInstantKit(true);
+  addSongEnergy();
+  setStatus("Song canvas van 64 steps gemaakt");
+}
+
+function addSongEnergy() {
+  state.tracks.forEach((track, trackIndex) => {
+    const sample = getSampleById(track.sampleId);
+    const type = sample?.type || "";
+    for (let step = 0; step < STEP_COUNT; step += 1) {
+      const bar = Math.floor(step / 16);
+      if (bar === 0 && (type === "clap" || type === "fx")) {
+        state.pattern[trackIndex][step] = false;
+      }
+      if (bar >= 2 && type === "hat" && step % 2 === 0) {
+        state.pattern[trackIndex][step] = true;
+      }
+      if (bar === 3 && type === "fill" && step >= STEP_COUNT - 8) {
+        state.pattern[trackIndex][step] = step % 2 === 0;
+      }
+    }
+  });
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
 }
 
 function randomizeSelectedTrack() {
@@ -2017,6 +2265,13 @@ function rotateRow(row, direction) {
   return direction < 0 ? row.slice(1).concat(row[0]) : [row[row.length - 1]].concat(row.slice(0, -1));
 }
 
+function randomFrom(items) {
+  if (!items.length) {
+    return null;
+  }
+  return items[Math.floor(Math.random() * items.length)];
+}
+
 function createSynthSample(name, type, tone, source) {
   return { id: `${source}-${crypto.randomUUID()}`, name, path: null, type, tone, source, buffer: null, loadFailed: false };
 }
@@ -2026,6 +2281,9 @@ function getSampleById(id) {
 }
 
 function getSampleSubtitle(sample) {
+  if (sample.source === "stickz") {
+    return `${sample.pack || "Stickz"}${sample.bpm ? ` - ${sample.bpm} BPM` : ""}${sample.key ? ` - ${sample.key}` : ""}`;
+  }
   if (sample.source === "piano") return `${sample.pianoNotes?.length || 0} piano notes`;
   if (sample.source === "recording") return "Recorded audio";
   if (sample.source === "uploaded") return sample.path || "Uploaded audio";
@@ -2042,7 +2300,7 @@ function countActiveSteps(track) {
 }
 
 function typeLabel(type) {
-  const labels = { all: "Alles", kick: "Kick", snare: "Snare", clap: "Clap", hat: "Hi-hat", bass: "Bass", melody: "Melody", fx: "FX", piano: "Piano", recording: "Recording", uploaded: "Upload", sound: "Sound" };
+  const labels = { all: "Alles", kick: "Kick", snare: "Snare", clap: "Clap", hat: "Hi-hat", bass: "Bass", melody: "Melody", loop: "Loop", fill: "Fill", fx: "FX", vocal: "Vocal", piano: "Piano", recording: "Recording", uploaded: "Upload", favorites: "Favoriet", sound: "Sound" };
   return labels[type] || "Sound";
 }
 
