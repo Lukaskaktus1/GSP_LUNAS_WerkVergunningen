@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacybeleid - BeatForge Studio</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KRSDK8CF6V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    const savedAnalyticsConsent = (() => {
+      try {
+        return localStorage.getItem('beatforge-analytics-consent');
+      } catch (error) {
+        return null;
+      }
+    })();
+    gtag('consent', 'default', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
+    gtag('js', new Date());
+
+    if (savedAnalyticsConsent === 'granted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+      gtag('config', 'G-KRSDK8CF6V');
+      gtag('config', 'G-PZ9WG0Q900');
+      window.beatForgeAnalyticsConfigured = true;
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="legal-page">
+  <main class="legal-shell">
+    <header class="legal-header">
+      <div>
+        <span class="deck-label">BeatForge Studio</span>
+        <h1>Privacybeleid</h1>
+      </div>
+      <a class="legal-back" href="index.html">Terug naar studio</a>
+    </header>
+
+    <article class="legal-content">
+      <section>
+        <h2>Laatst bijgewerkt</h2>
+        <p>9 juni 2026</p>
+      </section>
+
+      <section>
+        <h2>Wie beheert deze website?</h2>
+        <p>BeatForge Studio is een webproject van Jonas De Meersman. Voor vragen over privacy kun je contact opnemen via de portfolio site die onderaan de studio gelinkt staat.</p>
+      </section>
+
+      <section>
+        <h2>Welke gegevens verwerken we?</h2>
+        <ul>
+          <li>Je cookiekeuze voor Google Analytics.</li>
+          <li>Algemene analyticsgegevens, alleen als je toestemming geeft.</li>
+          <li>Beats, patronen, uploads en opnames die je zelf in de browser maakt. Deze blijven lokaal in je browser, tenzij je ze zelf exporteert of deelt.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Waarom verwerken we gegevens?</h2>
+        <p>We gebruiken functionele opslag om de studio bruikbaar te maken. Analytics gebruiken we alleen om te begrijpen hoe de website wordt gebruikt en hoe we de pagina kunnen verbeteren.</p>
+      </section>
+
+      <section>
+        <h2>Derde partijen</h2>
+        <p>Bij toestemming gebruiken we Google Analytics. Google kan daarbij technische gegevens verwerken volgens het eigen privacybeleid van Google. Zonder toestemming blijft analytics-opslag geweigerd.</p>
+      </section>
+
+      <section>
+        <h2>Je rechten</h2>
+        <p>Je kunt je browsergegevens verwijderen via de instellingen van je browser. Je kunt ook analytics weigeren via de cookiebanner. Voor vragen over inzage, correctie of verwijdering kun je contact opnemen via de portfolio site.</p>
+      </section>
+    </article>
+  </main>
+
+  <section class="cookie-banner" id="cookieBanner" aria-label="Cookie melding">
+    <div>
+      <strong>Analytics cookies</strong>
+      <p>We gebruiken Google Analytics alleen als je akkoord gaat. Lees meer in ons <a href="cookiebeleid.html">cookiebeleid</a> en <a href="privacybeleid.html">privacybeleid</a>.</p>
+    </div>
+    <div class="cookie-actions">
+      <button id="declineCookiesButton" type="button">Weigeren</button>
+      <button id="acceptCookiesButton" class="primary-action" type="button">Accepteren</button>
+    </div>
+  </section>
+
+  <script>
+    const banner = document.getElementById('cookieBanner');
+    const acceptButton = document.getElementById('acceptCookiesButton');
+    const declineButton = document.getElementById('declineCookiesButton');
+    const key = 'beatforge-analytics-consent';
+
+    function configureAnalytics() {
+      if (window.beatForgeAnalyticsConfigured || typeof gtag !== 'function') return;
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+      gtag('config', 'G-KRSDK8CF6V');
+      gtag('config', 'G-PZ9WG0Q900');
+      window.beatForgeAnalyticsConfigured = true;
+    }
+
+    function denyAnalytics() {
+      if (typeof gtag !== 'function') return;
+      gtag('consent', 'update', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied'
+      });
+    }
+
+    function hideBanner() {
+      banner.classList.add('hidden');
+    }
+
+    acceptButton.addEventListener('click', () => {
+      localStorage.setItem(key, 'granted');
+      configureAnalytics();
+      hideBanner();
+    });
+
+    declineButton.addEventListener('click', () => {
+      localStorage.setItem(key, 'denied');
+      denyAnalytics();
+      hideBanner();
+    });
+
+    if (localStorage.getItem(key) === 'granted') {
+      configureAnalytics();
+      hideBanner();
+    } else if (localStorage.getItem(key) === 'denied') {
+      denyAnalytics();
+      hideBanner();
+    }
+  </script>
+</body>
+</html>
