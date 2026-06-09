@@ -1288,6 +1288,59 @@ body.light-theme .piano-roll-grid {
   text-decoration: none;
 }
 
+.cookie-banner {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 14px;
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.42);
+}
+
+.cookie-banner strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.cookie-banner p {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.cookie-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cookie-actions button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  color: var(--text);
+  font-weight: 900;
+}
+
+.cookie-actions .primary-action {
+  border-color: rgba(55, 214, 143, 0.45);
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  color: #06110b;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -1389,5 +1442,15 @@ body.light-theme .piano-roll-grid {
 
   .piano-tools {
     grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .cookie-banner {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .cookie-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 }

@@ -1,5 +1,6 @@
 const TRACK_COUNT = 8;
 const STORAGE_KEY = "beatforge-pattern-v2";
+const ANALYTICS_CONSENT_KEY = "beatforge-analytics-consent";
 const MIN_STEPS = 8;
 const MAX_STEPS = 32;
 const MIDI_PPQ = 480;
@@ -197,7 +198,10 @@ const elements = {
   addPianoSoundButton: document.getElementById("addPianoSoundButton"),
   quantizePianoButton: document.getElementById("quantizePianoButton"),
   octaveDownButton: document.getElementById("octaveDownButton"),
-  octaveUpButton: document.getElementById("octaveUpButton")
+  octaveUpButton: document.getElementById("octaveUpButton"),
+  cookieBanner: document.getElementById("cookieBanner"),
+  acceptCookiesButton: document.getElementById("acceptCookiesButton"),
+  declineCookiesButton: document.getElementById("declineCookiesButton")
 };
 
 function initializeStudio() {
@@ -266,6 +270,8 @@ function bindEvents() {
   elements.quantizePianoButton.addEventListener("click", quantizePianoRoll);
   elements.octaveDownButton.addEventListener("click", () => transposePianoRoll(-12));
   elements.octaveUpButton.addEventListener("click", () => transposePianoRoll(12));
+  elements.acceptCookiesButton.addEventListener("click", acceptAnalyticsCookies);
+  elements.declineCookiesButton.addEventListener("click", declineAnalyticsCookies);
   window.addEventListener("mouseup", endGestures);
   window.addEventListener("keydown", (event) => updateModifierStatus(null, event));
   window.addEventListener("keyup", (event) => updateModifierStatus(null, event));
@@ -284,6 +290,7 @@ function renderEverything() {
   renderPianoRoll();
   updateDensityReadout();
   updatePianoVelocity();
+  initializeCookieBanner();
   updateStudioOverview();
   updatePlaybackHighlight();
 }
@@ -1800,6 +1807,76 @@ function showPianoView() {
   elements.showPianoButton.classList.add("active-view-button");
   renderPianoRoll();
   setStatus("Piano Roll actief");
+}
+
+function initializeCookieBanner() {
+  const consent = getStoredAnalyticsConsent();
+  if (consent === "granted") {
+    enableAnalytics();
+    elements.cookieBanner.classList.add("hidden");
+    return;
+  }
+  if (consent === "denied") {
+    disableAnalytics();
+    elements.cookieBanner.classList.add("hidden");
+    return;
+  }
+  disableAnalytics();
+  elements.cookieBanner.classList.remove("hidden");
+}
+
+function acceptAnalyticsCookies() {
+  storeAnalyticsConsent("granted");
+  enableAnalytics();
+  elements.cookieBanner.classList.add("hidden");
+  setStatus("Analytics cookies geaccepteerd");
+}
+
+function declineAnalyticsCookies() {
+  storeAnalyticsConsent("denied");
+  disableAnalytics();
+  elements.cookieBanner.classList.add("hidden");
+  setStatus("Analytics cookies geweigerd");
+}
+
+function enableAnalytics() {
+  if (typeof window.gtag !== "function") {
+    return;
+  }
+  window.gtag("consent", "update", { analytics_storage: "granted" });
+  if (window.beatForgeAnalyticsConfigured) {
+    return;
+  }
+  window.gtag("config", "G-KRSDK8CF6V");
+  window.beatForgeAnalyticsConfigured = true;
+}
+
+function disableAnalytics() {
+  if (typeof window.gtag !== "function") {
+    return;
+  }
+  window.gtag("consent", "update", {
+    analytics_storage: "denied",
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied"
+  });
+}
+
+function getStoredAnalyticsConsent() {
+  try {
+    return localStorage.getItem(ANALYTICS_CONSENT_KEY);
+  } catch (error) {
+    return null;
+  }
+}
+
+function storeAnalyticsConsent(value) {
+  try {
+    localStorage.setItem(ANALYTICS_CONSENT_KEY, value);
+  } catch (error) {
+    setStatus("Cookiekeuze kon niet opgeslagen worden");
+  }
 }
 
 function toggleTheme() {
