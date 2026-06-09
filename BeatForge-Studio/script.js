@@ -1848,6 +1848,7 @@ function enableAnalytics() {
     return;
   }
   window.gtag("config", "G-KRSDK8CF6V");
+  window.gtag("config", "G-PZ9WG0Q900");
   window.beatForgeAnalyticsConfigured = true;
 }
 
