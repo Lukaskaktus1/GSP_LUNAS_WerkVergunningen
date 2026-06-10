@@ -165,6 +165,7 @@ const state = {
   lengths: [],
   dragPaint: null,
   gridGesture: null,
+  clipboardTrack: null,
   pianoGesture: null,
   skipNextClick: false,
   mediaRecorder: null,
@@ -197,6 +198,15 @@ const elements = {
   removeBarButton: document.getElementById("removeBarButton"),
   addTrackButton: document.getElementById("addTrackButton"),
   removeTrackButton: document.getElementById("removeTrackButton"),
+  duplicateTrackButton: document.getElementById("duplicateTrackButton"),
+  copyTrackButton: document.getElementById("copyTrackButton"),
+  pasteTrackButton: document.getElementById("pasteTrackButton"),
+  invertTrackButton: document.getElementById("invertTrackButton"),
+  mirrorTrackButton: document.getElementById("mirrorTrackButton"),
+  thinTrackButton: document.getElementById("thinTrackButton"),
+  doubleTrackButton: document.getElementById("doubleTrackButton"),
+  randomAllButton: document.getElementById("randomAllButton"),
+  clearAllButton: document.getElementById("clearAllButton"),
   normalizeButton: document.getElementById("normalizeButton"),
   unmuteAllButton: document.getElementById("unmuteAllButton"),
   themeButton: document.getElementById("themeButton"),
@@ -342,6 +352,15 @@ function bindEvents() {
   elements.removeBarButton.addEventListener("click", () => resizeSteps(STEP_COUNT - 8));
   elements.addTrackButton.addEventListener("click", addTrack);
   elements.removeTrackButton.addEventListener("click", removeSelectedTrack);
+  elements.duplicateTrackButton.addEventListener("click", duplicateSelectedTrack);
+  elements.copyTrackButton.addEventListener("click", copySelectedTrack);
+  elements.pasteTrackButton.addEventListener("click", pasteTrackToSelected);
+  elements.invertTrackButton.addEventListener("click", invertSelectedTrack);
+  elements.mirrorTrackButton.addEventListener("click", mirrorSelectedTrack);
+  elements.thinTrackButton.addEventListener("click", thinSelectedTrack);
+  elements.doubleTrackButton.addEventListener("click", doubleSelectedTrack);
+  elements.randomAllButton.addEventListener("click", randomizeAllTracks);
+  elements.clearAllButton.addEventListener("click", clearAllTracks);
   elements.normalizeButton.addEventListener("click", normalizeMixer);
   elements.unmuteAllButton.addEventListener("click", unmuteAllTracks);
   elements.themeButton.addEventListener("click", toggleTheme);
@@ -774,6 +793,8 @@ function renderStepGrid() {
       cell.addEventListener("mousedown", (event) => beginGridGesture(event, track, step));
       cell.addEventListener("mouseenter", (event) => continueGridGesture(event, track, step));
       cell.addEventListener("click", (event) => handleStepClick(event, track, step));
+      cell.addEventListener("dblclick", (event) => cycleStepLength(event, track, step));
+      cell.addEventListener("contextmenu", (event) => clearStepCell(event, track, step));
       cell.addEventListener("dragover", (event) => handleSampleDragOver(event, track, step, cell));
       cell.addEventListener("dragenter", (event) => {
         if (event.shiftKey) {
@@ -805,28 +826,48 @@ function renderMixer() {
   state.tracks.forEach((track, index) => {
     const sample = getSampleById(track.sampleId);
     const channel = document.createElement("div");
-    channel.className = "mixer-channel";
+    const activeSteps = countActiveSteps(index);
+    channel.className = `mixer-channel${state.selectedTrack === index ? " selected" : ""}${track.muted ? " muted" : ""}`;
+    channel.dataset.track = index;
     channel.innerHTML = `
-      <div class="channel-index">${index + 1}</div>
+      <button class="channel-index" type="button" aria-label="Selecteer track ${index + 1}">${index + 1}</button>
       <div class="channel-main">
-        <span class="channel-name">${escapeHtml(sample?.name || "Empty")}</span>
+        <div class="channel-heading">
+          <span class="channel-name">${escapeHtml(sample?.name || "Empty")}</span>
+          <span class="channel-type">${escapeHtml(typeLabel(sample?.type || "sound"))}</span>
+        </div>
+        <div class="channel-stats">
+          <span>${activeSteps} step${activeSteps === 1 ? "" : "s"}</span>
+          <span>${track.muted ? "Muted" : "Actief"}</span>
+        </div>
         <div class="volume-row">
           <input type="range" min="0" max="1" step="0.01" value="${track.volume}" aria-label="Volume track ${index + 1}">
           <span class="volume-value">${Math.round(track.volume * 100)}%</span>
         </div>
+        <div class="channel-meter" aria-hidden="true"><span style="width: ${Math.round(track.volume * 100)}%"></span></div>
       </div>
-      <button class="mute-button${track.muted ? " muted" : ""}" type="button">M</button>
+      <button class="mute-button${track.muted ? " muted" : ""}" type="button" title="${track.muted ? "Unmute" : "Mute"}">${track.muted ? "Uit" : "M"}</button>
     `;
+    const indexButton = channel.querySelector(".channel-index");
     const volumeInput = channel.querySelector("input");
     const volumeValue = channel.querySelector(".volume-value");
+    const meterFill = channel.querySelector(".channel-meter span");
     const muteButton = channel.querySelector(".mute-button");
+    indexButton.addEventListener("click", () => selectTrack(index));
+    channel.addEventListener("click", (event) => {
+      if (event.target.closest("input, button")) {
+        return;
+      }
+      selectTrack(index);
+    });
     volumeInput.addEventListener("input", () => {
       track.volume = Number(volumeInput.value);
       volumeValue.textContent = `${Math.round(track.volume * 100)}%`;
+      meterFill.style.width = `${Math.round(track.volume * 100)}%`;
     });
     muteButton.addEventListener("click", () => {
       track.muted = !track.muted;
-      muteButton.classList.toggle("muted", track.muted);
+      renderMixer();
       setStatus(track.muted ? `Track ${index + 1} muted` : `Track ${index + 1} aan`);
     });
     elements.mixerList.appendChild(channel);
@@ -2092,19 +2133,58 @@ function addSongEnergy() {
   updateStudioOverview();
 }
 
+function clearStepCell(event, track, step) {
+  event.preventDefault();
+  state.pattern[track][step] = false;
+  state.lengths[track][step] = 1;
+  updateStepCell(track, step);
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Track ${track + 1}, step ${step + 1} gewist`);
+}
+
+function cycleStepLength(event, track, step) {
+  event.preventDefault();
+  state.pattern[track][step] = true;
+  const lengths = [0.5, 1, 1.5, 2, 3, 4];
+  const current = state.lengths[track][step] || 1;
+  const currentIndex = lengths.findIndex((length) => length >= current);
+  const nextLength = lengths[(currentIndex + 1) % lengths.length];
+  state.lengths[track][step] = nextLength;
+  updateStepCell(track, step);
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Step lengte: ${nextLength}x`);
+}
+
 function randomizeSelectedTrack() {
-  const trackIndex = state.selectedTrack;
+  randomizeTrackPattern(state.selectedTrack);
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Variatie gemaakt voor track ${state.selectedTrack + 1}`);
+}
+
+function randomizeTrackPattern(trackIndex) {
   const sample = getSampleById(state.tracks[trackIndex].sampleId);
   const density = clampDensity() / 100;
   state.pattern[trackIndex] = Array.from({ length: STEP_COUNT }, (_, step) => {
     const chance = getVariationChance(sample?.type || "sound", step, density);
     return Math.random() < Math.min(0.95, chance);
   });
-  state.lengths[trackIndex] = state.pattern[trackIndex].map((active) => active && ["bass", "melody", "piano", "loop", "vocal", "uploaded", "recording"].includes(sample?.type) && Math.random() > 0.58 ? 2 : (active && Math.random() > 0.78 ? 1.5 : 1));
+  state.lengths[trackIndex] = state.pattern[trackIndex].map((active) => {
+    if (!active) return 1;
+    if (["bass", "melody", "piano", "loop", "vocal", "uploaded", "recording"].includes(sample?.type) && Math.random() > 0.58) return 2;
+    return Math.random() > 0.78 ? 1.5 : 1;
+  });
+}
+
+function randomizeAllTracks() {
+  state.tracks.forEach((track, index) => randomizeTrackPattern(index));
   renderStepGrid();
   renderTrackLabels();
   updateStudioOverview();
-  setStatus(`Variatie gemaakt voor track ${trackIndex + 1}`);
+  setStatus("Variatie gemaakt voor alle tracks");
 }
 
 function shiftSelectedTrack(direction) {
@@ -2133,24 +2213,154 @@ function clearSelectedTrack() {
   setStatus(`Track ${state.selectedTrack + 1} leeggemaakt`);
 }
 
-function addTrack() {
+function clearAllTracks() {
+  state.pattern = state.pattern.map(() => Array(STEP_COUNT).fill(false));
+  state.lengths = state.lengths.map(() => Array(STEP_COUNT).fill(1));
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus("Alle tracks leeggemaakt");
+}
+
+function copySelectedTrack() {
+  const trackIndex = state.selectedTrack;
+  state.clipboardTrack = {
+    track: { ...state.tracks[trackIndex] },
+    pattern: [...state.pattern[trackIndex]],
+    lengths: [...state.lengths[trackIndex]]
+  };
+  setStatus(`Track ${trackIndex + 1} gekopieerd`);
+}
+
+function pasteTrackToSelected() {
+  if (!state.clipboardTrack) {
+    setStatus("Kopieer eerst een track");
+    return;
+  }
+  const trackIndex = state.selectedTrack;
+  state.tracks[trackIndex] = {
+    ...state.tracks[trackIndex],
+    sampleId: state.clipboardTrack.track.sampleId,
+    volume: state.clipboardTrack.track.volume,
+    muted: state.clipboardTrack.track.muted
+  };
+  state.pattern[trackIndex] = fitRowToStepCount(state.clipboardTrack.pattern, false);
+  state.lengths[trackIndex] = fitRowToStepCount(state.clipboardTrack.lengths, 1);
+  renderTrackLabels();
+  renderStepGrid();
+  renderMixer();
+  updateStudioOverview();
+  setStatus(`Track geplakt op track ${trackIndex + 1}`);
+}
+
+function duplicateSelectedTrack() {
   if (state.tracks.length >= MAX_TRACKS) {
     setStatus(`Maximum ${MAX_TRACKS} tracks bereikt`);
     return;
   }
-  const fallback = state.samples.find((sample) => sample.type === "kick") || state.samples[0];
-  const index = state.tracks.length;
-  state.tracks.push({ id: index, sampleId: fallback?.id, volume: 0.82, muted: false });
-  state.pattern.push(Array(STEP_COUNT).fill(false));
-  state.lengths.push(Array(STEP_COUNT).fill(1));
-  state.selectedTrack = index;
+  const sourceIndex = state.selectedTrack;
+  const nextIndex = sourceIndex + 1;
+  state.tracks.splice(nextIndex, 0, {
+    ...state.tracks[sourceIndex],
+    id: nextIndex
+  });
+  state.pattern.splice(nextIndex, 0, [...state.pattern[sourceIndex]]);
+  state.lengths.splice(nextIndex, 0, [...state.lengths[sourceIndex]]);
+  state.tracks.forEach((track, index) => {
+    track.id = index;
+  });
+  state.selectedTrack = nextIndex;
   applyGridSizing();
   renderTrackPicker();
   renderTrackLabels();
   renderStepGrid();
   renderMixer();
   updateStudioOverview();
-  setStatus(`Track ${index + 1} toegevoegd`);
+  setStatus(`Track ${sourceIndex + 1} gedupliceerd`);
+}
+
+function invertSelectedTrack() {
+  const trackIndex = state.selectedTrack;
+  state.pattern[trackIndex] = state.pattern[trackIndex].map((active, step) => {
+    const nextActive = !active;
+    if (nextActive && !state.lengths[trackIndex][step]) {
+      state.lengths[trackIndex][step] = 1;
+    }
+    return nextActive;
+  });
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Track ${trackIndex + 1} omgekeerd`);
+}
+
+function mirrorSelectedTrack() {
+  const trackIndex = state.selectedTrack;
+  state.pattern[trackIndex] = [...state.pattern[trackIndex]].reverse();
+  state.lengths[trackIndex] = [...state.lengths[trackIndex]].reverse();
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Track ${trackIndex + 1} gespiegeld`);
+}
+
+function thinSelectedTrack() {
+  const trackIndex = state.selectedTrack;
+  let activeSeen = 0;
+  state.pattern[trackIndex] = state.pattern[trackIndex].map((active, step) => {
+    if (!active) return false;
+    activeSeen += 1;
+    if (activeSeen % 2 === 0) {
+      state.lengths[trackIndex][step] = 1;
+      return false;
+    }
+    return true;
+  });
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Track ${trackIndex + 1} uitgedund`);
+}
+
+function doubleSelectedTrack() {
+  const trackIndex = state.selectedTrack;
+  const nextPattern = [...state.pattern[trackIndex]];
+  const nextLengths = [...state.lengths[trackIndex]];
+  state.pattern[trackIndex].forEach((active, step) => {
+    if (!active) return;
+    const nextStep = Math.min(STEP_COUNT - 1, step + 1);
+    nextPattern[nextStep] = true;
+    nextLengths[nextStep] = Math.min(2, nextLengths[step] || 1);
+  });
+  state.pattern[trackIndex] = nextPattern;
+  state.lengths[trackIndex] = nextLengths;
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Track ${trackIndex + 1} verdubbeld`);
+}
+
+function addTrack() {
+  if (state.tracks.length >= MAX_TRACKS) {
+    setStatus(`Maximum ${MAX_TRACKS} tracks bereikt`);
+    return;
+  }
+  const fallback = state.samples.find((sample) => sample.type === "kick") || state.samples[0];
+  const insertIndex = Math.min(state.selectedTrack + 1, state.tracks.length);
+  state.tracks.splice(insertIndex, 0, { id: insertIndex, sampleId: fallback?.id, volume: 0.82, muted: false });
+  state.pattern.splice(insertIndex, 0, Array(STEP_COUNT).fill(false));
+  state.lengths.splice(insertIndex, 0, Array(STEP_COUNT).fill(1));
+  state.tracks.forEach((track, index) => {
+    track.id = index;
+  });
+  state.selectedTrack = insertIndex;
+  applyGridSizing();
+  renderTrackPicker();
+  renderTrackLabels();
+  renderStepGrid();
+  renderMixer();
+  updateStudioOverview();
+  setStatus(`Track ${insertIndex + 1} toegevoegd onder de selectie`);
 }
 
 function removeSelectedTrack() {
@@ -2225,6 +2435,10 @@ function resizeRows(grid, fillValue) {
     while (row.length < STEP_COUNT) row.push(fillValue);
     if (row.length > STEP_COUNT) row.splice(STEP_COUNT);
   });
+}
+
+function fitRowToStepCount(row = [], fillValue) {
+  return Array.from({ length: STEP_COUNT }, (_, step) => step < row.length ? row[step] : fillValue);
 }
 
 function applyGridSizing() {

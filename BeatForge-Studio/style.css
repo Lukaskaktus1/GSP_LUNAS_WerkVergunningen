@@ -1059,56 +1059,136 @@ body.light-theme .step-cell:nth-child(4n + 1) {
 .mixer-list {
   display: grid;
   gap: 10px;
-  max-height: 440px;
+  max-height: 520px;
   overflow-y: auto;
 }
 
 .mixer-channel {
+  position: relative;
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 10px;
-  padding: 9px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--panel-deep);
+  background:
+    linear-gradient(135deg, rgba(101, 184, 255, 0.08), transparent 58%),
+    var(--panel-deep);
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.mixer-channel:hover {
+  border-color: var(--line-bright);
+  background:
+    linear-gradient(135deg, rgba(55, 214, 143, 0.08), transparent 58%),
+    var(--panel-soft);
+}
+
+.mixer-channel.selected {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent), 0 10px 26px rgba(0, 0, 0, 0.2);
+}
+
+.mixer-channel.muted {
+  opacity: 0.74;
 }
 
 .channel-index {
+  border: 1px solid rgba(244, 176, 79, 0.24);
   background: rgba(244, 176, 79, 0.15);
   color: var(--accent-2);
+  cursor: pointer;
+}
+
+.mixer-channel.selected .channel-index {
+  border-color: rgba(55, 214, 143, 0.52);
+  background: rgba(55, 214, 143, 0.16);
+  color: var(--accent);
 }
 
 .channel-main {
+  display: grid;
+  gap: 8px;
   min-width: 0;
+}
+
+.channel-heading,
+.channel-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .channel-name {
   display: block;
-  margin-bottom: 7px;
   overflow: hidden;
   color: var(--text);
-  font-size: 0.86rem;
+  font-size: 0.9rem;
   font-weight: 800;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.channel-type {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  border: 1px solid rgba(101, 184, 255, 0.28);
+  border-radius: 999px;
+  color: var(--accent-3);
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.channel-stats {
+  justify-content: flex-start;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.channel-stats span {
+  padding: 3px 6px;
+  border: 1px solid rgba(101, 112, 128, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
 .volume-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
   align-items: center;
   gap: 8px;
 }
 
 .volume-value {
-  width: 38px;
   color: var(--muted);
   font-size: 0.74rem;
   text-align: right;
 }
 
+.channel-meter {
+  height: 7px;
+  overflow: hidden;
+  border: 1px solid rgba(101, 112, 128, 0.28);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.channel-meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 120ms ease;
+}
+
 .mute-button {
-  width: 34px;
-  height: 34px;
+  min-width: 42px;
+  height: 42px;
   border: 1px solid var(--line);
   border-radius: 7px;
   background: var(--panel-deep);
@@ -1586,6 +1666,16 @@ body.light-theme .piano-roll-grid {
   align-content: start;
 }
 
+@media (min-width: 1440px) {
+  .workspace {
+    grid-template-columns: minmax(280px, 340px) minmax(720px, 1fr) minmax(300px, 360px);
+  }
+
+  .mixer-list {
+    max-height: 600px;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -1613,6 +1703,11 @@ body.light-theme .piano-roll-grid {
   .sequencer-panel,
   .mixer-panel {
     min-height: auto;
+  }
+
+  .mixer-list {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    max-height: none;
   }
 
   .workspace:has(.sample-browser:not([open])),
@@ -1685,6 +1780,25 @@ body.light-theme .piano-roll-grid {
     grid-template-columns: 1fr;
   }
 
+  .mixer-list {
+    grid-template-columns: 1fr;
+  }
+
+  .mixer-channel {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .mixer-channel .mute-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .channel-heading,
+  .channel-stats {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .piano-tools {
     grid-template-columns: 1fr 1fr;
   }
@@ -1712,5 +1826,62 @@ body.light-theme .piano-roll-grid {
 
   .sample-library-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 440px) {
+  .studio-shell {
+    gap: 9px;
+    padding: 8px;
+  }
+
+  .brand-mark {
+    width: 44px;
+    height: 44px;
+  }
+
+  h1 {
+    font-size: 1.22rem;
+  }
+
+  .transport,
+  .command-bar,
+  .view-switch,
+  .piano-actions,
+  .sequencer-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .step-header {
+    grid-template-columns: 116px repeat(var(--step-count, 16), 34px);
+  }
+
+  .grid-wrap {
+    grid-template-columns: 116px 1fr;
+  }
+
+  .track-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    min-width: 116px;
+    padding: 7px;
+  }
+
+  .track-number,
+  .track-chip {
+    display: none;
+  }
+
+  .step-grid {
+    grid-template-columns: repeat(var(--step-count, 16), 34px);
+  }
+
+  .mixer-channel {
+    grid-template-columns: 1fr;
+  }
+
+  .channel-index {
+    width: 100%;
   }
 }
