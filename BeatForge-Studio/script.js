@@ -1,5 +1,10 @@
-const TRACK_COUNT = 8;
+const DEFAULT_TRACK_COUNT = 8;
+const MIN_TRACKS = 1;
+const MAX_TRACKS = 24;
 const STORAGE_KEY = "beatforge-pattern-v2";
+const SAMPLE_CACHE_KEY = "beatforge-sample-cache-v1";
+const USERS_KEY = "beatforge-users-v1";
+const SESSION_KEY = "beatforge-session-v1";
 const ANALYTICS_CONSENT_KEY = "beatforge-analytics-consent";
 const FAVORITES_KEY = "beatforge-favorite-samples";
 const MIN_STEPS = 8;
@@ -115,6 +120,39 @@ const drumMidiNotes = {
   uploaded: 45
 };
 
+const starterBeatTemplates = [
+  { name: "Four floor", kick: [0, 4, 8, 12], snare: [4, 12], clap: [4, 12], hat: [2, 6, 10, 14], bass: [0, 7, 10, 14], melody: [0, 8], loop: [0], fill: [14], fx: [0, 15] },
+  { name: "Trap bounce", kick: [0, 3, 7, 11, 14], snare: [4, 12], clap: [12], hat: [1, 2, 5, 6, 9, 10, 13, 15], bass: [0, 3, 8, 11], melody: [2, 10], loop: [0, 8], fill: [11, 15], fx: [15] },
+  { name: "Boom bap", kick: [0, 6, 10], snare: [4, 12], clap: [4, 12], hat: [0, 2, 4, 6, 8, 10, 12, 14], bass: [0, 5, 8, 13], melody: [0, 8], loop: [0], fill: [15], fx: [0] },
+  { name: "Garage skip", kick: [0, 7, 10], snare: [5, 13], clap: [5, 13], hat: [2, 4, 6, 9, 11, 14], bass: [0, 6, 9, 12], melody: [1, 9], loop: [0, 8], fill: [14], fx: [7, 15] },
+  { name: "House lift", kick: [0, 4, 8, 12], snare: [4, 12], clap: [4, 12], hat: [2, 6, 10, 14, 15], bass: [0, 4, 8, 12], melody: [0, 4, 8, 12], loop: [0], fill: [12, 14], fx: [0, 8] },
+  { name: "Drill lean", kick: [0, 5, 7, 13], snare: [4, 12], clap: [12], hat: [1, 3, 4, 6, 8, 9, 11, 13, 15], bass: [0, 5, 10, 13], melody: [0, 6, 12], loop: [0, 8], fill: [15], fx: [0] },
+  { name: "Afro pulse", kick: [0, 3, 8, 11], snare: [4, 12], clap: [6, 14], hat: [2, 5, 7, 10, 13, 15], bass: [0, 3, 6, 10, 13], melody: [0, 7, 12], loop: [0], fill: [13, 15], fx: [8] },
+  { name: "Breakbeat", kick: [0, 3, 8, 11], snare: [4, 7, 12], clap: [12], hat: [0, 2, 3, 6, 8, 10, 11, 14], bass: [0, 6, 8, 14], melody: [2, 10], loop: [0, 8], fill: [7, 15], fx: [15] },
+  { name: "Minimal", kick: [0, 8], snare: [12], clap: [4], hat: [2, 6, 10, 14], bass: [0, 10], melody: [4, 12], loop: [0], fill: [15], fx: [0] },
+  { name: "Pop step", kick: [0, 4, 10], snare: [4, 12], clap: [4, 12], hat: [2, 6, 8, 10, 14], bass: [0, 4, 8, 12], melody: [0, 8, 12], loop: [0], fill: [14, 15], fx: [8, 15] },
+  { name: "Jersey", kick: [0, 3, 6, 9, 12], snare: [4, 12], clap: [4, 12, 15], hat: [1, 2, 5, 7, 10, 13], bass: [0, 3, 6, 9, 12], melody: [0, 6, 12], loop: [0, 8], fill: [15], fx: [0, 12] },
+  { name: "Techno", kick: [0, 4, 8, 12], snare: [12], clap: [4, 12], hat: [2, 4, 6, 10, 12, 14], bass: [0, 2, 8, 10], melody: [0, 8], loop: [0], fill: [14], fx: [0, 8, 15] },
+  { name: "R&B pocket", kick: [0, 6, 9], snare: [4, 12], clap: [4, 12], hat: [1, 4, 6, 9, 12, 14], bass: [0, 5, 8, 11], melody: [0, 5, 10], loop: [0], fill: [15], fx: [8] },
+  { name: "Dancehall", kick: [0, 7, 10], snare: [4, 12], clap: [6, 14], hat: [2, 5, 8, 11, 14], bass: [0, 3, 8, 10, 13], melody: [0, 8], loop: [0, 8], fill: [12, 15], fx: [0] },
+  { name: "Hyperpop", kick: [0, 2, 6, 8, 13], snare: [4, 12], clap: [4, 12], hat: [1, 3, 5, 7, 9, 11, 13, 15], bass: [0, 4, 6, 10, 12], melody: [0, 4, 8, 12], loop: [0], fill: [14, 15], fx: [3, 15] },
+  { name: "Lo-fi", kick: [0, 5, 11], snare: [4, 12], clap: [12], hat: [0, 3, 6, 9, 12, 15], bass: [0, 7, 10, 14], melody: [0, 8], loop: [0], fill: [15], fx: [8] },
+  { name: "Reggaeton", kick: [0, 3, 8, 11], snare: [4, 12], clap: [4, 12], hat: [2, 6, 10, 14], bass: [0, 3, 8, 11], melody: [0, 8], loop: [0], fill: [14], fx: [15] },
+  { name: "Half-time", kick: [0, 7, 10], snare: [8], clap: [8], hat: [2, 5, 7, 10, 13, 15], bass: [0, 6, 10], melody: [0, 8], loop: [0], fill: [14, 15], fx: [0, 15] },
+  { name: "Dnb seed", kick: [0, 6, 10], snare: [4, 12], clap: [12], hat: [1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15], bass: [0, 4, 8, 12], melody: [0, 8], loop: [0, 8], fill: [12, 13, 14, 15], fx: [0] },
+  { name: "Future bass", kick: [0, 4, 9, 12], snare: [4, 12], clap: [4, 12], hat: [2, 6, 8, 10, 14], bass: [0, 4, 8, 11], melody: [0, 4, 8, 12], loop: [0], fill: [15], fx: [0, 8] },
+  { name: "Latin club", kick: [0, 3, 8, 10, 13], snare: [4, 12], clap: [6, 14], hat: [1, 4, 7, 10, 13, 15], bass: [0, 3, 6, 9, 12], melody: [0, 5, 10], loop: [0, 8], fill: [15], fx: [8] },
+  { name: "Trap sparse", kick: [0, 7, 14], snare: [4, 12], clap: [12], hat: [2, 5, 8, 10, 13, 15], bass: [0, 7, 11], melody: [0, 12], loop: [0], fill: [15], fx: [0] },
+  { name: "Club swing", kick: [0, 4, 8, 12, 15], snare: [4, 12], clap: [4, 12], hat: [1, 3, 6, 9, 11, 14], bass: [0, 4, 7, 10, 12], melody: [0, 8], loop: [0], fill: [14], fx: [7, 15] },
+  { name: "Synthwave", kick: [0, 4, 8, 12], snare: [4, 12], clap: [4, 12], hat: [2, 6, 10, 14], bass: [0, 2, 8, 10], melody: [0, 4, 8, 12], loop: [0], fill: [15], fx: [0, 8] },
+  { name: "Perc pop", kick: [0, 5, 8, 13], snare: [4, 12], clap: [6, 14], hat: [1, 3, 6, 8, 10, 13, 15], bass: [0, 5, 8, 12], melody: [0, 6, 12], loop: [0, 8], fill: [14, 15], fx: [8] },
+  { name: "Hard trap", kick: [0, 2, 7, 8, 11, 14], snare: [4, 12], clap: [4, 12], hat: [1, 2, 3, 5, 6, 9, 10, 11, 13, 15], bass: [0, 2, 7, 11, 14], melody: [0, 8], loop: [0], fill: [15], fx: [0, 15] },
+  { name: "Deep house", kick: [0, 4, 8, 12], snare: [12], clap: [4, 12], hat: [2, 6, 10, 14], bass: [0, 3, 8, 11], melody: [0, 8, 12], loop: [0], fill: [14], fx: [8] },
+  { name: "Neo soul", kick: [0, 6, 10, 15], snare: [4, 12], clap: [4, 12], hat: [1, 4, 7, 9, 12, 14], bass: [0, 5, 9, 13], melody: [0, 5, 10, 14], loop: [0], fill: [15], fx: [8] },
+  { name: "Industrial", kick: [0, 4, 8, 11, 12], snare: [4, 12], clap: [12], hat: [2, 3, 6, 7, 10, 14, 15], bass: [0, 4, 8, 12], melody: [0, 8], loop: [0, 8], fill: [11, 15], fx: [0, 4, 15] },
+  { name: "Ambient beat", kick: [0, 8], snare: [12], clap: [4], hat: [3, 7, 11, 15], bass: [0, 8, 14], melody: [0, 6, 12], loop: [0], fill: [15], fx: [0, 8, 15] }
+];
+
 const state = {
   audioContext: null,
   isPlaying: false,
@@ -133,10 +171,12 @@ const state = {
   recordedChunks: [],
   pianoNotes: [],
   pianoVelocity: 104,
+  selectedPianoNote: null,
   favoriteSamples: new Set(),
   packSamplesLoaded: false,
   selectedPack: "all",
-  sampleSearch: ""
+  sampleSearch: "",
+  currentUserEmail: null
 };
 
 const elements = {
@@ -155,14 +195,20 @@ const elements = {
   removeStepButton: document.getElementById("removeStepButton"),
   addBarButton: document.getElementById("addBarButton"),
   removeBarButton: document.getElementById("removeBarButton"),
+  addTrackButton: document.getElementById("addTrackButton"),
+  removeTrackButton: document.getElementById("removeTrackButton"),
   normalizeButton: document.getElementById("normalizeButton"),
   unmuteAllButton: document.getElementById("unmuteAllButton"),
   themeButton: document.getElementById("themeButton"),
   showStudioButton: document.getElementById("showStudioButton"),
   showPianoButton: document.getElementById("showPianoButton"),
+  showAuthButton: document.getElementById("showAuthButton"),
+  showAccountButton: document.getElementById("showAccountButton"),
   backToStudioButton: document.getElementById("backToStudioButton"),
   saveButton: document.getElementById("saveButton"),
   loadButton: document.getElementById("loadButton"),
+  importProjectButton: document.getElementById("importProjectButton"),
+  projectImportInput: document.getElementById("projectImportInput"),
   exportMidiButton: document.getElementById("exportMidiButton"),
   bpmInput: document.getElementById("bpmInput"),
   swingInput: document.getElementById("swingInput"),
@@ -197,8 +243,12 @@ const elements = {
   stepDepthValue: document.getElementById("stepDepthValue"),
   modifierStatus: document.getElementById("modifierStatus"),
   stepCountMeta: document.getElementById("stepCountMeta"),
+  trackCountMeta: document.getElementById("trackCountMeta"),
+  mixerChannelCount: document.getElementById("mixerChannelCount"),
   masterMeter: document.getElementById("masterMeter"),
   pianoPage: document.getElementById("pianoPage"),
+  authPage: document.getElementById("authPage"),
+  accountPage: document.getElementById("accountPage"),
   pianoNameInput: document.getElementById("pianoNameInput"),
   pianoStepsInput: document.getElementById("pianoStepsInput"),
   pianoLengthInput: document.getElementById("pianoLengthInput"),
@@ -216,12 +266,36 @@ const elements = {
   humanizePianoButton: document.getElementById("humanizePianoButton"),
   octaveDownButton: document.getElementById("octaveDownButton"),
   octaveUpButton: document.getElementById("octaveUpButton"),
+  pianoAddStepButton: document.getElementById("pianoAddStepButton"),
+  pianoRemoveStepButton: document.getElementById("pianoRemoveStepButton"),
+  pianoAddBarButton: document.getElementById("pianoAddBarButton"),
+  pianoRemoveBarButton: document.getElementById("pianoRemoveBarButton"),
+  pianoShiftLeftButton: document.getElementById("pianoShiftLeftButton"),
+  pianoShiftRightButton: document.getElementById("pianoShiftRightButton"),
+  pianoVariationButton: document.getElementById("pianoVariationButton"),
   cookieBanner: document.getElementById("cookieBanner"),
   acceptCookiesButton: document.getElementById("acceptCookiesButton"),
   declineCookiesButton: document.getElementById("declineCookiesButton"),
   sampleLibraryModal: document.getElementById("sampleLibraryModal"),
   sampleLibraryGrid: document.getElementById("sampleLibraryGrid"),
-  closeSampleLibraryButton: document.getElementById("closeSampleLibraryButton")
+  closeSampleLibraryButton: document.getElementById("closeSampleLibraryButton"),
+  loginEmailInput: document.getElementById("loginEmailInput"),
+  loginPasswordInput: document.getElementById("loginPasswordInput"),
+  loginButton: document.getElementById("loginButton"),
+  registerUsernameInput: document.getElementById("registerUsernameInput"),
+  registerEmailInput: document.getElementById("registerEmailInput"),
+  registerPasswordInput: document.getElementById("registerPasswordInput"),
+  registerConfirmInput: document.getElementById("registerConfirmInput"),
+  registerButton: document.getElementById("registerButton"),
+  accountTitle: document.getElementById("accountTitle"),
+  accountUsernameInput: document.getElementById("accountUsernameInput"),
+  accountEmailInput: document.getElementById("accountEmailInput"),
+  accountPasswordInput: document.getElementById("accountPasswordInput"),
+  accountConfirmInput: document.getElementById("accountConfirmInput"),
+  updateAccountButton: document.getElementById("updateAccountButton"),
+  logoutButton: document.getElementById("logoutButton"),
+  deleteAccountButton: document.getElementById("deleteAccountButton"),
+  accountBackButton: document.getElementById("accountBackButton")
 };
 
 function initializeStudio() {
@@ -233,9 +307,10 @@ function initializeStudio() {
     buffer: null,
     loadFailed: false
   }));
+  restoreCustomSamples(loadCachedSamples());
 
   const starterTypes = ["kick", "snare", "clap", "hat", "hat", "bass", "melody", "fx"];
-  state.tracks = Array.from({ length: TRACK_COUNT }, (_, index) => {
+  state.tracks = Array.from({ length: DEFAULT_TRACK_COUNT }, (_, index) => {
     const sample = state.samples.find((item) => item.type === starterTypes[index]) || state.samples[index];
     return { id: index, sampleId: sample.id, volume: 0.82, muted: false };
   });
@@ -244,6 +319,7 @@ function initializeStudio() {
   bindEvents();
   applyGridSizing();
   renderEverything();
+  loadUserSession();
   setStatus("Klaar");
   loadStickzSamples();
 }
@@ -264,14 +340,20 @@ function bindEvents() {
   elements.removeStepButton.addEventListener("click", () => resizeSteps(STEP_COUNT - 1));
   elements.addBarButton.addEventListener("click", () => resizeSteps(STEP_COUNT + 8));
   elements.removeBarButton.addEventListener("click", () => resizeSteps(STEP_COUNT - 8));
+  elements.addTrackButton.addEventListener("click", addTrack);
+  elements.removeTrackButton.addEventListener("click", removeSelectedTrack);
   elements.normalizeButton.addEventListener("click", normalizeMixer);
   elements.unmuteAllButton.addEventListener("click", unmuteAllTracks);
   elements.themeButton.addEventListener("click", toggleTheme);
   elements.showStudioButton.addEventListener("click", showStudioView);
   elements.showPianoButton.addEventListener("click", showPianoView);
+  elements.showAuthButton.addEventListener("click", handleAuthButtonClick);
+  elements.showAccountButton.addEventListener("click", showAccountView);
   elements.backToStudioButton.addEventListener("click", showStudioView);
   elements.saveButton.addEventListener("click", savePattern);
   elements.loadButton.addEventListener("click", loadPattern);
+  elements.importProjectButton.addEventListener("click", () => elements.projectImportInput.click());
+  elements.projectImportInput.addEventListener("change", importProjectFile);
   elements.exportMidiButton.addEventListener("click", exportStudioMidi);
   elements.bpmInput.addEventListener("change", clampBpm);
   elements.swingInput.addEventListener("change", clampSwing);
@@ -316,10 +398,24 @@ function bindEvents() {
   elements.humanizePianoButton.addEventListener("click", humanizePianoRoll);
   elements.octaveDownButton.addEventListener("click", () => transposePianoRoll(-12));
   elements.octaveUpButton.addEventListener("click", () => transposePianoRoll(12));
+  elements.pianoAddStepButton.addEventListener("click", () => resizePianoSteps(1));
+  elements.pianoRemoveStepButton.addEventListener("click", () => resizePianoSteps(-1));
+  elements.pianoAddBarButton.addEventListener("click", () => resizePianoSteps(8));
+  elements.pianoRemoveBarButton.addEventListener("click", () => resizePianoSteps(-8));
+  elements.pianoShiftLeftButton.addEventListener("click", () => shiftPianoRoll(-1));
+  elements.pianoShiftRightButton.addEventListener("click", () => shiftPianoRoll(1));
+  elements.pianoVariationButton.addEventListener("click", randomizePianoRoll);
+  elements.loginButton.addEventListener("click", loginUser);
+  elements.registerButton.addEventListener("click", registerUser);
+  elements.updateAccountButton.addEventListener("click", updateAccount);
+  elements.logoutButton.addEventListener("click", logoutUser);
+  elements.deleteAccountButton.addEventListener("click", deleteAccount);
+  elements.accountBackButton.addEventListener("click", showStudioView);
   elements.acceptCookiesButton.addEventListener("click", acceptAnalyticsCookies);
   elements.declineCookiesButton.addEventListener("click", declineAnalyticsCookies);
   window.addEventListener("mouseup", endGestures);
   window.addEventListener("keydown", (event) => updateModifierStatus(null, event));
+  window.addEventListener("keydown", handleGlobalKeys);
   window.addEventListener("keyup", (event) => updateModifierStatus(null, event));
 }
 
@@ -344,8 +440,8 @@ function renderEverything() {
 }
 
 function resetGrids() {
-  state.pattern = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(false));
-  state.lengths = Array.from({ length: TRACK_COUNT }, () => Array(STEP_COUNT).fill(1));
+  state.pattern = Array.from({ length: state.tracks.length }, () => Array(STEP_COUNT).fill(false));
+  state.lengths = Array.from({ length: state.tracks.length }, () => Array(STEP_COUNT).fill(1));
 }
 
 function renderMasterMeter() {
@@ -462,7 +558,11 @@ function createSampleListItem(sample) {
   actions.className = "sample-actions";
   actions.append(createSampleButton("Play", "preview-button", () => previewSample(sample.id)));
   actions.append(createSampleButton("Gebruik", "", () => assignSampleToTrack(sample.id, state.selectedTrack)));
+  actions.append(createSampleButton("Leeg", "", () => clearSampleFromPattern(sample.id)));
   actions.append(createSampleButton(state.favoriteSamples.has(sample.id) ? "Favoriet" : "Ster", `favorite-button${state.favoriteSamples.has(sample.id) ? " active" : ""}`, () => toggleFavoriteSample(sample.id)));
+  if (sample.audioDataUrl) {
+    actions.append(createSampleButton("Download", "", () => downloadSample(sample.id)));
+  }
 
   if (canDeleteSample(sample)) {
     actions.append(createSampleButton("Verwijder", "delete-button", () => deleteSample(sample.id)));
@@ -505,7 +605,10 @@ function createSampleButton(text, className, onClick) {
   if (className) {
     button.className = className;
   }
-  button.addEventListener("click", onClick);
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    onClick();
+  });
   return button;
 }
 
@@ -615,6 +718,14 @@ function renderTrackPicker() {
   });
 }
 
+function selectTrack(index) {
+  state.selectedTrack = clampNumber(index, 0, Math.max(0, state.tracks.length - 1));
+  renderTrackPicker();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(`Track ${state.selectedTrack + 1} geselecteerd`);
+}
+
 function renderTrackLabels() {
   elements.trackLabels.innerHTML = "";
   state.tracks.forEach((track, index) => {
@@ -647,7 +758,7 @@ function renderTrackLabels() {
 
 function renderStepGrid() {
   elements.stepGrid.innerHTML = "";
-  for (let track = 0; track < TRACK_COUNT; track += 1) {
+  for (let track = 0; track < state.tracks.length; track += 1) {
     for (let step = 0; step < STEP_COUNT; step += 1) {
       const cell = document.createElement("button");
       cell.className = [
@@ -908,12 +1019,47 @@ function deleteSample(sampleId) {
       track.sampleId = fallback.id;
     }
   });
+  saveCachedSamples();
   renderCategoryTabs();
   renderSampleList();
+  renderSampleLibrary();
   renderTrackLabels();
   renderMixer();
   updateStudioOverview();
   setStatus(`${sample.name} verwijderd`);
+}
+
+function clearSampleFromPattern(sampleId) {
+  const sample = getSampleById(sampleId);
+  if (!sample) {
+    return;
+  }
+  let cleared = 0;
+  state.tracks.forEach((track, trackIndex) => {
+    if (track.sampleId !== sampleId) {
+      return;
+    }
+    state.pattern[trackIndex] = state.pattern[trackIndex].map((active) => {
+      if (active) cleared += 1;
+      return false;
+    });
+    state.lengths[trackIndex] = Array(STEP_COUNT).fill(1);
+  });
+  renderStepGrid();
+  renderTrackLabels();
+  updateStudioOverview();
+  setStatus(cleared ? `${sample.name} uit ${cleared} steps leeggemaakt` : `${sample.name} stond nog niet in het pattern`);
+}
+
+function downloadSample(sampleId) {
+  const sample = getSampleById(sampleId);
+  if (!sample?.audioDataUrl) {
+    setStatus("Deze sound heeft geen downloadbare audio");
+    return;
+  }
+  const extension = getAudioExtension(sample.mimeType || sample.audioDataUrl);
+  downloadDataUrl(sample.audioDataUrl, `${sanitizeFileName(sample.name)}.${extension}`);
+  setStatus(`${sample.name} gedownload`);
 }
 
 async function addManualSound() {
@@ -922,6 +1068,7 @@ async function addManualSound() {
   state.samples.push(createSynthSample(name, type, "custom", "manual"));
   elements.manualSoundName.value = "";
   elements.categoryFilter.value = type;
+  saveCachedSamples();
   renderCategoryTabs();
   renderSampleList();
   setStatus(`${name} toegevoegd`);
@@ -932,7 +1079,9 @@ async function handleSampleUpload(event) {
   const files = Array.from(event.target.files);
   for (const file of files) {
     try {
-      const buffer = await state.audioContext.decodeAudioData(await file.arrayBuffer());
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = await state.audioContext.decodeAudioData(arrayBuffer.slice(0));
+      const audioDataUrl = await blobToDataUrl(new Blob([arrayBuffer], { type: file.type || "audio/wav" }));
       state.samples.push({
         id: `upload-${crypto.randomUUID()}`,
         name: file.name.replace(/\.[^/.]+$/, ""),
@@ -940,6 +1089,8 @@ async function handleSampleUpload(event) {
         type: "uploaded",
         tone: "audio",
         source: "uploaded",
+        mimeType: file.type || "audio/wav",
+        audioDataUrl,
         buffer,
         loadFailed: false
       });
@@ -949,6 +1100,7 @@ async function handleSampleUpload(event) {
   }
   event.target.value = "";
   elements.categoryFilter.value = "uploaded";
+  saveCachedSamples();
   renderCategoryTabs();
   renderSampleList();
   setStatus(`${files.length} upload${files.length === 1 ? "" : "s"} toegevoegd`);
@@ -998,7 +1150,9 @@ async function finishRecording(stream) {
   const blob = new Blob(state.recordedChunks, { type: state.recordedChunks[0]?.type || "audio/webm" });
 
   try {
-    const buffer = await state.audioContext.decodeAudioData(await blob.arrayBuffer());
+    const arrayBuffer = await blob.arrayBuffer();
+    const buffer = await state.audioContext.decodeAudioData(arrayBuffer.slice(0));
+    const audioDataUrl = await blobToDataUrl(new Blob([arrayBuffer], { type: blob.type || "audio/webm" }));
     state.samples.push({
       id: `record-${crypto.randomUUID()}`,
       name,
@@ -1006,11 +1160,14 @@ async function finishRecording(stream) {
       type,
       tone: "recording",
       source: "recording",
+      mimeType: blob.type || "audio/webm",
+      audioDataUrl,
       buffer,
       loadFailed: false
     });
     elements.recordSoundName.value = "";
     elements.categoryFilter.value = type;
+    saveCachedSamples();
     renderCategoryTabs();
     renderSampleList();
     setStatus(`${name} opgenomen`);
@@ -1032,6 +1189,10 @@ function renderPianoRoll() {
     key.type = "button";
     key.textContent = note;
     key.addEventListener("click", () => playPianoNote(note, 0.8, 0.45));
+    key.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      clearPianoNoteRow(note);
+    });
     elements.pianoKeys.appendChild(key);
   });
 
@@ -1044,7 +1205,8 @@ function renderPianoRoll() {
         "piano-cell",
         noteInfo ? "active" : "",
         isStart ? "start" : "",
-        noteInfo && !isStart ? "continue" : ""
+        noteInfo && !isStart ? "continue" : "",
+        isSelectedPianoNote(noteInfo) ? "selected-note" : ""
       ].filter(Boolean).join(" ");
       cell.type = "button";
       cell.dataset.note = note;
@@ -1067,6 +1229,9 @@ function renderPianoRoll() {
         if (state.skipNextClick) {
           state.skipNextClick = false;
           return;
+        }
+        if (noteInfo) {
+          state.selectedPianoNote = { note: noteInfo.note, start: noteInfo.start };
         }
         addOrRemovePianoNote(note, step, clampPianoLength());
       });
@@ -1107,6 +1272,7 @@ function continuePianoGesture(event, note, step) {
 function addOrRemovePianoNote(note, step, length) {
   const existingIndex = state.pianoNotes.findIndex((item) => item.note === note && step >= item.start && step < item.start + item.length);
   if (existingIndex >= 0) {
+    state.selectedPianoNote = { note: state.pianoNotes[existingIndex].note, start: state.pianoNotes[existingIndex].start };
     state.pianoNotes.splice(existingIndex, 1);
   } else {
     addOrUpdatePianoNote(note, step, length);
@@ -1124,6 +1290,7 @@ function addOrUpdatePianoNote(note, start, length) {
     const nextEnd = start + safeLength;
     return itemEnd <= start || item.start >= nextEnd;
   });
+  state.selectedPianoNote = { note, start };
   state.pianoNotes.push({ note, start, length: safeLength, velocity });
   state.pianoNotes.sort(sortPianoNotes);
   renderPianoRoll();
@@ -1135,15 +1302,28 @@ function getPianoNoteAt(note, step) {
 
 function removePianoNoteAt(note, step) {
   const before = state.pianoNotes.length;
+  const removed = getPianoNoteAt(note, step);
   state.pianoNotes = state.pianoNotes.filter((item) => !(item.note === note && step >= item.start && step < item.start + item.length));
   if (state.pianoNotes.length !== before) {
+    state.selectedPianoNote = removed ? { note: removed.note, start: removed.start } : null;
     renderPianoRoll();
     setStatus(`${note} verwijderd`);
   }
 }
 
+function clearPianoNoteRow(note) {
+  const before = state.pianoNotes.length;
+  state.pianoNotes = state.pianoNotes.filter((item) => item.note !== note);
+  if (state.pianoNotes.length !== before) {
+    state.selectedPianoNote = null;
+    renderPianoRoll();
+    setStatus(`Alle ${note} notes verwijderd`);
+  }
+}
+
 function clearPianoPattern() {
   state.pianoNotes = [];
+  state.selectedPianoNote = null;
   renderPianoRoll();
   setStatus("Piano roll leeggemaakt");
 }
@@ -1199,6 +1379,70 @@ function transposePianoRoll(semitones) {
   setStatus(semitones > 0 ? "Piano roll octave omhoog" : "Piano roll octave omlaag");
 }
 
+function resizePianoSteps(delta) {
+  elements.pianoStepsInput.value = clampNumber(clampPianoSteps() + delta, MIN_STEPS, MAX_STEPS);
+  renderPianoRoll();
+  setStatus(`${elements.pianoStepsInput.value} piano steps actief`);
+}
+
+function shiftPianoRoll(direction) {
+  const steps = clampPianoSteps();
+  if (!state.pianoNotes.length) {
+    setStatus("Geen piano notes om te verschuiven");
+    return;
+  }
+  state.pianoNotes = state.pianoNotes.map((note) => ({
+    ...note,
+    start: (note.start + direction + steps) % steps
+  })).sort(sortPianoNotes);
+  renderPianoRoll();
+  setStatus(direction < 0 ? "Piano roll naar links" : "Piano roll naar rechts");
+}
+
+function randomizePianoRoll() {
+  const steps = clampPianoSteps();
+  const density = clampDensity() / 100;
+  const scale = ["C4", "D4", "E4", "G4", "A4", "C5", "D5", "E5", "G5", "A5"];
+  state.pianoNotes = [];
+  for (let step = 0; step < steps; step += 1) {
+    const strong = step % 4 === 0;
+    const chance = strong ? density * 0.82 : density * 0.28;
+    if (Math.random() > chance) {
+      continue;
+    }
+    const note = randomFrom(scale);
+    const length = Math.min(strong && Math.random() > 0.35 ? 2 : 1, steps - step);
+    state.pianoNotes.push({
+      note,
+      start: step,
+      length,
+      velocity: clampNumber(0.62 + Math.random() * 0.32, 0.2, 1)
+    });
+  }
+  state.pianoNotes.sort(sortPianoNotes);
+  state.selectedPianoNote = state.pianoNotes[0] ? { note: state.pianoNotes[0].note, start: state.pianoNotes[0].start } : null;
+  renderPianoRoll();
+  setStatus("Piano variatie gemaakt");
+}
+
+function removeSelectedPianoNote() {
+  if (!state.selectedPianoNote) {
+    const lastNote = state.pianoNotes.at(-1);
+    state.selectedPianoNote = lastNote ? { note: lastNote.note, start: lastNote.start } : null;
+  }
+  if (!state.selectedPianoNote) {
+    setStatus("Geen piano note geselecteerd");
+    return;
+  }
+  const before = state.pianoNotes.length;
+  state.pianoNotes = state.pianoNotes.filter((note) => !(note.note === state.selectedPianoNote.note && note.start === state.selectedPianoNote.start));
+  state.selectedPianoNote = null;
+  if (state.pianoNotes.length !== before) {
+    renderPianoRoll();
+    setStatus("Piano note verwijderd");
+  }
+}
+
 async function playPianoPattern() {
   await ensureAudioContext();
   const stepMs = getStepDuration(0);
@@ -1228,6 +1472,7 @@ function addPianoSound() {
     loadFailed: false
   });
   elements.categoryFilter.value = "piano";
+  saveCachedSamples();
   renderCategoryTabs();
   renderSampleList();
   showStudioView();
@@ -1750,6 +1995,16 @@ async function preloadDefaultSamples() {
 }
 
 async function loadSampleBuffer(sample) {
+  if (sample.audioDataUrl && ["uploaded", "recording"].includes(sample.source)) {
+    try {
+      const response = await fetch(sample.audioDataUrl);
+      sample.buffer = await state.audioContext.decodeAudioData(await response.arrayBuffer());
+      sample.loadFailed = false;
+    } catch (error) {
+      sample.loadFailed = true;
+    }
+    return;
+  }
   if (!sample.path || sample.source === "uploaded" || sample.source === "recording") {
     return;
   }
@@ -1766,18 +2021,14 @@ async function loadSampleBuffer(sample) {
 
 function fillStarterBeat() {
   resetGrids();
+  const template = randomFrom(starterBeatTemplates) || starterBeatTemplates[0];
   state.tracks.forEach((track, trackIndex) => {
     const sample = getSampleById(track.sampleId);
     const type = sample?.type || "";
-    let steps = [];
-    if (type === "kick") steps = [0, 4, 8, 12];
-    else if (type === "snare") steps = [4, 12];
-    else if (type === "clap") steps = [6, 14];
-    else if (type === "hat") steps = [2, 4, 6, 8, 10, 12, 14];
-    else if (type === "bass") steps = [0, 3, 7, 10, 14];
-    else if (type === "melody" || type === "piano" || type === "loop") steps = [0, 8];
-    else if (type === "fill") steps = [STEP_COUNT - 4];
-    else if (type === "fx" || type === "vocal") steps = [0, Math.max(0, STEP_COUNT - 1)];
+    let steps = template[type] || template[getTemplateType(type)] || [];
+    if (!steps.length && ["recording", "uploaded", "vocal"].includes(type)) {
+      steps = template.fx || [0];
+    }
     for (let offset = 0; offset < STEP_COUNT; offset += 16) {
       steps.map((step) => step + offset).filter((step) => step < STEP_COUNT).forEach((step) => {
         state.pattern[trackIndex][step] = true;
@@ -1788,12 +2039,13 @@ function fillStarterBeat() {
   renderStepGrid();
   renderTrackLabels();
   updateStudioOverview();
-  setStatus("Starter beat geplaatst");
+  setStatus(`Starter beat: ${template.name}`);
 }
 
 function buildInstantKit(quiet = false) {
-  const starterTypes = ["kick", "snare", "clap", "hat", "hat", "bass", "loop", "fx"];
-  starterTypes.forEach((type, index) => {
+  const starterTypes = ["kick", "snare", "clap", "hat", "hat", "bass", "loop", "fx", "vocal", "fill", "melody", "piano"];
+  state.tracks.forEach((track, index) => {
+    const type = starterTypes[index % starterTypes.length];
     const pool = state.samples.filter((sample) => sample.type === type && sample.source === "stickz");
     const fallback = state.samples.filter((sample) => sample.type === type);
     const sample = randomFrom(pool.length ? pool : fallback);
@@ -1845,16 +2097,10 @@ function randomizeSelectedTrack() {
   const sample = getSampleById(state.tracks[trackIndex].sampleId);
   const density = clampDensity() / 100;
   state.pattern[trackIndex] = Array.from({ length: STEP_COUNT }, (_, step) => {
-    const strong = step % 4 === 0;
-    const offbeat = step % 2 === 1;
-    let chance = density;
-    if (sample?.type === "kick") chance = strong ? density + 0.28 : density * 0.25;
-    else if (sample?.type === "snare" || sample?.type === "clap") chance = step === 4 || step === 12 ? density + 0.3 : density * 0.2;
-    else if (sample?.type === "hat") chance = offbeat ? density + 0.25 : density * 0.7;
-    else if (sample?.type === "fx") chance = step === 0 || step === STEP_COUNT - 1 ? density * 0.7 : density * 0.1;
+    const chance = getVariationChance(sample?.type || "sound", step, density);
     return Math.random() < Math.min(0.95, chance);
   });
-  state.lengths[trackIndex] = state.pattern[trackIndex].map((active) => active && Math.random() > 0.78 ? 1.5 : 1);
+  state.lengths[trackIndex] = state.pattern[trackIndex].map((active) => active && ["bass", "melody", "piano", "loop", "vocal", "uploaded", "recording"].includes(sample?.type) && Math.random() > 0.58 ? 2 : (active && Math.random() > 0.78 ? 1.5 : 1));
   renderStepGrid();
   renderTrackLabels();
   updateStudioOverview();
@@ -1885,6 +2131,48 @@ function clearSelectedTrack() {
   renderTrackLabels();
   updateStudioOverview();
   setStatus(`Track ${state.selectedTrack + 1} leeggemaakt`);
+}
+
+function addTrack() {
+  if (state.tracks.length >= MAX_TRACKS) {
+    setStatus(`Maximum ${MAX_TRACKS} tracks bereikt`);
+    return;
+  }
+  const fallback = state.samples.find((sample) => sample.type === "kick") || state.samples[0];
+  const index = state.tracks.length;
+  state.tracks.push({ id: index, sampleId: fallback?.id, volume: 0.82, muted: false });
+  state.pattern.push(Array(STEP_COUNT).fill(false));
+  state.lengths.push(Array(STEP_COUNT).fill(1));
+  state.selectedTrack = index;
+  applyGridSizing();
+  renderTrackPicker();
+  renderTrackLabels();
+  renderStepGrid();
+  renderMixer();
+  updateStudioOverview();
+  setStatus(`Track ${index + 1} toegevoegd`);
+}
+
+function removeSelectedTrack() {
+  if (state.tracks.length <= MIN_TRACKS) {
+    setStatus("Minstens 1 track blijft nodig");
+    return;
+  }
+  const removed = state.selectedTrack;
+  state.tracks.splice(removed, 1);
+  state.pattern.splice(removed, 1);
+  state.lengths.splice(removed, 1);
+  state.tracks.forEach((track, index) => {
+    track.id = index;
+  });
+  state.selectedTrack = Math.min(removed, state.tracks.length - 1);
+  applyGridSizing();
+  renderTrackPicker();
+  renderTrackLabels();
+  renderStepGrid();
+  renderMixer();
+  updateStudioOverview();
+  setStatus(`Track ${removed + 1} verwijderd`);
 }
 
 function resetPattern() {
@@ -1941,11 +2229,29 @@ function resizeRows(grid, fillValue) {
 
 function applyGridSizing() {
   document.documentElement.style.setProperty("--step-count", STEP_COUNT);
+  document.documentElement.style.setProperty("--track-count", state.tracks.length);
   elements.stepCountMeta.textContent = `${STEP_COUNT} steps`;
+  elements.trackCountMeta.textContent = `${state.tracks.length} track${state.tracks.length === 1 ? "" : "s"}`;
+  elements.mixerChannelCount.textContent = `${state.tracks.length} ch`;
 }
 
 function savePattern() {
-  const data = {
+  const data = createProjectData();
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (error) {
+    setStatus("Lokale opslag is vol, projectdownload wordt wel gemaakt");
+  }
+  saveCachedSamples();
+  downloadJsonFile(`beatforge-project-${Date.now()}.beatforge.json`, data);
+  setStatus("Pattern opgeslagen en project gedownload");
+}
+
+function createProjectData() {
+  return {
+    app: "BeatForge Studio",
+    version: 3,
+    savedAt: new Date().toISOString(),
     bpm: clampBpm(),
     swing: clampSwing(),
     density: clampDensity(),
@@ -1957,8 +2263,6 @@ function savePattern() {
     lightTheme: document.body.classList.contains("light-theme"),
     customSamples: state.samples.filter(canDeleteSample).map(serializeSample)
   };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  setStatus("Pattern opgeslagen");
 }
 
 function loadPattern() {
@@ -1969,19 +2273,7 @@ function loadPattern() {
   }
   try {
     const data = JSON.parse(saved);
-    restoreCustomSamples(data.customSamples);
-    STEP_COUNT = Math.min(MAX_STEPS, Math.max(MIN_STEPS, Number(data.stepCount) || 16));
-    elements.bpmInput.value = data.bpm || 120;
-    elements.swingInput.value = data.swing || 0;
-    elements.densityInput.value = data.density || 42;
-    state.selectedTrack = Math.min(TRACK_COUNT - 1, data.selectedTrack || 0);
-    state.pattern = normalizeBooleanGrid(data.pattern);
-    state.lengths = normalizeNumberGrid(data.lengths, 1);
-    state.tracks = normalizeTracks(data.tracks);
-    document.body.classList.toggle("light-theme", Boolean(data.lightTheme));
-    elements.themeButton.querySelector(".button-text").textContent = data.lightTheme ? "Donker" : "Licht";
-    applyGridSizing();
-    renderEverything();
+    applyProjectData(data);
     setStatus("Pattern geladen");
   } catch (error) {
     setStatus("Opgeslagen pattern kon niet laden");
@@ -1996,6 +2288,9 @@ function serializeSample(sample) {
     type: sample.type,
     tone: sample.tone,
     source: sample.source,
+    variant: sample.variant,
+    mimeType: sample.mimeType,
+    audioDataUrl: sample.audioDataUrl,
     pianoNotes: sample.pianoNotes,
     pianoStepCount: sample.pianoStepCount
   };
@@ -2006,20 +2301,88 @@ function restoreCustomSamples(samples = []) {
     return;
   }
   samples.forEach((sample) => {
-    if (!sample?.id || state.samples.some((item) => item.id === sample.id)) {
+    if (!sample?.id) {
+      return;
+    }
+    const existingIndex = state.samples.findIndex((item) => item.id === sample.id);
+    if (existingIndex >= 0) {
+      if (canDeleteSample(state.samples[existingIndex])) {
+        state.samples[existingIndex] = { ...state.samples[existingIndex], ...sample, buffer: null, loadFailed: false };
+      }
       return;
     }
     state.samples.push({ ...sample, buffer: null, loadFailed: false });
   });
 }
 
+function loadCachedSamples() {
+  try {
+    return JSON.parse(localStorage.getItem(SAMPLE_CACHE_KEY) || "[]");
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveCachedSamples() {
+  try {
+    localStorage.setItem(SAMPLE_CACHE_KEY, JSON.stringify(state.samples.filter(canDeleteSample).map(serializeSample)));
+  } catch (error) {
+    setStatus("Niet alle sounds pasten in de lokale cache");
+  }
+}
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(reader.result));
+    reader.addEventListener("error", () => reject(reader.error));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function downloadJsonFile(filename, data) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  downloadBlob(blob, filename);
+}
+
+function downloadDataUrl(dataUrl, filename) {
+  const link = document.createElement("a");
+  link.href = dataUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+function downloadBlob(blob, filename) {
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  const objectUrl = link.href;
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+}
+
+function getAudioExtension(mimeType) {
+  if (mimeType.includes("mpeg") || mimeType.includes("mp3")) return "mp3";
+  if (mimeType.includes("webm")) return "webm";
+  if (mimeType.includes("ogg")) return "ogg";
+  if (mimeType.includes("wav")) return "wav";
+  return "audio";
+}
+
 function normalizeTracks(tracks = []) {
-  return Array.from({ length: TRACK_COUNT }, (_, index) => {
-    const saved = tracks[index] || {};
+  const fallbackSample = state.samples.find((sample) => sample.source === "default") || state.samples[0];
+  const safeTracks = Array.isArray(tracks) && tracks.length ? tracks : state.tracks;
+  const nextCount = clampNumber(safeTracks.length || DEFAULT_TRACK_COUNT, MIN_TRACKS, MAX_TRACKS);
+  return Array.from({ length: nextCount }, (_, index) => {
+    const saved = safeTracks[index] || {};
     const sampleExists = state.samples.some((sample) => sample.id === saved.sampleId);
     return {
       id: index,
-      sampleId: sampleExists ? saved.sampleId : state.tracks[index].sampleId,
+      sampleId: sampleExists ? saved.sampleId : state.tracks[index]?.sampleId || fallbackSample?.id,
       volume: Number.isFinite(saved.volume) ? saved.volume : 0.82,
       muted: Boolean(saved.muted)
     };
@@ -2027,14 +2390,14 @@ function normalizeTracks(tracks = []) {
 }
 
 function normalizeBooleanGrid(grid = []) {
-  return Array.from({ length: TRACK_COUNT }, (_, track) => {
+  return Array.from({ length: state.tracks.length }, (_, track) => {
     const row = Array.isArray(grid[track]) ? grid[track] : [];
     return Array.from({ length: STEP_COUNT }, (_, step) => Boolean(row[step]));
   });
 }
 
 function normalizeNumberGrid(grid = [], fallback) {
-  return Array.from({ length: TRACK_COUNT }, (_, track) => {
+  return Array.from({ length: state.tracks.length }, (_, track) => {
     const row = Array.isArray(grid[track]) ? grid[track] : [];
     return Array.from({ length: STEP_COUNT }, (_, step) => Number(row[step]) || fallback);
   });
@@ -2043,18 +2406,247 @@ function normalizeNumberGrid(grid = [], fallback) {
 function showStudioView() {
   document.querySelectorAll(".studio-view").forEach((view) => view.classList.remove("hidden"));
   elements.pianoPage.classList.add("hidden");
+  elements.authPage.classList.add("hidden");
+  elements.accountPage.classList.add("hidden");
   elements.showStudioButton.classList.add("active-view-button");
   elements.showPianoButton.classList.remove("active-view-button");
+  elements.showAuthButton.classList.remove("active-view-button");
+  elements.showAccountButton.classList.remove("active-view-button");
   setStatus("Studio actief");
 }
 
 function showPianoView() {
   document.querySelectorAll(".studio-view").forEach((view) => view.classList.add("hidden"));
   elements.pianoPage.classList.remove("hidden");
+  elements.authPage.classList.add("hidden");
+  elements.accountPage.classList.add("hidden");
   elements.showStudioButton.classList.remove("active-view-button");
   elements.showPianoButton.classList.add("active-view-button");
+  elements.showAuthButton.classList.remove("active-view-button");
+  elements.showAccountButton.classList.remove("active-view-button");
   renderPianoRoll();
   setStatus("Piano Roll actief");
+}
+
+function showAuthView() {
+  document.querySelectorAll(".studio-view").forEach((view) => view.classList.add("hidden"));
+  elements.pianoPage.classList.add("hidden");
+  elements.accountPage.classList.add("hidden");
+  elements.authPage.classList.remove("hidden");
+  elements.showStudioButton.classList.remove("active-view-button");
+  elements.showPianoButton.classList.remove("active-view-button");
+  elements.showAuthButton.classList.add("active-view-button");
+  elements.showAccountButton.classList.remove("active-view-button");
+  setStatus("Inloggen of registreren");
+}
+
+function showAccountView() {
+  if (!state.currentUserEmail) {
+    showAuthView();
+    setStatus("Log eerst in om je account te bekijken");
+    return;
+  }
+  fillAccountForm();
+  document.querySelectorAll(".studio-view").forEach((view) => view.classList.add("hidden"));
+  elements.pianoPage.classList.add("hidden");
+  elements.authPage.classList.add("hidden");
+  elements.accountPage.classList.remove("hidden");
+  elements.showStudioButton.classList.remove("active-view-button");
+  elements.showPianoButton.classList.remove("active-view-button");
+  elements.showAuthButton.classList.remove("active-view-button");
+  elements.showAccountButton.classList.add("active-view-button");
+  setStatus("Account actief");
+}
+
+function handleAuthButtonClick() {
+  if (state.currentUserEmail) {
+    logoutUser();
+  } else {
+    showAuthView();
+  }
+}
+
+function loadUserSession() {
+  try {
+    state.currentUserEmail = localStorage.getItem(SESSION_KEY);
+  } catch (error) {
+    state.currentUserEmail = null;
+  }
+  updateAccountButtons();
+}
+
+function loadUsers() {
+  try {
+    return JSON.parse(localStorage.getItem(USERS_KEY) || "{}");
+  } catch (error) {
+    return {};
+  }
+}
+
+function saveUsers(users) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
+function registerUser() {
+  const username = elements.registerUsernameInput.value.trim();
+  const email = normalizeEmail(elements.registerEmailInput.value);
+  const password = elements.registerPasswordInput.value;
+  const confirm = elements.registerConfirmInput.value;
+  if (!username || !email || !password || !confirm) {
+    setStatus("Vul alle registratievelden in");
+    return;
+  }
+  if (password !== confirm) {
+    setStatus("Wachtwoord bevestigen moet hetzelfde zijn");
+    return;
+  }
+  const users = loadUsers();
+  if (users[email]) {
+    setStatus("Dit emailadres bestaat al");
+    return;
+  }
+  users[email] = {
+    username,
+    email,
+    password: encodePassword(password),
+    createdAt: new Date().toISOString()
+  };
+  saveUsers(users);
+  setCurrentUser(email);
+  clearAuthForms();
+  showAccountView();
+  setStatus(`${username} geregistreerd en ingelogd`);
+}
+
+function loginUser() {
+  const email = normalizeEmail(elements.loginEmailInput.value);
+  const password = elements.loginPasswordInput.value;
+  if (!email || !password) {
+    setStatus("Vul email en wachtwoord in");
+    return;
+  }
+  const users = loadUsers();
+  if (!users[email] || users[email].password !== encodePassword(password)) {
+    setStatus("Email of wachtwoord klopt niet");
+    return;
+  }
+  setCurrentUser(email);
+  clearAuthForms();
+  showAccountView();
+  setStatus(`${users[email].username} ingelogd`);
+}
+
+function updateAccount() {
+  if (!state.currentUserEmail) {
+    showAuthView();
+    return;
+  }
+  const users = loadUsers();
+  const current = users[state.currentUserEmail];
+  if (!current) {
+    logoutUser();
+    return;
+  }
+  const username = elements.accountUsernameInput.value.trim();
+  const email = normalizeEmail(elements.accountEmailInput.value);
+  const password = elements.accountPasswordInput.value;
+  const confirm = elements.accountConfirmInput.value;
+  if (!username || !email) {
+    setStatus("Gebruikersnaam en email zijn verplicht");
+    return;
+  }
+  if ((password || confirm) && password !== confirm) {
+    setStatus("Wachtwoord bevestigen moet hetzelfde zijn");
+    return;
+  }
+  if (email !== state.currentUserEmail && users[email]) {
+    setStatus("Dit emailadres bestaat al");
+    return;
+  }
+  const updated = {
+    ...current,
+    username,
+    email,
+    password: password ? encodePassword(password) : current.password,
+    updatedAt: new Date().toISOString()
+  };
+  delete users[state.currentUserEmail];
+  users[email] = updated;
+  saveUsers(users);
+  setCurrentUser(email);
+  elements.accountPasswordInput.value = "";
+  elements.accountConfirmInput.value = "";
+  fillAccountForm();
+  setStatus("Account aangepast");
+}
+
+function deleteAccount() {
+  if (!state.currentUserEmail) {
+    return;
+  }
+  const users = loadUsers();
+  const user = users[state.currentUserEmail];
+  delete users[state.currentUserEmail];
+  saveUsers(users);
+  setCurrentUser(null);
+  showAuthView();
+  setStatus(`${user?.username || "Account"} verwijderd`);
+}
+
+function logoutUser() {
+  setCurrentUser(null);
+  showAuthView();
+  setStatus("Uitgelogd");
+}
+
+function fillAccountForm() {
+  const user = loadUsers()[state.currentUserEmail];
+  if (!user) {
+    return;
+  }
+  elements.accountTitle.textContent = user.username;
+  elements.accountUsernameInput.value = user.username;
+  elements.accountEmailInput.value = user.email;
+  elements.accountPasswordInput.value = "";
+  elements.accountConfirmInput.value = "";
+}
+
+function setCurrentUser(email) {
+  state.currentUserEmail = email;
+  try {
+    if (email) localStorage.setItem(SESSION_KEY, email);
+    else localStorage.removeItem(SESSION_KEY);
+  } catch (error) {
+    state.currentUserEmail = email;
+  }
+  updateAccountButtons();
+}
+
+function updateAccountButtons() {
+  const loggedIn = Boolean(state.currentUserEmail);
+  elements.showAccountButton.classList.toggle("hidden", !loggedIn);
+  elements.showAuthButton.textContent = loggedIn ? "Uitloggen" : "Inloggen";
+}
+
+function clearAuthForms() {
+  [
+    elements.loginEmailInput,
+    elements.loginPasswordInput,
+    elements.registerUsernameInput,
+    elements.registerEmailInput,
+    elements.registerPasswordInput,
+    elements.registerConfirmInput
+  ].forEach((input) => {
+    input.value = "";
+  });
+}
+
+function normalizeEmail(value) {
+  return value.trim().toLowerCase();
+}
+
+function encodePassword(value) {
+  return btoa(unescape(encodeURIComponent(value)));
 }
 
 function initializeCookieBanner() {
@@ -2120,6 +2712,44 @@ function getStoredAnalyticsConsent() {
   }
 }
 
+async function importProjectFile(event) {
+  const file = event.target.files?.[0];
+  if (!file) {
+    return;
+  }
+  try {
+    const data = JSON.parse(await file.text());
+    applyProjectData(data);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(createProjectData()));
+    } catch (storageError) {
+      setStatus("Project geladen, maar lokale opslag is vol");
+    }
+    saveCachedSamples();
+    setStatus(`${file.name} geimporteerd`);
+  } catch (error) {
+    setStatus("Projectbestand kon niet geimporteerd worden");
+  } finally {
+    event.target.value = "";
+  }
+}
+
+function applyProjectData(data) {
+  restoreCustomSamples(data.customSamples);
+  STEP_COUNT = Math.min(MAX_STEPS, Math.max(MIN_STEPS, Number(data.stepCount) || 16));
+  elements.bpmInput.value = data.bpm || 120;
+  elements.swingInput.value = data.swing || 0;
+  elements.densityInput.value = data.density || 42;
+  state.tracks = normalizeTracks(data.tracks);
+  state.selectedTrack = Math.min(Math.max(0, state.tracks.length - 1), data.selectedTrack || 0);
+  state.pattern = normalizeBooleanGrid(data.pattern);
+  state.lengths = normalizeNumberGrid(data.lengths, 1);
+  document.body.classList.toggle("light-theme", Boolean(data.lightTheme));
+  elements.themeButton.querySelector(".button-text").textContent = data.lightTheme ? "Donker" : "Licht";
+  applyGridSizing();
+  renderEverything();
+}
+
 function storeAnalyticsConsent(value) {
   try {
     localStorage.setItem(ANALYTICS_CONSENT_KEY, value);
@@ -2178,6 +2808,17 @@ function updateModifierStatus(message = null, keyEvent = null) {
   }
   elements.modifierStatus.textContent = active.length ? active.join(" + ") : "Geen modifier actief";
   elements.stepDepthValue.textContent = `${STEP_COUNT} steps`;
+}
+
+function handleGlobalKeys(event) {
+  const activeInput = ["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement?.tagName);
+  if (activeInput) {
+    return;
+  }
+  if (!elements.pianoPage.classList.contains("hidden") && (event.key === "Delete" || event.key === "Backspace")) {
+    event.preventDefault();
+    removeSelectedPianoNote();
+  }
 }
 
 function clampBpm() {
@@ -2272,6 +2913,30 @@ function randomFrom(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+function getTemplateType(type) {
+  if (["recording", "uploaded", "vocal"].includes(type)) return "fx";
+  if (type === "piano") return "melody";
+  return type;
+}
+
+function getVariationChance(type, step, density) {
+  const strong = step % 4 === 0;
+  const offbeat = step % 2 === 1;
+  if (type === "kick") return strong ? density + 0.28 : density * 0.25;
+  if (type === "snare" || type === "clap") return step % 8 === 4 ? density + 0.3 : density * 0.18;
+  if (type === "hat") return offbeat ? density + 0.25 : density * 0.7;
+  if (type === "bass") return strong ? density + 0.18 : density * 0.38;
+  if (type === "melody" || type === "piano") return strong ? density * 0.62 : density * 0.2;
+  if (type === "loop") return step % 8 === 0 ? density + 0.22 : density * 0.08;
+  if (type === "fill") return step >= STEP_COUNT - 4 ? density + 0.34 : density * 0.05;
+  if (type === "fx" || type === "vocal" || type === "uploaded" || type === "recording") return step === 0 || step === STEP_COUNT - 1 || step % 8 === 0 ? density * 0.72 : density * 0.12;
+  return density;
+}
+
+function isSelectedPianoNote(noteInfo) {
+  return Boolean(noteInfo && state.selectedPianoNote && noteInfo.note === state.selectedPianoNote.note && noteInfo.start === state.selectedPianoNote.start);
+}
+
 function createSynthSample(name, type, tone, source) {
   return { id: `${source}-${crypto.randomUUID()}`, name, path: null, type, tone, source, buffer: null, loadFailed: false };
 }
@@ -2296,7 +2961,7 @@ function canDeleteSample(sample) {
 }
 
 function countActiveSteps(track) {
-  return state.pattern[track].filter(Boolean).length;
+  return (state.pattern[track] || []).filter(Boolean).length;
 }
 
 function typeLabel(type) {

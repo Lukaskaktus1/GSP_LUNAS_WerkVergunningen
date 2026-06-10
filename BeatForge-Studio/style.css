@@ -114,6 +114,7 @@ p {
 .piano-hero,
 .piano-toolbar,
 .piano-roll-shell,
+.auth-panel,
 .studio-footer {
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -327,7 +328,8 @@ h1 {
   cursor: pointer;
 }
 
-#sampleUpload {
+#sampleUpload,
+#projectImportInput {
   display: none;
 }
 
@@ -883,7 +885,7 @@ input[type="range"] {
 .track-labels,
 .step-grid {
   display: grid;
-  grid-template-rows: repeat(8, var(--row-height));
+  grid-template-rows: repeat(var(--track-count, 8), var(--row-height));
   gap: 6px;
 }
 
@@ -1180,7 +1182,7 @@ body.light-theme .step-cell:nth-child(4n + 1) {
 
 .piano-tools {
   display: grid;
-  grid-template-columns: 1.15fr 1fr 0.8fr 0.8fr;
+  grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
   gap: 8px;
 }
 
@@ -1304,6 +1306,69 @@ body.light-theme .piano-roll-grid {
 
 .piano-cell.continue {
   color: transparent;
+}
+
+.piano-cell.selected-note::after {
+  outline: 2px solid var(--accent-2);
+  outline-offset: -2px;
+}
+
+.auth-page,
+.account-page {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.account-page {
+  grid-template-columns: minmax(280px, 560px);
+}
+
+.auth-panel {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  background: var(--surface);
+  box-shadow: 0 22px 50px var(--shadow);
+}
+
+.auth-panel header {
+  display: grid;
+  gap: 5px;
+}
+
+.auth-panel h2 {
+  font-size: 1.28rem;
+}
+
+.auth-panel button,
+.account-actions button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--line-bright);
+  border-radius: var(--radius);
+  background: var(--panel-soft);
+  color: var(--text);
+  font-weight: 900;
+}
+
+.auth-panel .primary-action,
+.account-actions .primary-action {
+  border-color: rgba(55, 214, 143, 0.72);
+  background: linear-gradient(180deg, rgba(55, 214, 143, 0.22), rgba(55, 214, 143, 0.1));
+}
+
+.danger-action {
+  border-color: rgba(255, 102, 138, 0.58) !important;
+  background: rgba(255, 102, 138, 0.12) !important;
+  color: var(--danger) !important;
+}
+
+.account-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .studio-footer {
@@ -1622,6 +1687,12 @@ body.light-theme .piano-roll-grid {
 
   .piano-tools {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .auth-page,
+  .account-page,
+  .account-actions {
+    grid-template-columns: 1fr;
   }
 
   .studio-footer {

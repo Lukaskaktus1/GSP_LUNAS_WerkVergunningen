@@ -44,7 +44,7 @@
           <div class="project-meta" aria-label="Projectstatus">
             <span>Pattern A</span>
             <span id="stepCountMeta">16 steps</span>
-            <span>8 tracks</span>
+            <span id="trackCountMeta">8 tracks</span>
           </div>
         </div>
       </section>
@@ -71,6 +71,8 @@
       <section class="view-switch" aria-label="Weergave">
         <button id="showStudioButton" class="active-view-button" type="button">Studio</button>
         <button id="showPianoButton" type="button">Piano Roll</button>
+        <button id="showAuthButton" type="button">Inloggen</button>
+        <button id="showAccountButton" class="hidden" type="button">Account</button>
         <button class="theme-toggle" id="themeButton" type="button" title="Licht thema">
           <span aria-hidden="true">o</span>
           <span class="button-text">Licht</span>
@@ -94,7 +96,9 @@
       <button id="resetButton" type="button">Reset</button>
       <button id="saveButton" type="button">Opslaan</button>
       <button id="loadButton" type="button">Laden</button>
+      <button id="importProjectButton" type="button">Import project</button>
       <button id="exportMidiButton" type="button">Export MIDI</button>
+      <input id="projectImportInput" type="file" accept=".json,.beatforge,application/json">
     </section>
 
     <section class="timeline-strip studio-view" aria-label="Timeline">
@@ -169,6 +173,23 @@
           </label>
           <button class="library-open-button" id="openSampleLibraryButton" type="button">Open volledige library</button>
           <div class="track-picker" id="trackPicker"></div>
+          <section class="mini-menu" aria-label="Opnemen">
+            <h3>Record sound</h3>
+            <input id="recordSoundName" type="text" placeholder="Naam opname">
+            <select id="recordSoundType">
+              <option value="recording">Recording</option>
+              <option value="kick">Kick</option>
+              <option value="snare">Snare</option>
+              <option value="hat">Hi-hat</option>
+              <option value="fx">FX</option>
+            </select>
+            <div class="record-actions">
+              <button id="recordButton" type="button">Record</button>
+              <button id="stopRecordButton" type="button" disabled>Stop</button>
+            </div>
+            <span id="recordStatus">Microfoon klaar</span>
+          </section>
+          <ul class="sample-list" id="sampleList"></ul>
           <section class="mini-menu" aria-label="Sound toevoegen">
             <h3>Sound toevoegen</h3>
             <input id="manualSoundName" type="text" placeholder="Naam">
@@ -187,23 +208,6 @@
             </select>
             <button id="addSoundButton" type="button">Toevoegen</button>
           </section>
-          <section class="mini-menu" aria-label="Opnemen">
-            <h3>Record sound</h3>
-            <input id="recordSoundName" type="text" placeholder="Naam opname">
-            <select id="recordSoundType">
-              <option value="recording">Recording</option>
-              <option value="kick">Kick</option>
-              <option value="snare">Snare</option>
-              <option value="hat">Hi-hat</option>
-              <option value="fx">FX</option>
-            </select>
-            <div class="record-actions">
-              <button id="recordButton" type="button">Record</button>
-              <button id="stopRecordButton" type="button" disabled>Stop</button>
-            </div>
-            <span id="recordStatus">Microfoon klaar</span>
-          </section>
-          <ul class="sample-list" id="sampleList"></ul>
         </div>
       </details>
 
@@ -218,6 +222,8 @@
             <button id="removeStepButton" type="button">- Stap</button>
             <button id="addBarButton" type="button">+ 8</button>
             <button id="removeBarButton" type="button">- 8</button>
+            <button id="addTrackButton" type="button">+ Track</button>
+            <button id="removeTrackButton" type="button">- Track</button>
             <button id="accentButton" type="button">Accent</button>
           </div>
         </div>
@@ -231,7 +237,7 @@
       <details class="mixer-panel side-panel" aria-label="Mixer" open>
         <summary class="panel-heading collapsible-heading">
           <h2>Mixer</h2>
-          <span>8 ch</span>
+          <span id="mixerChannelCount">8 ch</span>
         </summary>
         <div class="panel-content">
           <section class="mini-menu mixer-tools" aria-label="Mixer tools">
@@ -286,6 +292,13 @@
           <button id="humanizePianoButton" type="button">Humanize</button>
           <button id="octaveDownButton" type="button">- Oct</button>
           <button id="octaveUpButton" type="button">+ Oct</button>
+          <button id="pianoAddStepButton" type="button">+ Stap</button>
+          <button id="pianoRemoveStepButton" type="button">- Stap</button>
+          <button id="pianoAddBarButton" type="button">+ 8</button>
+          <button id="pianoRemoveBarButton" type="button">- 8</button>
+          <button id="pianoShiftLeftButton" type="button">&lt; Step</button>
+          <button id="pianoShiftRightButton" type="button">Step &gt;</button>
+          <button id="pianoVariationButton" type="button">Variatie</button>
         </div>
       </section>
 
@@ -293,6 +306,79 @@
         <div class="piano-keys" id="pianoKeys"></div>
         <div class="piano-roll-grid" id="pianoRollGrid"></div>
       </section>
+    </section>
+
+    <section class="auth-page app-view hidden" id="authPage" aria-label="Inloggen en registreren">
+      <article class="auth-panel">
+        <header>
+          <span class="deck-label">Account</span>
+          <h2>Inloggen</h2>
+        </header>
+        <label class="panel-field" for="loginEmailInput">
+          <span>Email</span>
+          <input id="loginEmailInput" type="email" autocomplete="email">
+        </label>
+        <label class="panel-field" for="loginPasswordInput">
+          <span>Wachtwoord</span>
+          <input id="loginPasswordInput" type="password" autocomplete="current-password">
+        </label>
+        <button id="loginButton" class="primary-action" type="button">Inloggen</button>
+      </article>
+
+      <article class="auth-panel">
+        <header>
+          <span class="deck-label">Nieuw account</span>
+          <h2>Registreren</h2>
+        </header>
+        <label class="panel-field" for="registerUsernameInput">
+          <span>Gebruikersnaam</span>
+          <input id="registerUsernameInput" type="text" autocomplete="username">
+        </label>
+        <label class="panel-field" for="registerEmailInput">
+          <span>Email</span>
+          <input id="registerEmailInput" type="email" autocomplete="email">
+        </label>
+        <label class="panel-field" for="registerPasswordInput">
+          <span>Wachtwoord</span>
+          <input id="registerPasswordInput" type="password" autocomplete="new-password">
+        </label>
+        <label class="panel-field" for="registerConfirmInput">
+          <span>Wachtwoord bevestigen</span>
+          <input id="registerConfirmInput" type="password" autocomplete="new-password">
+        </label>
+        <button id="registerButton" class="primary-action" type="button">Registreren</button>
+      </article>
+    </section>
+
+    <section class="account-page app-view hidden" id="accountPage" aria-label="Account beheren">
+      <article class="auth-panel account-panel">
+        <header>
+          <span class="deck-label">Mijn account</span>
+          <h2 id="accountTitle">Account</h2>
+        </header>
+        <label class="panel-field" for="accountUsernameInput">
+          <span>Gebruikersnaam</span>
+          <input id="accountUsernameInput" type="text" autocomplete="username">
+        </label>
+        <label class="panel-field" for="accountEmailInput">
+          <span>Email</span>
+          <input id="accountEmailInput" type="email" autocomplete="email">
+        </label>
+        <label class="panel-field" for="accountPasswordInput">
+          <span>Nieuw wachtwoord</span>
+          <input id="accountPasswordInput" type="password" autocomplete="new-password" placeholder="Laat leeg om te behouden">
+        </label>
+        <label class="panel-field" for="accountConfirmInput">
+          <span>Wachtwoord bevestigen</span>
+          <input id="accountConfirmInput" type="password" autocomplete="new-password">
+        </label>
+        <div class="account-actions">
+          <button id="updateAccountButton" class="primary-action" type="button">Aanpassen</button>
+          <button id="logoutButton" type="button">Uitloggen</button>
+          <button id="deleteAccountButton" class="danger-action" type="button">Account verwijderen</button>
+          <button id="accountBackButton" type="button">Terug naar Studio</button>
+        </div>
+      </article>
     </section>
 
     <footer class="studio-footer">
