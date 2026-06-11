@@ -56,6 +56,7 @@ BEGIN
                 'goedgekeurd',
                 'afgekeurd',
                 'in_uitvoering',
+                'vak_vi_voltooid',
                 'afgerond',
                 'afgemeld',
                 'gesloten'

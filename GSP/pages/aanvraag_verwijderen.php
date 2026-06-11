@@ -48,11 +48,6 @@ try {
         redirect('mijn_aanvragen.php');
     }
 
-    if (in_array((string) $aanvraag['status'], ['goedgekeurd', 'gesloten'], true)) {
-        setFlashMessage('error', 'Goedgekeurde of gesloten aanvragen kunnen niet verwijderd worden.');
-        redirect('mijn_aanvragen.php');
-    }
-
     $deleteStmt = $pdo->prepare("
         DELETE FROM werkvergunning
         WHERE id = :id

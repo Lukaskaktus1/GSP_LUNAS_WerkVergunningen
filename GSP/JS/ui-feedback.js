@@ -104,7 +104,7 @@
             const key = sessionStorage.key(i);
             if (!key) continue;
 
-            if (key === 'aanvraag_submit_pending' || key === 'aanvraag_session_id' || prefixes.some(function (prefix) { return key.indexOf(prefix) === 0; })) {
+            if (key === 'aanvraag_submit_pending' || key === 'aanvraag_session_id' || key === 'aanvraag_last_submit_payload' || key === 'aanvraag_bewerk_id' || prefixes.some(function (prefix) { return key.indexOf(prefix) === 0; })) {
                 keysToRemove.push(key);
             }
         }

@@ -19,6 +19,40 @@ if (isset($_SESSION['user_id'])) {
     }
 }
 
+if (!defined('GSP_PAGE_ENHANCEMENTS_LOADER')) {
+    define('GSP_PAGE_ENHANCEMENTS_LOADER', true);
+
+    ob_start(static function (string $html): string {
+        $assetPrefix = gspRelativeAssetPrefix();
+
+        if (stripos($html, 'user-menu.css') === false && stripos($html, '</head>') !== false) {
+            $css = '<link rel="stylesheet" href="' . $assetPrefix . '/CSS/user-menu.css">';
+            $html = preg_replace('/<\/head>/i', "    {$css}\n</head>", $html, 1) ?? $html;
+        }
+
+        if (stripos($html, 'data-app-flash') === false) {
+            $flashMarkup = flashDialogMarkup(getFlashMessage());
+            if ($flashMarkup !== '' && stripos($html, '<body') !== false) {
+                $html = preg_replace('/(<body[^>]*>)/i', "$1\n    {$flashMarkup}", $html, 1) ?? $html;
+            }
+        }
+
+        $scripts = '';
+        if (stripos($html, 'ui-feedback.js') === false) {
+            $scripts .= '    <script src="' . $assetPrefix . '/JS/ui-feedback.js"></script>' . "\n";
+        }
+        if (stripos($html, 'user-menu.js') === false) {
+            $scripts .= '    <script src="' . $assetPrefix . '/JS/user-menu.js"></script>' . "\n";
+        }
+
+        if ($scripts !== '' && stripos($html, '</body>') !== false) {
+            return preg_replace('/<\/body>/i', $scripts . '</body>', $html, 1) ?? $html;
+        }
+
+        return $html . "\n" . $scripts;
+    });
+}
+
 function redirectToRoleOverview(): never
 {
     $redirects = [

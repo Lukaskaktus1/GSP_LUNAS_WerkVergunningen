@@ -193,16 +193,22 @@ try {
         ORDER BY aw.naam ASC
     ", $aanvraagId, 'vergunning_activiteit_warm');
 
+    $machineExtraSql = databaseColumnExists($pdo, 'vergunning_machine', 'extra_info')
+        ? "CASE WHEN vm.extra_info IS NULL OR vm.extra_info = '' THEN '' ELSE CONCAT(' (', vm.extra_info, ')') END"
+        : "''";
     $machines = haalGekoppeldeWaardenSafe($pdo, "
-        SELECT m.naam
+        SELECT CONCAT(m.naam, {$machineExtraSql})
         FROM vergunning_machine vm
         INNER JOIN machine m ON m.id = vm.machine_id
         WHERE vm.vergunning_id = :vergunning_id
         ORDER BY m.naam ASC
     ", $aanvraagId, 'vergunning_machine');
 
+    $stofExtraSql = databaseColumnExists($pdo, 'vergunning_gevaarlijke_stof', 'extra_info')
+        ? "CASE WHEN vgs.extra_info IS NULL OR vgs.extra_info = '' THEN '' ELSE CONCAT(' (', vgs.extra_info, ')') END"
+        : "''";
     $gevaarlijkeStoffen = haalGekoppeldeWaardenSafe($pdo, "
-        SELECT gs.naam
+        SELECT CONCAT(gs.naam, {$stofExtraSql})
         FROM vergunning_gevaarlijke_stof vgs
         INNER JOIN gevaarlijke_stof gs ON gs.id = vgs.gevaarlijke_stof_id
         WHERE vgs.vergunning_id = :vergunning_id
@@ -225,16 +231,32 @@ try {
         ORDER BY av.naam ASC
     ", $aanvraagId, 'vergunning_andere_vergunning');
 
+    $toelatingExtraSql = databaseColumnExists($pdo, 'vergunning_toelating', 'vrije_tekst')
+        ? "CASE WHEN vt.vrije_tekst IS NULL OR vt.vrije_tekst = '' THEN '' ELSE CONCAT(' (', vt.vrije_tekst, ')') END"
+        : "''";
     $toelatingen = haalGekoppeldeWaardenSafe($pdo, "
-        SELECT t.naam
+        SELECT CONCAT(t.naam, {$toelatingExtraSql})
         FROM vergunning_toelating vt
         INNER JOIN toelating t ON t.id = vt.toelating_id
         WHERE vt.vergunning_id = :vergunning_id
         ORDER BY t.naam ASC
     ", $aanvraagId, 'vergunning_toelating');
 
+    $preventieExtraParts = [];
+    if (databaseColumnExists($pdo, 'vergunning_preventie_item', 'extra_tekst')) {
+        $preventieExtraParts[] = "NULLIF(vpi.extra_tekst, '')";
+    }
+    if (databaseColumnExists($pdo, 'vergunning_preventie_item', 'extra_datum')) {
+        $preventieExtraParts[] = "NULLIF(CAST(vpi.extra_datum AS CHAR), '')";
+    }
+    if (databaseColumnExists($pdo, 'vergunning_preventie_item', 'extra_korte_tekst')) {
+        $preventieExtraParts[] = "NULLIF(vpi.extra_korte_tekst, '')";
+    }
+    $preventieExtraSql = $preventieExtraParts !== []
+        ? "CASE WHEN CONCAT_WS(' / ', " . implode(', ', $preventieExtraParts) . ") = '' THEN '' ELSE CONCAT(' (', CONCAT_WS(' / ', " . implode(', ', $preventieExtraParts) . "), ')') END"
+        : "''";
     $preventiemaatregelen = haalGekoppeldeWaardenSafe($pdo, "
-        SELECT po.label_tekst
+        SELECT CONCAT(po.label_tekst, {$preventieExtraSql})
         FROM vergunning_preventie_item vpi
         INNER JOIN preventie_optie po ON po.id = vpi.preventie_optie_id
         WHERE vpi.vergunning_id = :vergunning_id
@@ -319,10 +341,10 @@ try {
         $beoordelingen = array_filter($stmtBeoordeling->fetchAll(), 'is_array');
     }
 
+    $aanvraag = herstelVakViVoltooidStatusIndienNodig($pdo, $aanvraag, $userId);
     $magVak6 = magVergunningVak6($aanvraag, $userId);
     $magVak7 = magVergunningVak7($aanvraag, $userId, $pdo);
-    $magKeuren = magVergunningKeuren($pdo, $aanvraag, $userId, $role)
-        && (int) ($aanvraag['eigenaar_user_id'] ?? 0) !== $userId;
+    $magKeuren = magVergunningKeuren($pdo, $aanvraag, $userId, $role);
     $flash = getFlashMessage();
 } catch (Throwable $exception) {
     error_log('aanvraag_bekijken failed: ' . $exception->getMessage());
@@ -554,6 +576,7 @@ if (!is_array($aanvraag)) {
             <div class="applications-container">
                 <?php renderDetailGrid([
                     ['label' => 'Aandachtspunten vanwege opdrachtgever', 'value' => toonWaarde((string) ($aanvraag['aandachtspunten_vak3'] ?? '')), 'full' => true],
+                    ['label' => 'Parkeerplaats / werfzone', 'value' => toonWaarde((string) ($aanvraag['vak3_parkeerplaats'] ?? '')), 'full' => true],
                 ]); ?>
             </div>
         </section>
@@ -581,7 +604,32 @@ if (!is_array($aanvraag)) {
                     ['label' => 'Andere vergunningen', 'value' => toonLijst($andereVergunningen), 'full' => true],
                     ['label' => 'Bijkomende toelatingen', 'value' => toonLijst($toelatingen), 'full' => true],
                     ['label' => 'Preventiemaatregelen', 'value' => toonLijst($preventiemaatregelen), 'full' => true],
+                    ['label' => 'Aanvullende preventiemaatregelen', 'value' => toonWaarde((string) ($aanvraag['preventie_aanvullend'] ?? '')), 'full' => true],
+                    ['label' => 'Datum opdrachtgever', 'value' => toonWaarde((string) ($aanvraag['datum_opdrachtgever'] ?? ''))],
+                    ['label' => 'Datum afdeling', 'value' => toonWaarde((string) ($aanvraag['datum_afdeling'] ?? ''))],
+                    ['label' => 'Handtekening opdrachtgever', 'value' => !empty($aanvraag['handtekening_opdrachtgever']) ? 'Aanwezig' : 'Niet ingevuld'],
+                    ['label' => 'Handtekening afdeling', 'value' => !empty($aanvraag['handtekening_afdeling']) ? 'Aanwezig' : 'Niet ingevuld'],
                 ]); ?>
+                <?php if (!empty($aanvraag['handtekening_opdrachtgever']) || !empty($aanvraag['handtekening_afdeling'])): ?>
+                    <div class="detail-grid">
+                        <?php if (!empty($aanvraag['handtekening_opdrachtgever'])): ?>
+                            <div class="detail-field">
+                                <label>Handtekening opdrachtgever</label>
+                                <div class="readonly-box">
+                                    <img class="aanvraag-photo" src="<?= e((string) $aanvraag['handtekening_opdrachtgever']) ?>" alt="Handtekening opdrachtgever">
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (!empty($aanvraag['handtekening_afdeling'])): ?>
+                            <div class="detail-field">
+                                <label>Handtekening afdeling</label>
+                                <div class="readonly-box">
+                                    <img class="aanvraag-photo" src="<?= e((string) $aanvraag['handtekening_afdeling']) ?>" alt="Handtekening afdeling">
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </section>
 

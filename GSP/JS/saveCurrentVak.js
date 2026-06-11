@@ -23,6 +23,10 @@ function appendTestParam(url) {
 }
 
 function inlineInputStorageKey(el) {
+    if (el && el.type === 'radio' && el.name) {
+        return el.name;
+    }
+
     if (!el || (el.id || el.name)) {
         return el ? (el.id || el.name) : '';
     }
@@ -742,12 +746,12 @@ function attachSchoolToggle() {
     function update() {
         const school = schoolRadio.checked;
         if (schoolGroup) schoolGroup.hidden = !school;
-        if (klasGroup) klasGroup.hidden = !school;
+        if (klasGroup) klasGroup.hidden = true;
         if (firmaGroup) firmaGroup.hidden = school;
 
         if (klasInput) {
-            klasInput.required = school;
-            klasInput.disabled = !school;
+            klasInput.required = false;
+            klasInput.disabled = true;
         }
         if (firmaInput) {
             firmaInput.required = !school && externeRadio.checked;
@@ -848,6 +852,7 @@ function ensureAanvraagSession() {
         sessionStorage.setItem('aanvraag_session_id', String(Date.now()));
         sessionStorage.setItem('admin_test_aanvraag', startsAdminTest ? 'true' : 'false');
         sessionStorage.removeItem('admin_test_edit_id');
+        sessionStorage.removeItem('aanvraag_bewerk_id');
         window.history.replaceState({}, document.title, window.location.pathname);
         return;
     }
@@ -905,6 +910,8 @@ function clearAanvraagDraftData() {
     keysToRemove.forEach(function (key) {
         sessionStorage.removeItem(key);
     });
+    sessionStorage.removeItem('aanvraag_last_submit_payload');
+    sessionStorage.removeItem('aanvraag_bewerk_id');
 }
 
 const gspClearAanvraagDraftData = clearAanvraagDraftData;
@@ -1063,7 +1070,7 @@ function collectAllAanvraagData() {
             continue;
         }
 
-        if (key === 'werkvergunning_nummer' || key === 'admin_test_aanvraag' || key === 'admin_test_edit_id' || key === 'aanvraag_session_id' || key === 'gsp_profile_seeded') {
+        if (key === 'werkvergunning_nummer' || key === 'admin_test_aanvraag' || key === 'admin_test_edit_id' || key === 'aanvraag_session_id' || key === 'aanvraag_last_submit_payload' || key === 'gsp_profile_seeded') {
             continue;
         }
 
@@ -1091,6 +1098,120 @@ function collectAllAanvraagData() {
 
 const gspCollectAllAanvraagData = collectAllAanvraagData;
 
+function firstAanvraagValue(fields, keys) {
+    for (const key of keys) {
+        const value = fields && fields[key] !== undefined && fields[key] !== null
+            ? String(fields[key]).trim()
+            : '';
+
+        if (value !== '') {
+            return value;
+        }
+    }
+
+    return '';
+}
+
+function normalizeAanvraagFields(data) {
+    const fields = data && data.fields ? data.fields : {};
+    const aliases = {
+        vak1_afdeling: ['vak1_afdeling', 'afdeling_tekst', 'afdeling', 'vak4_afdeling'],
+        vak1_exzone: ['vak1_exzone', 'ex_zone', 'exzone', 'vak1_exzone_ja', 'vak1_exzone_neen'],
+        vak1_werkbeschrijving: ['vak1_werkbeschrijving', 'werkbeschrijving', 'beschrijving'],
+        vak2_datumwerken: ['vak2_datumwerken', 'datum_werken', 'datumwerken'],
+        vak2_veiligheidstest: ['vak2_veiligheidstest', 'veiligheidstest_status', 'veiligheidstest', 'vak2_veiligheidstest_ok', 'vak2_veiligheidstest_nok'],
+        vca: ['vca', 'vca_verplicht', 'vca_ja', 'vca_nee'],
+        geldig_tot: ['geldig_tot', 'vca_geldig_tot'],
+        vak2_firma: ['vak2_firma', 'firma_naam'],
+        firma_naam: ['firma_naam', 'vak2_firma']
+    };
+
+    Object.keys(aliases).forEach(function (canonicalKey) {
+        if (String(fields[canonicalKey] || '').trim() !== '') {
+            return;
+        }
+
+        const value = firstAanvraagValue(fields, aliases[canonicalKey]);
+        if (value !== '') {
+            fields[canonicalKey] = value;
+        }
+    });
+
+    if (fields.vak2_doel === 'school') {
+        fields.aanvrager_is_school = 'ja';
+        fields.firma_naam = 'GTI Beveren';
+        fields.vak2_school_uitvoerder = 'GTI Beveren';
+    } else if (fields.vak2_doel === 'externe') {
+        fields.aanvrager_is_school = 'nee';
+    }
+
+    return data;
+}
+
+function validateCompleteAanvraagData(data) {
+    const fields = data && data.fields ? data.fields : {};
+    const required = [
+        { keys: ['vak1_afdeling', 'afdeling_tekst', 'afdeling', 'vak4_afdeling'], label: 'Afdeling', page: 'werkvergunning_vak1.php' },
+        { keys: ['vak1_exzone', 'ex_zone', 'exzone', 'vak1_exzone_ja', 'vak1_exzone_neen'], label: 'EX-zone', page: 'werkvergunning_vak1.php' },
+        { keys: ['vak1_werkbeschrijving', 'werkbeschrijving', 'beschrijving'], label: 'Werkbeschrijving', page: 'werkvergunning_vak1.php' },
+        { keys: ['uitvoerder_voornaam'], label: 'Voornaam uitvoerder', page: 'werkvergunning_vak2.php' },
+        { keys: ['uitvoerder_naam'], label: 'Naam uitvoerder', page: 'werkvergunning_vak2.php' },
+        { keys: ['vak2_datumwerken', 'datum_werken', 'datumwerken'], label: 'Datum werken', page: 'werkvergunning_vak2.php' },
+        { keys: ['werktijd_van'], label: 'Werktijd van', page: 'werkvergunning_vak2.php' },
+        { keys: ['werktijd_tot'], label: 'Werktijd tot', page: 'werkvergunning_vak2.php' },
+        { keys: ['vermoedelijke_duur'], label: 'Vermoedelijke duur', page: 'werkvergunning_vak2.php' },
+        { keys: ['werkzaamheden'], label: 'Werkzaamheden', page: 'werkvergunning_vak2.php' },
+        { keys: ['vak2_veiligheidstest', 'veiligheidstest_status', 'veiligheidstest', 'vak2_veiligheidstest_ok', 'vak2_veiligheidstest_nok'], label: 'Veiligheidstest', page: 'werkvergunning_vak2.php' },
+        { keys: ['vca', 'vca_verplicht', 'vca_ja', 'vca_nee'], label: 'VCA', page: 'werkvergunning_vak2.php' }
+    ];
+
+    for (const item of required) {
+        if (firstAanvraagValue(fields, item.keys) === '') {
+            return item;
+        }
+    }
+
+    const doel = firstAanvraagValue(fields, ['vak2_doel']);
+    const schoolFlag = firstAanvraagValue(fields, ['aanvrager_is_school']);
+    const isSchool = doel === 'school' || schoolFlag === 'ja' || schoolFlag === '1';
+
+    if (!doel && !schoolFlag) {
+        return { label: 'Wie voert de werken uit?', page: 'werkvergunning_vak2.php' };
+    }
+
+    if (!isSchool && firstAanvraagValue(fields, ['vak2_firma', 'firma_naam']) === '') {
+        return { label: 'Naam externe firma', page: 'werkvergunning_vak2.php' };
+    }
+
+    if (firstAanvraagValue(fields, ['vca', 'vca_verplicht', 'vca_ja', 'vca_nee']).toLowerCase() === 'ja'
+        && firstAanvraagValue(fields, ['geldig_tot', 'vca_geldig_tot']) === '') {
+        return { label: 'Geldig tot (VCA)', page: 'werkvergunning_vak2.php' };
+    }
+
+    return null;
+}
+
+function showCompleteAanvraagProblem(problem) {
+    const message = problem.label + ' is nog niet ingevuld.';
+    const goToPage = function () {
+        if (problem.page) {
+            window.location.href = appendTestParam(problem.page);
+        }
+    };
+
+    if (typeof window.showAppPopup === 'function') {
+        window.showAppPopup({
+            type: 'error',
+            title: 'Aanvraag nog niet volledig',
+            message: message,
+            solution: 'Ik breng u naar de juiste stap zodat u dit veld kunt aanvullen.'
+        }).then(goToPage);
+    } else {
+        alert(message);
+        goToPage();
+    }
+}
+
 function bindAanvraagSubmitForm(formId) {
     const form = document.getElementById(formId);
     if (!form) {
@@ -1105,6 +1226,13 @@ function bindAanvraagSubmitForm(formId) {
         }
 
         saveCurrentVak();
+        const aanvraagData = normalizeAanvraagFields(gspCollectAllAanvraagData());
+        const fullFormProblem = validateCompleteAanvraagData(aanvraagData);
+
+        if (fullFormProblem && !(typeof isAdminTestMode === 'function' && isAdminTestMode())) {
+            showCompleteAanvraagProblem(fullFormProblem);
+            return;
+        }
 
         const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
         if (submitButton) {
@@ -1117,11 +1245,11 @@ function bindAanvraagSubmitForm(formId) {
 
         const hiddenInput = form.querySelector('input[name="aanvraag_data"]');
         if (hiddenInput) {
-            hiddenInput.value = JSON.stringify(gspCollectAllAanvraagData());
+            hiddenInput.value = JSON.stringify(aanvraagData);
+            sessionStorage.setItem('aanvraag_last_submit_payload', hiddenInput.value);
         }
 
         if (typeof isAdminTestMode === 'function' && isAdminTestMode()) {
-            const aanvraagData = gspCollectAllAanvraagData();
             gspSaveAdminTestAanvraag(aanvraagData);
             gspClearAanvraagDraftData();
             sessionStorage.removeItem('admin_test_edit_id');

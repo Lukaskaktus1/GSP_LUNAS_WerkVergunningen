@@ -114,6 +114,7 @@ function vergunningStatusLabel(string $status): string
         'goedgekeurd' => 'Goedgekeurd',
         'afgekeurd' => 'Afgekeurd',
         'in_uitvoering' => 'In uitvoering',
+        'vak_vi_voltooid' => 'Vak VI voltooid',
         'afgerond' => 'Afgerond',
         'afgemeld' => 'Afgemeld',
         'gesloten' => 'Gesloten',
@@ -124,11 +125,92 @@ function vergunningStatusLabel(string $status): string
 function vergunningStatusClass(string $status): string
 {
     return match ($status) {
-        'goedgekeurd', 'afgerond' => 'status-goedgekeurd',
+        'goedgekeurd', 'vak_vi_voltooid', 'afgerond' => 'status-goedgekeurd',
         'afgekeurd' => 'status-afgekeurd',
         'ingediend', 'in_beoordeling', 'in_uitvoering' => 'status-wachtend',
         default => 'status-concept',
     };
+}
+
+function ensureWerkvergunningStatusEnum(PDO $pdo): void
+{
+    if (!databaseColumnExists($pdo, 'werkvergunning', 'status')) {
+        return;
+    }
+
+    $stmt = $pdo->prepare("
+        SELECT DATA_TYPE
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = 'werkvergunning'
+          AND COLUMN_NAME = 'status'
+        LIMIT 1
+    ");
+    $stmt->execute();
+
+    if ((string) $stmt->fetchColumn() !== 'enum') {
+        return;
+    }
+
+    $pdo->exec("
+        ALTER TABLE werkvergunning
+        MODIFY status ENUM(
+            'concept',
+            'ingediend',
+            'in_beoordeling',
+            'goedgekeurd',
+            'afgekeurd',
+            'in_uitvoering',
+            'vak_vi_voltooid',
+            'afgerond',
+            'afgemeld',
+            'gesloten'
+        ) NOT NULL DEFAULT 'concept'
+    ");
+}
+
+function herstelVakViVoltooidStatusIndienNodig(PDO $pdo, array $aanvraag, int $userId): array
+{
+    $status = trim((string) ($aanvraag['status'] ?? ''));
+
+    if (!in_array($status, ['', '0', 'onbekend', 'in_uitvoering'], true)) {
+        return $aanvraag;
+    }
+
+    $vergunningId = (int) ($aanvraag['id'] ?? 0);
+
+    if ($vergunningId <= 0 || (int) ($aanvraag['eigenaar_user_id'] ?? 0) !== $userId) {
+        return $aanvraag;
+    }
+
+    $vak6Volledig = alleVak6DagenVolledig($pdo, $vergunningId, $aanvraag);
+
+    if (!$vak6Volledig && $status === 'in_uitvoering') {
+        try {
+            $update = $pdo->prepare("UPDATE werkvergunning SET status = 'goedgekeurd' WHERE id = :id");
+            $update->execute(['id' => $vergunningId]);
+            $aanvraag['status'] = 'goedgekeurd';
+        } catch (Throwable $exception) {
+            error_log('herstelVakViVoltooidStatusIndienNodig legacy reset failed: ' . $exception->getMessage());
+        }
+
+        return $aanvraag;
+    }
+
+    if (!$vak6Volledig) {
+        return $aanvraag;
+    }
+
+    try {
+        ensureWerkvergunningStatusEnum($pdo);
+        $update = $pdo->prepare("UPDATE werkvergunning SET status = 'vak_vi_voltooid' WHERE id = :id");
+        $update->execute(['id' => $vergunningId]);
+        $aanvraag['status'] = 'vak_vi_voltooid';
+    } catch (Throwable $exception) {
+        error_log('herstelVakViVoltooidStatusIndienNodig failed: ' . $exception->getMessage());
+    }
+
+    return $aanvraag;
 }
 
 function magVergunningBekijken(array $aanvraag, int $userId, string $role): bool
@@ -188,39 +270,23 @@ function ensureWerkvergunningBeoordelingTable(PDO $pdo): void
 
 function magVergunningBewerken(array $aanvraag, int $userId): bool
 {
-    $status = (string) ($aanvraag['status'] ?? '');
-
-    if (in_array($status, ['afgerond', 'gesloten', 'afgemeld'], true)) {
-        return false;
-    }
-
-    return (int) ($aanvraag['eigenaar_user_id'] ?? 0) === $userId;
+    return (int) ($aanvraag['eigenaar_user_id'] ?? 0) === $userId
+        && (string) ($aanvraag['status'] ?? '') === 'ingediend';
 }
 
 function magVergunningVak6(array $aanvraag, int $userId): bool
 {
-    if (!magVergunningBewerken($aanvraag, $userId)) {
-        return false;
-    }
-
-    return in_array((string) ($aanvraag['status'] ?? ''), ['goedgekeurd', 'in_uitvoering'], true);
+    return (int) ($aanvraag['eigenaar_user_id'] ?? 0) === $userId
+        && (string) ($aanvraag['status'] ?? '') === 'goedgekeurd';
 }
 
 function magVergunningVak7(array $aanvraag, int $userId, PDO $pdo): bool
 {
-    if (!magVergunningBewerken($aanvraag, $userId)) {
-        return false;
-    }
+    $aanvraag = herstelVakViVoltooidStatusIndienNodig($pdo, $aanvraag, $userId);
 
-    if ((string) ($aanvraag['status'] ?? '') === 'afgerond') {
-        return false;
-    }
-
-    if (!in_array((string) ($aanvraag['status'] ?? ''), ['goedgekeurd', 'in_uitvoering'], true)) {
-        return false;
-    }
-
-    return alleVak6DagenVolledig($pdo, (int) ($aanvraag['id'] ?? 0), $aanvraag);
+    return (int) ($aanvraag['eigenaar_user_id'] ?? 0) === $userId
+        && (string) ($aanvraag['status'] ?? '') === 'vak_vi_voltooid'
+        && alleVak6DagenVolledig($pdo, (int) ($aanvraag['id'] ?? 0), $aanvraag);
 }
 
 function parseAantalWerkdagen(?string $vermoedelijkeDuur, int $default = 1): int

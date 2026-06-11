@@ -7,7 +7,6 @@ require_once __DIR__ . '/../auth/auth.php';
 $role = (string) ($_SESSION['rol'] ?? '');
 $voornaam = trim((string) ($_SESSION['voornaam'] ?? ''));
 $achternaam = trim((string) ($_SESSION['naam'] ?? ''));
-$klas = trim((string) ($_SESSION['klas'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -76,11 +75,6 @@ $klas = trim((string) ($_SESSION['klas'] ?? ''));
                 <div class="form-group" id="vak2_school_group" hidden>
                     <label for="vak2_school_uitvoerder">Uitvoerende organisatie</label>
                     <input type="text" id="vak2_school_uitvoerder" name="vak2_school_uitvoerder" value="GTI Beveren" readonly data-preserve-value="true">
-                </div>
-                <div class="form-group" id="vak2_klas_group" hidden>
-                    <label for="vak2_klas">Klas</label>
-                    <input type="text" id="vak2_klas" name="vak2_klas" value="<?= e($klas) ?>" placeholder="bijv. 6ADB" data-preserve-value="<?= $klas !== '' ? 'true' : 'false' ?>">
-                    <p class="field-note">Voor leerlingen wordt deze klas gebruikt om de juiste leerkracht te verwittigen.</p>
                 </div>
                 <div class="form-group" id="vak2_firma_group" hidden>
                     <label for="vak2_firma">Naam externe firma</label>

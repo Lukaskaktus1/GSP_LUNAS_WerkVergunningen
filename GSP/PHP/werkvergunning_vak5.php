@@ -35,10 +35,6 @@ $overzichtPagina = match ($role) {
     <meta property="og:title" content="Werkvergunning Vak 5 – GTI Beveren">
     <meta property="og:description" content="Werkvergunning formulier Vak 5 - Vul de vijfde sectie van je werkvergunning in.">
     <meta property="og:image" content="<?= e(appOrigin() . '/afbeeldingen/LogoADB_1.png') ?>">
-</head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Werkvergunning - Vak V</title>
     <link rel="stylesheet" href="../CSS/werkvergunning-base.css?v=20260608">
     <link rel="stylesheet" href="../CSS/werkvergunning_vak5.css?v=20260608">
     <link rel="stylesheet" href="../CSS/local-icons.css?v=20260608">

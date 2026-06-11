@@ -12,7 +12,7 @@ $pdo = getDbConnection();
 $stmt = $pdo->prepare("
     SELECT id, vergunning_nummer, eigenaar_email, eigenaar_rol, werkbeschrijving, datum_werken, status, updated_at
     FROM werkvergunning
-    WHERE status IN ('goedgekeurd', 'afgekeurd', 'in_uitvoering', 'afgerond')
+    WHERE status IN ('goedgekeurd', 'afgekeurd', 'vak_vi_voltooid', 'afgerond')
     ORDER BY updated_at DESC
 ");
 

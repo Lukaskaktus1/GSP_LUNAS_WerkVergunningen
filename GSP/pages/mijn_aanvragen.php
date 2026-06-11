@@ -10,7 +10,7 @@ $pdo = getDbConnection();
 $userId = (int) $_SESSION['user_id'];
 
 $stmt = $pdo->prepare("
-    SELECT id, vergunning_nummer, werkbeschrijving, datum_werken, status, created_at
+    SELECT id, vergunning_nummer, eigenaar_user_id, werkbeschrijving, datum_werken, vermoedelijke_duur, status, created_at
     FROM werkvergunning
     WHERE eigenaar_user_id = :user_id
     ORDER BY created_at DESC
@@ -131,19 +131,11 @@ function statusLabel(string $status): string
                         <tbody>
                         <?php foreach ($aanvragen as $aanvraag): ?>
                             <?php
+                            $aanvraag = herstelVakViVoltooidStatusIndienNodig($pdo, $aanvraag, $userId);
                             $status = (string) $aanvraag['status'];
-                            $magActieAanvragen = !in_array($status, ['gesloten', 'afgerond', 'in_uitvoering'], true);
-                            $magVak6 = in_array($status, ['goedgekeurd', 'in_uitvoering'], true);
-                            $magVak7 = false;
-
-                            if ($magVak6 && databaseTableExists($pdo, 'werkvergunning_vak6_log')) {
-                                $checkStmt = $pdo->prepare('SELECT * FROM werkvergunning WHERE id = :id LIMIT 1');
-                                $checkStmt->execute(['id' => (int) $aanvraag['id']]);
-                                $row = $checkStmt->fetch();
-                                if (is_array($row)) {
-                                    $magVak7 = alleVak6DagenVolledig($pdo, (int) $row['id'], $row) && $status !== 'afgerond';
-                                }
-                            }
+                            $magAanpassen = $status === 'ingediend';
+                            $magVak6 = $status === 'goedgekeurd';
+                            $magVak7 = $status === 'vak_vi_voltooid';
                             ?>
                             <tr>
                                 <td><?= e((string) $aanvraag['vergunning_nummer']) ?></td>
@@ -164,13 +156,23 @@ function statusLabel(string $status): string
                                             Bekijken
                                         </button>
 
+                                        <?php if ($magAanpassen): ?>
+                                            <button
+                                                class="small-btn"
+                                                type="button"
+                                                onclick="window.location.href='aanvraag_bewerken.php?id=<?= e((string) $aanvraag['id']) ?>'"
+                                            >
+                                                Aanpassen
+                                            </button>
+                                        <?php endif; ?>
+
                                         <?php if ($magVak6): ?>
                                             <button
                                                 class="small-btn"
                                                 type="button"
                                                 onclick="window.location.href='aanvraag_vak6.php?id=<?= e((string) $aanvraag['id']) ?>'"
                                             >
-                                                Vak VI
+                                                Vak VI invullen
                                             </button>
                                         <?php endif; ?>
 
@@ -180,27 +182,16 @@ function statusLabel(string $status): string
                                                 type="button"
                                                 onclick="window.location.href='aanvraag_vak7.php?id=<?= e((string) $aanvraag['id']) ?>'"
                                             >
-                                                Vak VII
+                                                Vak VII invullen
                                             </button>
                                         <?php endif; ?>
 
-                                        <?php if ($magActieAanvragen): ?>
-                                            <form action="aanvraag_actie_aanvragen.php" method="POST" data-confirm-title="Aanpassing aanvragen" data-confirm-message="Wilt u vragen om deze aanvraag opnieuw te mogen aanpassen?" data-confirm-solution="Een leerkracht, TA of admin krijgt hiervan een melding.">
-                                                <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
-                                                <input type="hidden" name="actie" value="aanpassen">
-                                                <button type="submit" class="small-btn">
-                                                    Aanpassen aanvragen
-                                                </button>
-                                            </form>
-
-                                            <form action="aanvraag_actie_aanvragen.php" method="POST" data-confirm-title="Verwijdering aanvragen" data-confirm-message="Wilt u vragen om deze aanvraag te verwijderen?" data-confirm-solution="Een leerkracht, TA of admin krijgt hiervan een melding.">
-                                                <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
-                                                <input type="hidden" name="actie" value="verwijderen">
-                                                <button type="submit" class="small-btn delete-btn">
-                                                    Verwijderen aanvragen
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
+                                        <form action="aanvraag_verwijderen.php" method="POST" data-confirm-title="Aanvraag verwijderen" data-confirm-message="Wilt u deze aanvraag verwijderen?" data-confirm-solution="Deze actie verwijdert de aanvraag uit uw overzicht.">
+                                            <input type="hidden" name="id" value="<?= e((string) $aanvraag['id']) ?>">
+                                            <button type="submit" class="small-btn delete-btn">
+                                                Verwijderen
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

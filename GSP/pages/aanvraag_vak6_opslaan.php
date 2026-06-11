@@ -159,19 +159,20 @@ try {
         $delete->execute($deleteParams);
     }
 
-    if (databaseColumnExists($pdo, 'werkvergunning', 'status')) {
-        $statusUpdate = $pdo->prepare("
-            UPDATE werkvergunning
-            SET status = 'in_uitvoering'
-            WHERE id = :id
-              AND status = 'goedgekeurd'
-        ");
-        $statusUpdate->execute(['id' => $vergunningId]);
-    }
-
     setFlashMessage('success', 'Vak VI-logboek is opgeslagen.');
 
     if (alleVak6DagenVolledig($pdo, $vergunningId, $aanvraag)) {
+        if (databaseColumnExists($pdo, 'werkvergunning', 'status')) {
+            ensureWerkvergunningStatusEnum($pdo);
+            $statusUpdate = $pdo->prepare("
+                UPDATE werkvergunning
+                SET status = 'vak_vi_voltooid'
+                WHERE id = :id
+                  AND status NOT IN ('afgekeurd', 'vak_vi_voltooid', 'afgerond', 'afgemeld', 'gesloten')
+            ");
+            $statusUpdate->execute(['id' => $vergunningId]);
+        }
+
         setFlashMessage('success', 'Alle Vak VI-dagen zijn ingevuld. U kunt nu Vak VII openen.');
     }
 
